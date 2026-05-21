@@ -1106,6 +1106,13 @@ setInterval(function() {
 // INICIALIZAR
 // ================================================
 (function init() {
+  // Limpar dados de exemplo na primeira vez
+  if (!localStorage.getItem('il_zerado')) {
+    localStorage.removeItem('il_mods');
+    localStorage.removeItem('il_aulas');
+    localStorage.removeItem('il_alunos');
+    localStorage.setItem('il_zerado', '1');
+  }
   // garantir que só o dashboard aparece
   var todas = document.querySelectorAll('.page');
   for (var i = 0; i < todas.length; i++) {
