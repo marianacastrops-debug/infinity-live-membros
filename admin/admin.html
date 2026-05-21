@@ -278,6 +278,17 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 <script src="admin-auth.js"></script>
 </head>
 <body>
+<script>
+// Limpar todos os dados de exemplo
+(function(){
+  if (!localStorage.getItem('il_limpo_v2')) {
+    ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado','il_pronto'].forEach(function(k){
+      localStorage.removeItem(k);
+    });
+    localStorage.setItem('il_limpo_v2','1');
+  }
+})();
+</script>
 <div class="layout">
 
 <!-- SIDEBAR -->
