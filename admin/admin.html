@@ -313,7 +313,10 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     </div>
     <div class="tb-right">
       <div class="live-pill"><div class="live-dot"></div> Online</div>
-      <button class="btn btn-primary" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Novo aluno</button>
+      <button class="btn btn-outline btn-sm" onclick="zerarTudo()" style="border-color:rgba(255,59,92,0.3);color:#ff3b5c;" title="Zerar todos os dados de exemplo">
+          <i class="ti ti-trash" style="font-size:13px;"></i> Zerar dados
+        </button>
+        <button class="btn btn-primary" onclick="abrirModal('modal-aluno')" ><i class="ti ti-user-plus" style="font-size:14px;"></i> Novo aluno</button>
     </div>
   </div>
 
@@ -325,16 +328,14 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
         <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-users"></i></div><span class="stat-trend t1">+12</span></div><div class="stat-val" id="st-alunos">0</div><div class="stat-lbl">Alunos ativos</div></div>
         <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-eye"></i></div><span class="stat-trend t2" id="st-online-badge">17</span></div><div class="stat-val" id="st-online">17</div><div class="stat-lbl">Online agora</div></div>
         <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-message-circle"></i></div><span class="stat-trend t3">3 abertos</span></div><div class="stat-val">3</div><div class="stat-lbl">Tickets</div></div>
-        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-chart-bar"></i></div><span class="stat-trend t4">+5%</span></div><div class="stat-val">63%</div><div class="stat-lbl">Engajamento</div></div>
+        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-stack"></i></div><span class="stat-trend t4" id="st-mods-badge">0</span></div><div class="stat-val" id="st-mods">0</div><div class="stat-lbl">Módulos</div></div>
       </div>
       <div class="grid2">
         <div class="card">
           <div class="card-hd"><span class="card-title">Atividade recente</span></div>
-          <div class="act-item"><div class="act-ico ai-g"><i class="ti ti-user-plus"></i></div><div><div class="act-txt"><strong>Novo aluno</strong> — <span>carolina.m@gmail.com</span></div><div class="act-time">5 min atrás</div></div></div>
-          <div class="act-item"><div class="act-ico ai-b"><i class="ti ti-message-circle"></i></div><div><div class="act-txt"><strong>Ticket #003</strong> aberto por <span>Pedro Kovalski</span></div><div class="act-time">18 min atrás</div></div></div>
-          <div class="act-item"><div class="act-ico ai-y"><i class="ti ti-video"></i></div><div><div class="act-txt"><span>Ana Mendes</span> concluiu o <strong>Módulo 1</strong></div><div class="act-time">42 min atrás</div></div></div>
-          <div class="act-item"><div class="act-ico ai-r"><i class="ti ti-user-off"></i></div><div><div class="act-txt"><strong>Acesso bloqueado</strong> — <span>roberto.s@email.com</span></div><div class="act-time">1h atrás</div></div></div>
-          <div class="act-item"><div class="act-ico ai-p"><i class="ti ti-download"></i></div><div><div class="act-txt"><span>Juliana Santos</span> baixou <strong>Planilha de Metas</strong></div><div class="act-time">2h atrás</div></div></div>
+
+          
+<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma atividade recente.</div>
         </div>
         <div class="card">
           <div class="card-hd"><span class="card-title">Aulas mais assistidas</span></div>
@@ -363,12 +364,14 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <!-- TICKETS -->
     <div class="page" id="page-tickets">
       <div class="search-bar">
-        <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Buscar ticket..."/></div>
-        <select class="fsel"><option>Todos</option><option>Abertos</option><option>Respondidos</option></select>
+        <div class="srch"><i class="ti ti-search"></i><input type="text" id="srch-ticket" placeholder="Buscar ticket..." oninput="filtrarTickets(this.value)"/></div>
+        <select class="fsel" id="fil-ticket" onchange="filtrarTickets(document.getElementById('srch-ticket').value)">
+          <option value="">Todos</option><option value="aberto">Abertos</option><option value="pendente">Pendentes</option><option value="respondido">Respondidos</option><option value="resolvido">Resolvidos</option>
+        </select>
+        <button class="btn btn-primary" onclick="abrirNovoTicket()"><i class="ti ti-plus" style="font-size:14px;"></i> Novo ticket</button>
       </div>
-      <div class="tkt" onclick="mostrarToast('Abrindo ticket...')"><span class="tkt-num">#003</span><div class="tkt-info"><div class="tkt-title">Acesso ao Módulo 3</div><div class="tkt-user">João Silva</div></div><span class="sp sp-blk">Aberto</span><span class="tkt-time" style="margin-left:12px;">Hoje, 14h</span><button class="btn btn-primary btn-sm" style="margin-left:12px;" onclick="event.stopPropagation();mostrarToast('Respondendo ticket...')">Responder</button></div>
-      <div class="tkt" onclick="mostrarToast('Abrindo ticket...')"><span class="tkt-num">#002</span><div class="tkt-info"><div class="tkt-title">Problema no download</div><div class="tkt-user">Maria Oliveira</div></div><span class="sp" style="background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);">Pendente</span><span class="tkt-time" style="margin-left:12px;">Hoje, 11h</span><button class="btn btn-primary btn-sm" style="margin-left:12px;" onclick="event.stopPropagation();mostrarToast('Respondendo ticket...')">Responder</button></div>
-      <div class="tkt" onclick="mostrarToast('Abrindo ticket...')"><span class="tkt-num">#001</span><div class="tkt-info"><div class="tkt-title">Dúvida sobre Meta Ads</div><div class="tkt-user">Carlos Lima</div></div><span class="sp sp-ok">Respondido</span><span class="tkt-time" style="margin-left:12px;">Ontem</span><button class="btn btn-outline btn-sm" style="margin-left:12px;" onclick="event.stopPropagation();">Ver</button></div>
+      <div id="tickets-lista"></div>
+      <div class="empty" id="empty-tickets" style="display:none;"><i class="ti ti-message-circle"></i><p style="font-size:13px;">Nenhum ticket ainda.</p></div>
     </div>
 
     <!-- MÓDULOS E AULAS -->
@@ -402,9 +405,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
         <div style="font-size:14px;font-weight:700;color:var(--text);">Materiais para download</div>
         <button class="btn btn-primary" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
       </div>
-      <div class="mat-row"><div class="mat-ico mi-pdf"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Guia de Tráfego Pago</div><div class="mat-meta">PDF · 8.4 MB · 187 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">187 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
-      <div class="mat-row"><div class="mat-ico mi-xls"><i class="ti ti-table"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Planilha de Metas 2025</div><div class="mat-meta">XLSX · 1.2 MB · 243 downloads</div></div><span class="mat-mod">Geral</span><span class="mat-dl">243 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
-      <div class="mat-row"><div class="mat-ico mi-zip"><i class="ti ti-file-zip"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Pack de Templates</div><div class="mat-meta">ZIP · 124 MB · 156 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">156 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
+      <div id="mats-lista"><div class="empty" style="padding:30px;"><i class="ti ti-file-upload" style="font-size:32px;display:block;margin-bottom:8px;"></i><p style="font-size:13px;">Nenhum material cadastrado ainda.</p></div></div>
     </div>
 
     <!-- CONFIG -->
@@ -576,6 +577,13 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <button class="btn btn-primary" style="flex:1;" onclick="mostrarToast('Material salvo!');fecharModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Publicar</button>
       <button class="btn btn-outline" onclick="fecharModal('modal-material')">Cancelar</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL TICKET -->
+<div class="overlay" id="modal-ticket">
+  <div class="modal" style="width:540px;">
+    <div id="modal-ticket-body"></div>
   </div>
 </div>
 
@@ -1088,6 +1096,97 @@ function mostrarToast(msg, erro) {
 }
 
 // ================================================
+
+// TICKETS
+var TK='il_tickets';
+function getTickets(){try{return JSON.parse(localStorage.getItem(TK))||[];}catch(e){return[];}}
+function setTickets(d){localStorage.setItem(TK,JSON.stringify(d));}
+
+function renderTickets(lista){
+  var el=document.getElementById('tickets-lista');
+  var empty=document.getElementById('empty-tickets');
+  if(!el)return;
+  if(!lista)lista=getTickets();
+  if(!lista.length){el.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
+  var stC={aberto:'background:rgba(255,59,92,0.12);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2)',pendente:'background:rgba(255,184,0,0.12);color:#ffb800;border:1px solid rgba(255,184,0,0.2)',respondido:'background:rgba(0,229,160,0.12);color:#00e5a0;border:1px solid rgba(0,229,160,0.2)',resolvido:'background:rgba(255,255,255,0.06);color:#4a5270'};
+  var stL={aberto:'Aberto',pendente:'Pendente',respondido:'Respondido',resolvido:'Resolvido'};
+  el.innerHTML=lista.map(function(t,i){
+    var st=t.status||'aberto';
+    var num='#'+String(i+1).padStart(3,'0');
+    var tit=t.titulo.replace(/'/g,"&#39;");
+    return '<div class="tkt">'+
+      '<span class="tkt-num">'+num+'</span>'+
+      '<div class="tkt-info"><div class="tkt-title">'+t.titulo+'</div><div class="tkt-user">'+t.aluno+'</div></div>'+
+      '<span class="sp" style="'+stC[st]+'">'+stL[st]+'</span>'+
+      '<span class="tkt-time" style="margin-left:10px;">'+t.data+'</span>'+
+      '<button class="btn btn-primary btn-sm" style="margin-left:10px;" onclick="abrirTicket('+JSON.stringify(t.id)+')">'+
+        (st==='resolvido'?'Ver':'Responder')+
+      '</button>'+
+      '<button class="btn btn-sm" style="margin-left:6px;background:rgba(255,59,92,0.08);color:#ff3b5c;border:1px solid rgba(255,59,92,0.15);" onclick="excluirTicket('+JSON.stringify(t.id)+','+JSON.stringify(tit)+')"><i class="ti ti-trash" style="font-size:13px;"></i></button>'+
+    '</div>';
+  }).join('');
+}
+
+function filtrarTickets(q){
+  var fil=document.getElementById('fil-ticket');
+  var fv=fil?fil.value:'';
+  var lista=getTickets().filter(function(t){
+    return (!q||t.titulo.toLowerCase().includes(q.toLowerCase())||t.aluno.toLowerCase().includes(q.toLowerCase()))&&(!fv||t.status===fv);
+  });
+  renderTickets(lista);
+}
+
+function abrirNovoTicket(){
+  var titulo=prompt('Título do ticket:');if(!titulo)return;
+  var aluno=prompt('Nome do aluno:');if(!aluno)return;
+  var tickets=getTickets();
+  tickets.unshift({id:uid(),titulo:titulo,aluno:aluno,status:'aberto',data:'Agora',msgs:[]});
+  setTickets(tickets);renderTickets();mostrarToast('Ticket criado!');
+}
+
+function abrirTicket(id){
+  var t=getTickets().find(function(x){return x.id===id;});
+  if(!t)return;
+  var msgs=(t.msgs||[]).map(function(m){
+    return '<div style="margin-bottom:10px;"><div style="font-size:10px;color:var(--text3);margin-bottom:3px;">'+m.autor+' &middot; '+m.data+'</div>'+
+    '<div style="background:var(--card2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);">'+m.texto+'</div></div>';
+  }).join('')||'<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma mensagem ainda.</div>';
+  var stOpts=['aberto','pendente','respondido','resolvido'].map(function(s){
+    return '<option value="'+s+'"'+(t.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';
+  }).join('');
+  document.getElementById('modal-ticket-body').innerHTML=
+    '<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">'+
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">'+t.titulo+'</div>'+
+      '<div style="font-size:12px;color:var(--text2);">'+t.aluno+' &middot; '+t.data+'</div>'+
+    '</div>'+
+    '<div style="max-height:180px;overflow-y:auto;margin-bottom:14px;">'+msgs+'</div>'+
+    '<textarea id="tk-resp" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:80px;line-height:1.6;" placeholder="Escreva sua resposta..."></textarea>'+
+    '<div style="display:flex;gap:9px;margin-top:12px;">'+
+      '<button class="btn btn-primary" style="flex:1;" onclick="enviarResposta('+JSON.stringify(id)+')"><i class="ti ti-send" style="font-size:14px;"></i> Enviar</button>'+
+      '<select id="tk-status" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 12px;color:var(--text);font-family:inherit;font-size:12px;outline:none;">'+stOpts+'</select>'+
+      '<button class="btn btn-outline" onclick="fecharModal('modal-ticket')">Fechar</button>'+
+    '</div>';
+  abrirModal('modal-ticket');
+}
+
+function enviarResposta(id){
+  var texto=document.getElementById('tk-resp').value.trim();
+  var novoStatus=document.getElementById('tk-status').value;
+  var tickets=getTickets();
+  var t=tickets.find(function(x){return x.id===id;});
+  if(!t)return;
+  if(texto){if(!t.msgs)t.msgs=[];t.msgs.push({autor:'Mentor',texto:texto,data:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});}
+  t.status=novoStatus;
+  setTickets(tickets);fecharModal('modal-ticket');renderTickets();mostrarToast('Resposta enviada!');
+}
+
+function excluirTicket(id,titulo){
+  if(!confirm('Excluir o ticket "'+titulo+'"?'))return;
+  setTickets(getTickets().filter(function(t){return t.id!==id;}));
+  renderTickets();mostrarToast('Ticket excluído.');
+}
+
 // ONLINE ANIMADO
 // ================================================
 var onlineCount = 17;
@@ -1105,11 +1204,11 @@ setInterval(function() {
 // ================================================
 (function init() {
   // Zerar dados de exemplo na primeira vez
-  if (!localStorage.getItem('il_limpo_v2')) {
-    ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado','il_pronto'].forEach(function(k){
+  if (!localStorage.getItem('il_limpo_v3')) {
+    ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado','il_pronto','il_limpo_v2'].forEach(function(k){
       localStorage.removeItem(k);
     });
-    localStorage.setItem('il_limpo_v2','1');
+    localStorage.setItem('il_limpo_v3','1');
   }
   // garantir que só o dashboard aparece
   var todas = document.querySelectorAll('.page');
