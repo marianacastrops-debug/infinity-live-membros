@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Infinity Live — Suporte</title>
+<title>Infinity Live — Dashboard</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
@@ -15,13 +16,10 @@
     --border:rgba(255,255,255,0.07);--border-cyan:rgba(0,200,255,0.25);
     --g1:linear-gradient(135deg,#00c8ff,#3b7fff);
     --g3:linear-gradient(135deg,#ff4d8d,#ff8c42);
-    --g4:linear-gradient(135deg,#00e5a0,#00c8ff);
   }
   html,body{height:100%;overflow:hidden;}
   body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);}
   .layout{display:flex;height:100vh;}
-
-  /* SIDEBAR */
   .sidebar{width:245px;min-width:245px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
   .logo-area{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:74px;}
   .logo-area img{width:128px;height:auto;object-fit:contain;}
@@ -30,150 +28,130 @@
   .logo-name{font-size:15px;font-weight:700;color:var(--text);}
   .logo-sub{font-size:10px;color:var(--text2);}
   .nav-wrap{flex:1;padding:8px 10px;overflow-y:auto;}
-  .nav-section-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
+  .nav-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
   .nav-item:hover{background:var(--hover);color:var(--text);}
   .nav-item.active{background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(59,127,255,0.1));color:#fff;font-weight:600;border:1px solid rgba(0,200,255,0.2);}
   .nav-item.active i{color:var(--cyan);}
   .nav-item i{font-size:18px;flex-shrink:0;}
   .nav-badge{margin-left:auto;background:var(--g3);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
   .sidebar-bottom{padding:14px 10px;border-top:1px solid var(--border);}
-  .user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;cursor:pointer;border:1px solid var(--border);transition:background .15s;}
+  .user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:background .15s;cursor:pointer;}
   .user-row:hover{background:var(--card2);}
   .avatar{width:36px;height:36px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;}
   .user-name{font-size:13px;font-weight:600;color:var(--text);}
   .user-role{font-size:10px;color:var(--cyan);font-weight:600;margin-top:1px;}
-  .logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;transition:all .15s;}
+  .logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;transition:all .15s;text-decoration:none;}
   .logout:hover{color:var(--pink);background:rgba(255,77,141,0.07);}
-
-  /* MAIN */
   .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   .topbar{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-  .page-title{font-size:17px;font-weight:700;color:var(--text);}
+  .page-title{font-size:18px;font-weight:700;color:var(--text);}
   .page-sub{font-size:12px;color:var(--text2);margin-top:2px;}
   .topbar-right{display:flex;align-items:center;gap:10px;}
-  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(--green);}
+  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(--green);text-decoration:none;}
   .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:18px;transition:all .15s;position:relative;}
+  .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:18px;transition:all .15s;position:relative;text-decoration:none;}
   .icon-btn:hover{border-color:var(--border-cyan);color:var(--cyan);}
   .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--pink);border-radius:50%;border:1.5px solid var(--bg2);}
-
-  /* CONTENT */
-  .content{flex:1;overflow-y:auto;padding:24px 28px;}
+  .content{flex:1;overflow-y:auto;padding:20px 26px;}
   .content::-webkit-scrollbar{width:4px;}
   .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
 
-  /* LAYOUT INTERNO */
-  .suporte-grid{display:grid;grid-template-columns:1fr 380px;gap:20px;}
+  /* BANNER */
+  .banner{display:flex;align-items:center;justify-content:space-between;gap:20px;background:var(--card);border:1px solid rgba(0,200,255,0.2);border-radius:14px;padding:20px 24px;margin-bottom:18px;position:relative;overflow:hidden;text-decoration:none;transition:border-color .18s;animation:fadeUp .4s ease both;}
+  .banner:hover{border-color:rgba(0,200,255,0.4);}
+  .banner::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--g1);}
+  .banner-glow{position:absolute;right:-30px;top:-30px;width:160px;height:160px;background:radial-gradient(circle,rgba(0,200,255,0.07),transparent 70%);pointer-events:none;}
+  .banner h2{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .banner p{font-size:12px;color:var(--text2);line-height:1.6;}
+  .banner-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.2);color:var(--cyan);padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;margin-top:8px;}
+  .btn-play{background:var(--g1);color:#fff;font-weight:700;font-size:12px;padding:10px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:opacity .15s;flex-shrink:0;text-decoration:none;}
+  .btn-play:hover{opacity:.88;}
 
-  /* CONTATO RÁPIDO */
-  .contato-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;}
-  .contato-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;text-decoration:none;}
-  .contato-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.14);}
-  .contato-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-  .ci-wpp{background:rgba(37,211,102,0.12);color:#25d366;}
-  .ci-tg{background:rgba(0,136,204,0.12);color:#0088cc;}
-  .ci-mail{background:rgba(0,200,255,0.12);color:var(--cyan);}
-  .ci-insta{background:rgba(255,77,141,0.12);color:var(--pink);}
-  .contato-name{font-size:13px;font-weight:700;color:var(--text);}
-  .contato-sub{font-size:11px;color:var(--text2);margin-top:2px;}
-  .contato-arrow{margin-left:auto;color:var(--text3);font-size:18px;flex-shrink:0;}
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px;}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .2s;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
+  .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
+  .s1::before{background:var(--g1);}
+  .s2::before{background:linear-gradient(90deg,var(--green),var(--cyan));}
+  .s3::before{background:var(--g3);}
+  .s4::before{background:linear-gradient(90deg,var(--yellow),#ff8c42);}
+  .stat:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.13);}
+  .stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .stat-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .si1{background:rgba(0,200,255,0.12);color:var(--cyan);}
+  .si2{background:rgba(0,229,160,0.12);color:var(--green);}
+  .si3{background:rgba(255,77,141,0.12);color:var(--pink);}
+  .si4{background:rgba(255,184,0,0.12);color:var(--yellow);}
+  .stat-trend{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .t1{color:var(--cyan);background:rgba(0,200,255,0.1);}
+  .t2{color:var(--green);background:rgba(0,229,160,0.1);}
+  .t3{color:var(--pink);background:rgba(255,77,141,0.1);}
+  .t4{color:var(--yellow);background:rgba(255,184,0,0.1);}
+  .stat-val{font-size:26px;font-weight:800;color:var(--text);line-height:1;}
+  .stat-lbl{font-size:11px;color:var(--text2);margin-top:3px;font-weight:500;}
 
-  /* TABS */
-  .tabs-row{display:flex;gap:4px;margin-bottom:16px;background:var(--card2);border-radius:10px;padding:4px;}
-  .tab{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;text-align:center;}
-  .tab:hover{color:var(--text);}
-  .tab.active{background:var(--card);color:var(--cyan);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
-  .tab-content{display:none;}
-  .tab-content.active{display:block;}
+  /* CHARTS GRID */
+  .charts-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:16px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;animation:fadeUp .4s ease both;}
+  .card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .card-title{font-size:13px;font-weight:700;color:var(--text);}
+  .card-link{font-size:11px;font-weight:600;color:var(--cyan);text-decoration:none;cursor:pointer;}
+  .card-link:hover{opacity:.8;}
 
-  /* TICKETS */
-  .ticket-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .18s;}
-  .ticket-card:hover{border-color:rgba(255,255,255,0.12);background:var(--hover);}
-  .ticket-card.selected{border-color:var(--cyan);background:rgba(0,200,255,0.05);}
-  .ticket-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-  .ticket-title{font-size:13px;font-weight:700;color:var(--text);}
-  .ticket-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;}
-  .ts-open{background:rgba(255,59,92,0.12);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}
-  .ts-answered{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
-  .ts-pending{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
-  .ts-closed{background:rgba(255,255,255,0.06);color:var(--text3);}
-  .ticket-preview{font-size:12px;color:var(--text2);line-height:1.5;}
-  .ticket-meta{display:flex;align-items:center;gap:12px;margin-top:8px;font-size:11px;color:var(--text3);}
-  .ticket-meta i{font-size:13px;}
+  /* RADIAL */
+  .radials{display:flex;align-items:center;justify-content:space-around;padding:4px 0;}
+  .rad-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .rad-wrap{position:relative;width:76px;height:76px;}
+  .rad-wrap canvas{position:absolute;top:0;left:0;}
+  .rad-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+  .rad-pct{font-size:14px;font-weight:800;}
+  .rad-name{font-size:10px;font-weight:600;}
 
-  /* NOVO TICKET FORM */
-  .form-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:20px;}
-  .form-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-  .field{margin-bottom:14px;}
-  .field-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;letter-spacing:.3px;}
-  .field-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s;}
-  .field-input:focus{border-color:var(--border-cyan);box-shadow:0 0 0 3px rgba(0,200,255,0.07);}
-  .field-input::placeholder{color:var(--text3);}
-  .field-select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;cursor:pointer;transition:border-color .15s;}
-  .field-select:focus{border-color:var(--border-cyan);}
-  .field-textarea{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;resize:vertical;min-height:110px;line-height:1.6;transition:border-color .15s;}
-  .field-textarea:focus{border-color:var(--border-cyan);box-shadow:0 0 0 3px rgba(0,200,255,0.07);}
-  .field-textarea::placeholder{color:var(--text3);}
-  .btn-submit{width:100%;padding:12px;background:var(--g1);color:#fff;font-weight:700;font-size:13px;border-radius:10px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s;box-shadow:0 4px 20px rgba(0,200,255,0.2);}
-  .btn-submit:hover{opacity:.88;}
+  /* BOTTOM GRID */
+  .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .nav-link-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);text-decoration:none;transition:all .15s;}
+  .nav-link-item:hover .nli-name{color:var(--cyan);}
+  .nav-link-item:last-child{border-bottom:none;}
+  .nli-num{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+  .nli-info{flex:1;min-width:0;}
+  .nli-name{font-size:12px;font-weight:600;color:var(--text);transition:color .15s;}
+  .nli-meta{font-size:10px;color:var(--text2);margin-top:2px;}
+  .nli-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:4px;}
+  .nli-fill{height:3px;border-radius:2px;}
 
-  /* LADO DIREITO */
-  .right-col{display:flex;flex-direction:column;gap:16px;}
+  .act-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .act-row:last-child{border-bottom:none;}
+  .act-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+  .ai-g{background:rgba(0,229,160,0.12);color:var(--green);}
+  .ai-p{background:rgba(255,77,141,0.12);color:var(--pink);}
+  .ai-b{background:rgba(0,200,255,0.12);color:var(--cyan);}
+  .ai-y{background:rgba(255,184,0,0.12);color:var(--yellow);}
+  .act-txt{font-size:11px;font-weight:500;color:var(--text);line-height:1.5;}
+  .act-txt span{color:var(--text2);}
+  .act-time{font-size:10px;color:var(--text3);margin-top:1px;}
 
-  /* FAQ */
-  .faq-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 20px;}
-  .faq-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-  .faq-item{border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;}
-  .faq-item:last-child{border-bottom:none;}
-  .faq-q{display:flex;align-items:center;justify-content:space-between;padding:11px 0;font-size:13px;font-weight:600;color:var(--text);gap:10px;transition:color .15s;}
-  .faq-q:hover{color:var(--cyan);}
-  .faq-chevron{font-size:16px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
-  .faq-chevron.open{transform:rotate(180deg);}
-  .faq-a{font-size:12px;color:var(--text2);line-height:1.7;padding-bottom:12px;display:none;}
-  .faq-a.open{display:block;}
+  .conq-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .conq-row:last-child{border-bottom:none;}
+  .conq-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .conq-name{font-size:12px;font-weight:600;color:var(--text);}
+  .conq-desc{font-size:10px;color:var(--text2);margin-top:1px;}
+  .conq-tag{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;white-space:nowrap;}
+  .ct-ok{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+  .ct-no{background:rgba(255,255,255,0.05);color:var(--text3);}
 
-  /* TEMPO RESPOSTA */
-  .tempo-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 20px;}
-  .tempo-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;}
-  .tempo-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-  .tempo-item:last-child{border-bottom:none;}
-  .tempo-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-  .tempo-canal{font-size:12px;font-weight:600;color:var(--text);}
-  .tempo-prazo{font-size:11px;color:var(--text2);margin-top:1px;}
-  .tempo-badge{margin-left:auto;font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap;}
-  .tb-fast{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
-  .tb-mid{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
-
-  /* TICKET ABERTO DETALHE */
-  .ticket-detail{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:20px;display:none;}
-  .ticket-detail.show{display:block;}
-  .td-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-  .td-title{font-size:15px;font-weight:700;color:var(--text);}
-  .btn-back{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:color .15s;}
-  .btn-back:hover{color:var(--cyan);}
-  .msg-row{display:flex;gap:10px;margin-bottom:14px;}
-  .msg-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px;}
-  .msg-bubble{flex:1;background:var(--card2);border-radius:10px;padding:12px 14px;}
-  .msg-bubble.mentor{background:rgba(0,200,255,0.07);border:1px solid rgba(0,200,255,0.15);}
-  .msg-author{font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;}
-  .msg-author span{font-weight:400;color:var(--text3);margin-left:6px;}
-  .msg-text{font-size:12px;color:var(--text2);line-height:1.7;}
-  .reply-area{border-top:1px solid var(--border);padding-top:14px;margin-top:4px;}
-  .reply-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;resize:none;min-height:80px;line-height:1.6;transition:border-color .15s;margin-bottom:10px;}
-  .reply-input:focus{border-color:var(--border-cyan);}
-  .reply-input::placeholder{color:var(--text3);}
-
-  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .stat:nth-child(1){animation-delay:.04s}
+  .stat:nth-child(2){animation-delay:.08s}
+  .stat:nth-child(3){animation-delay:.12s}
+  .stat:nth-child(4){animation-delay:.16s}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
 </head>
 <body>
 <div class="layout">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo-area">
       <img src="../imagens/logo-infinity-live.png" alt="Infinity Live"
@@ -184,14 +162,13 @@
       </div>
     </div>
     <div class="nav-wrap">
-      <div class="nav-section-lbl">Menu</div>
-      <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <div class="nav-lbl">Menu</div>
+      <a class="nav-item active" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
       <a class="nav-item" href="modulos.html"><i class="ti ti-player-play"></i> Aulas</a>
       <a class="nav-item" href="materiais.html"><i class="ti ti-file-download"></i> Materiais</a>
-      <a class="nav-item active" href="suporte.html"><i class="ti ti-message-circle"></i> Suporte <span class="nav-badge">2</span></a>
-      <div class="nav-section-lbl">Conta</div>
-      <a class="nav-item" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-user-circle"></i> Meu Perfil</a>
-      <a class="nav-item" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-settings"></i> Configurações</a>
+      <a class="nav-item" href="suporte.html"><i class="ti ti-message-circle"></i> Suporte <span class="nav-badge">2</span></a>
+      <div class="nav-lbl">Conta</div>
+      <a class="nav-item" href="#"><i class="ti ti-user-circle"></i> Meu Perfil</a>
     </div>
     <div class="sidebar-bottom">
       <div class="user-row">
@@ -202,323 +179,174 @@
         </div>
         <i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px;flex-shrink:0;"></i>
       </div>
-      <div class="logout"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</div>
+      <a class="logout" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</a>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
     <div class="topbar">
       <div>
-        <div class="page-title">Suporte</div>
-        <div class="page-sub">Tire suas dúvidas e fale com o mentor</div>
+        <div class="page-title" id="saudacao">Carregando...</div>
+        <div class="page-sub" id="data-hoje"></div>
       </div>
       <div class="topbar-right">
-        <div class="live-badge"><div class="live-dot"></div> Live ativa agora</div>
-        <div class="icon-btn"><i class="ti ti-bell"></i><div class="notif-dot"></div></div>
+        <a class="live-badge" href="modulos.html"><div class="live-dot"></div> Live ativa agora</a>
+        <a class="icon-btn" href="suporte.html" title="Suporte"><i class="ti ti-bell"></i><div class="notif-dot"></div></a>
+        <a class="icon-btn" href="modulos.html" title="Aulas"><i class="ti ti-search"></i></a>
       </div>
     </div>
 
     <div class="content">
 
-      <!-- CONTATO RÁPIDO -->
-      <div class="contato-grid">
-        <a class="contato-card" href="../login.html" onclick="event.preventDefault();fazerLogout()">
-          <div class="contato-ico ci-wpp"><i class="ti ti-brand-whatsapp"></i></div>
-          <div>
-            <div class="contato-name">WhatsApp VIP</div>
-            <div class="contato-sub">Resposta em até 24h úteis</div>
-          </div>
-          <i class="ti ti-arrow-right contato-arrow"></i>
-        </a>
-        <a class="contato-card" href="../login.html" onclick="event.preventDefault();fazerLogout()">
-          <div class="contato-ico ci-tg"><i class="ti ti-brand-telegram"></i></div>
-          <div>
-            <div class="contato-name">Grupo Telegram</div>
-            <div class="contato-sub">Comunidade exclusiva de alunos</div>
-          </div>
-          <i class="ti ti-arrow-right contato-arrow"></i>
-        </a>
-        <a class="contato-card" href="../login.html" onclick="event.preventDefault();fazerLogout()">
-          <div class="contato-ico ci-insta"><i class="ti ti-brand-instagram"></i></div>
-          <div>
-            <div class="contato-name">Instagram do Mentor</div>
-            <div class="contato-sub">Acompanhe as novidades</div>
-          </div>
-          <i class="ti ti-arrow-right contato-arrow"></i>
-        </a>
-        <a class="contato-card" href="../login.html" onclick="event.preventDefault();fazerLogout()">
-          <div class="contato-ico ci-mail"><i class="ti ti-mail"></i></div>
-          <div>
-            <div class="contato-name">E-mail de suporte</div>
-            <div class="contato-sub">suporte@infinitylive.com.br</div>
-          </div>
-          <i class="ti ti-arrow-right contato-arrow"></i>
-        </a>
-      </div>
-
-      <div class="suporte-grid">
-
-        <!-- COLUNA ESQUERDA -->
+      <a class="banner" href="aulas.html">
+        <div class="banner-glow"></div>
         <div>
-
-          <!-- TABS -->
-          <div class="tabs-row">
-            <div class="tab active" onclick="showTab('tickets',this)"><i class="ti ti-ticket" style="font-size:15px;vertical-align:-2px;"></i> Meus Tickets</div>
-            <div class="tab" onclick="showTab('novo',this)"><i class="ti ti-plus" style="font-size:15px;vertical-align:-2px;"></i> Abrir Ticket</div>
-          </div>
-
-          <!-- MEUS TICKETS -->
-          <div class="tab-content active" id="tab-tickets">
-
-            <div class="ticket-card selected" onclick="verTicket(this,'Acesso ao Módulo 3','Olá! Queria saber quando o Módulo 3 será liberado para mim. Já concluí 50% do Módulo 2.','Aberto')">
-              <div class="ticket-hd">
-                <div class="ticket-title">Acesso ao Módulo 3</div>
-                <span class="ticket-status ts-open">Aberto</span>
-              </div>
-              <div class="ticket-preview">Olá! Queria saber quando o Módulo 3 será liberado para mim...</div>
-              <div class="ticket-meta">
-                <span><i class="ti ti-calendar"></i> Hoje, 14:30</span>
-                <span><i class="ti ti-tag"></i> Acesso</span>
-                <span><i class="ti ti-message-circle"></i> 1 mensagem</span>
-              </div>
-            </div>
-
-            <div class="ticket-card" onclick="verTicket(this,'Problema no download','O arquivo de templates não está abrindo corretamente no meu computador. Já tentei reinstalar...','Pendente')">
-              <div class="ticket-hd">
-                <div class="ticket-title">Problema no download</div>
-                <span class="ticket-status ts-pending">Pendente</span>
-              </div>
-              <div class="ticket-preview">O arquivo de templates não está abrindo corretamente...</div>
-              <div class="ticket-meta">
-                <span><i class="ti ti-calendar"></i> Ontem, 18h</span>
-                <span><i class="ti ti-tag"></i> Técnico</span>
-                <span><i class="ti ti-message-circle"></i> 2 mensagens</span>
-              </div>
-            </div>
-
-            <div class="ticket-card" onclick="verTicket(this,'Dúvida sobre Meta Ads','Qual o orçamento mínimo recomendado para começar a escalar campanhas no Meta Ads?','Respondido')">
-              <div class="ticket-hd">
-                <div class="ticket-title">Dúvida sobre Meta Ads</div>
-                <span class="ticket-status ts-answered">Respondido</span>
-              </div>
-              <div class="ticket-preview">Qual o orçamento mínimo para começar a escalar?</div>
-              <div class="ticket-meta">
-                <span><i class="ti ti-calendar"></i> 3 dias atrás</span>
-                <span><i class="ti ti-tag"></i> Conteúdo</span>
-                <span><i class="ti ti-message-circle"></i> 4 mensagens</span>
-              </div>
-            </div>
-
-            <div class="ticket-card" onclick="verTicket(this,'Certificado de conclusão','Quando finalizei o Módulo 1, o certificado é gerado automaticamente?','Fechado')">
-              <div class="ticket-hd">
-                <div class="ticket-title">Certificado de conclusão</div>
-                <span class="ticket-status ts-closed">Fechado</span>
-              </div>
-              <div class="ticket-preview">Quando finalizei o Módulo 1, o certificado é gerado...</div>
-              <div class="ticket-meta">
-                <span><i class="ti ti-calendar"></i> 1 semana atrás</span>
-                <span><i class="ti ti-tag"></i> Geral</span>
-                <span><i class="ti ti-message-circle"></i> 3 mensagens</span>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- NOVO TICKET -->
-          <div class="tab-content" id="tab-novo">
-            <div class="form-card">
-              <div class="form-title"><i class="ti ti-ticket" style="font-size:17px;color:var(--cyan);"></i> Abrir novo ticket</div>
-              <div class="field">
-                <label class="field-label">Assunto</label>
-                <input class="field-input" type="text" placeholder="Descreva brevemente sua dúvida..."/>
-              </div>
-              <div class="field">
-                <label class="field-label">Categoria</label>
-                <select class="field-select">
-                  <option>Dúvida sobre conteúdo</option>
-                  <option>Problema técnico</option>
-                  <option>Acesso bloqueado ou negado</option>
-                  <option>Download de material</option>
-                  <option>Sugestão ou feedback</option>
-                  <option>Outro</option>
-                </select>
-              </div>
-              <div class="field">
-                <label class="field-label">Módulo relacionado</label>
-                <select class="field-select">
-                  <option>Não se aplica</option>
-                  <option>Módulo 1 — Fundamentos</option>
-                  <option>Módulo 2 — Tráfego</option>
-                  <option>Módulo 3 — Performance</option>
-                  <option>Módulo 4 — Resultados</option>
-                  <option>Bônus</option>
-                </select>
-              </div>
-              <div class="field">
-                <label class="field-label">Mensagem</label>
-                <textarea class="field-textarea" placeholder="Explique sua dúvida em detalhes. Quanto mais informações, mais rápido podemos te ajudar!"></textarea>
-              </div>
-              <button class="btn-submit" onclick="enviarTicket()">
-                <i class="ti ti-send" style="font-size:15px;"></i> Enviar ticket
-              </button>
-            </div>
-          </div>
-
-          <!-- DETALHE DO TICKET -->
-          <div class="ticket-detail" id="ticket-detail">
-            <div class="td-header">
-              <div>
-                <div class="td-title" id="td-titulo">Acesso ao Módulo 3</div>
-                <span class="ticket-status ts-open" id="td-status" style="margin-top:5px;display:inline-block;">Aberto</span>
-              </div>
-              <div class="btn-back" onclick="fecharDetalhe()"><i class="ti ti-arrow-left" style="font-size:15px;"></i> Voltar</div>
-            </div>
-
-            <div id="td-msgs">
-              <div class="msg-row">
-                <div class="msg-av" style="background:var(--g1);">JS</div>
-                <div class="msg-bubble">
-                  <div class="msg-author">Você <span>Hoje, 14:30</span></div>
-                  <div class="msg-text" id="td-msg-text">Olá! Queria saber quando o Módulo 3 será liberado para mim. Já concluí 50% do Módulo 2.</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="reply-area">
-              <textarea class="reply-input" placeholder="Escreva sua resposta ou atualização..."></textarea>
-              <button class="btn-submit" style="width:auto;padding:9px 20px;" onclick="enviarResposta()">
-                <i class="ti ti-send" style="font-size:14px;"></i> Enviar
-              </button>
-            </div>
-          </div>
-
+          <h2>Continue de onde parou 🚀</h2>
+          <p>Você está indo muito bem! Mantenha o ritmo e conquiste o próximo nível.</p>
+          <div class="banner-pill"><i class="ti ti-player-play" style="font-size:11px;"></i> M2 · Aula 4 — Estratégias de Escala · 58% concluído</div>
         </div>
+        <div class="btn-play"><i class="ti ti-player-play" style="font-size:14px;"></i> Continuar aula</div>
+      </a>
 
-        <!-- COLUNA DIREITA -->
-        <div class="right-col">
+      <div class="stats">
+        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-video"></i></div><span class="stat-trend t1">+3 essa semana</span></div><div class="stat-val">18</div><div class="stat-lbl">Aulas assistidas</div></div>
+        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-clock"></i></div><span class="stat-trend t2">+2h essa semana</span></div><div class="stat-val">14h</div><div class="stat-lbl">Horas estudadas</div></div>
+        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-download"></i></div><span class="stat-trend t3">+2 esse mês</span></div><div class="stat-val">7</div><div class="stat-lbl">Materiais baixados</div></div>
+        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-chart-line"></i></div><span class="stat-trend t4">+8% essa semana</span></div><div class="stat-val">42%</div><div class="stat-lbl">Curso concluído</div></div>
+      </div>
 
-          <!-- TEMPO DE RESPOSTA -->
-          <div class="tempo-card">
-            <div class="tempo-title">⏱ Tempo de resposta</div>
-            <div class="tempo-item">
-              <div class="tempo-ico" style="background:rgba(37,211,102,0.12);color:#25d366;"><i class="ti ti-brand-whatsapp"></i></div>
-              <div><div class="tempo-canal">WhatsApp VIP</div><div class="tempo-prazo">Em até 24h úteis</div></div>
-              <span class="tempo-badge tb-fast">Rápido</span>
+      <div class="charts-grid">
+        <div class="card" style="animation-delay:.2s;">
+          <div class="card-hd"><span class="card-title">📈 Progresso semanal</span><span style="font-size:10px;color:var(--text3);">Últimos 7 dias</span></div>
+          <div style="height:160px;"><canvas id="chart-linha"></canvas></div>
+        </div>
+        <div class="card" style="animation-delay:.24s;">
+          <div class="card-hd"><span class="card-title">🎯 Progresso por módulo</span></div>
+          <div class="radials">
+            <div class="rad-item">
+              <div class="rad-wrap"><canvas id="r1" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--green);">100%</span></div></div>
+              <span class="rad-name" style="color:var(--green);">M1</span>
             </div>
-            <div class="tempo-item">
-              <div class="tempo-ico" style="background:rgba(0,136,204,0.12);color:#0088cc;"><i class="ti ti-brand-telegram"></i></div>
-              <div><div class="tempo-canal">Grupo Telegram</div><div class="tempo-prazo">Resposta da comunidade</div></div>
-              <span class="tempo-badge tb-fast">Rápido</span>
+            <div class="rad-item">
+              <div class="rad-wrap"><canvas id="r2" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--cyan);">50%</span></div></div>
+              <span class="rad-name" style="color:var(--cyan);">M2</span>
             </div>
-            <div class="tempo-item">
-              <div class="tempo-ico" style="background:rgba(0,200,255,0.12);color:var(--cyan);"><i class="ti ti-ticket"></i></div>
-              <div><div class="tempo-canal">Ticket de suporte</div><div class="tempo-prazo">Em até 48h úteis</div></div>
-              <span class="tempo-badge tb-mid">Médio</span>
+            <div class="rad-item">
+              <div class="rad-wrap"><canvas id="r3" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--text3);">0%</span></div></div>
+              <span class="rad-name" style="color:var(--text3);">M3</span>
             </div>
-            <div class="tempo-item">
-              <div class="tempo-ico" style="background:rgba(0,200,255,0.12);color:var(--cyan);"><i class="ti ti-mail"></i></div>
-              <div><div class="tempo-canal">E-mail</div><div class="tempo-prazo">Em até 72h úteis</div></div>
-              <span class="tempo-badge tb-mid">Médio</span>
+            <div class="rad-item">
+              <div class="rad-wrap"><canvas id="r4" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--text3);">0%</span></div></div>
+              <span class="rad-name" style="color:var(--text3);">M4</span>
             </div>
           </div>
-
-          <!-- FAQ -->
-          <div class="faq-card">
-            <div class="faq-title"><i class="ti ti-help-circle" style="font-size:17px;color:var(--cyan);"></i> Perguntas frequentes</div>
-
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Como liberar o próximo módulo?<i class="ti ti-chevron-down faq-chevron"></i></div>
-              <div class="faq-a">Os módulos são liberados progressivamente conforme você avança. Conclua pelo menos 80% do módulo atual para desbloquear o próximo automaticamente.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Por quanto tempo tenho acesso?<i class="ti ti-chevron-down faq-chevron"></i></div>
-              <div class="faq-a">Seu acesso é vitalício! Uma vez liberado, o conteúdo fica disponível para você para sempre, incluindo todas as futuras atualizações e novos módulos.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Posso baixar os vídeos?<i class="ti ti-chevron-down faq-chevron"></i></div>
-              <div class="faq-a">Por questões de segurança os vídeos não estão disponíveis para download direto, mas você pode assistir em qualquer dispositivo com internet a qualquer hora.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Esqueci minha senha, o que fazer?<i class="ti ti-chevron-down faq-chevron"></i></div>
-              <div class="faq-a">Na tela de login, clique em "Esqueci minha senha" e insira seu e-mail. Você receberá um link de recuperação em poucos minutos. Verifique também o spam.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-              <div class="faq-q">Os materiais ficam disponíveis para sempre?<i class="ti ti-chevron-down faq-chevron"></i></div>
-              <div class="faq-a">Sim! Todos os materiais para download ficam disponíveis permanentemente na sua área de membros, sem prazo de expiração.</div>
-            </div>
-          </div>
-
         </div>
       </div>
+
+      <div class="bottom-grid">
+        <div class="card" style="animation-delay:.28s;">
+          <div class="card-hd"><span class="card-title">📚 Próximas aulas</span><a class="card-link" href="modulos.html">Ver todas</a></div>
+          <a class="nav-link-item" href="aulas.html">
+            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
+            <div class="nli-info"><div class="nli-name">Estratégias de Escala</div><div class="nli-meta">28min · Em andamento</div><div class="nli-bar"><div class="nli-fill" style="width:58%;background:var(--cyan);"></div></div></div>
+          </a>
+          <a class="nav-link-item" href="aulas.html">
+            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
+            <div class="nli-info"><div class="nli-name">Automação de Processos</div><div class="nli-meta">35min · Disponível</div></div>
+          </a>
+          <a class="nav-link-item" href="aulas.html">
+            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
+            <div class="nli-info"><div class="nli-name">Copywriting de Conversão</div><div class="nli-meta">41min · Disponível</div></div>
+          </a>
+          <a class="nav-link-item" href="modulos.html" style="opacity:.5;">
+            <div class="nli-num" style="background:rgba(255,255,255,0.05);color:var(--text3);">M3</div>
+            <div class="nli-info"><div class="nli-name" style="color:var(--text3);">Mindset de Alta Performance</div><div class="nli-meta"><i class="ti ti-lock" style="font-size:10px;"></i> Bloqueado</div></div>
+          </a>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="card" style="animation-delay:.32s;">
+            <div class="card-hd"><span class="card-title">⚡ Atividade recente</span><a class="card-link" href="#">Ver tudo</a></div>
+            <div class="act-row"><div class="act-ico ai-g"><i class="ti ti-circle-check"></i></div><div><div class="act-txt">Aula concluída — <span>Fundamentos do Tráfego</span></div><div class="act-time">2h atrás</div></div></div>
+            <div class="act-row"><div class="act-ico ai-p"><i class="ti ti-download"></i></div><div><div class="act-txt">Download — <span>Planilha de Metas 2025</span></div><div class="act-time">5h atrás</div></div></div>
+            <div class="act-row"><div class="act-ico ai-b"><i class="ti ti-message-circle"></i></div><div><div class="act-txt">Ticket #042 <span>respondido pelo mentor</span></div><div class="act-time">1 dia atrás</div></div></div>
+            <div class="act-row"><div class="act-ico ai-y"><i class="ti ti-trophy"></i></div><div><div class="act-txt">Módulo 1 <span>finalizado com 100%</span></div><div class="act-time">3 dias atrás</div></div></div>
+          </div>
+          <div class="card" style="animation-delay:.36s;">
+            <div class="card-hd"><span class="card-title">🏆 Conquistas</span></div>
+            <div class="conq-row"><div class="conq-ico" style="background:rgba(255,184,0,0.12);color:var(--yellow);">🥇</div><div><div class="conq-name">Primeiro passo</div><div class="conq-desc">Assistiu à primeira aula</div></div><span class="conq-tag ct-ok">Conquistado</span></div>
+            <div class="conq-row"><div class="conq-ico" style="background:rgba(0,229,160,0.12);color:var(--green);">⚡</div><div><div class="conq-name">Módulo completo</div><div class="conq-desc">Concluiu o Módulo 1</div></div><span class="conq-tag ct-ok">Conquistado</span></div>
+            <div class="conq-row"><div class="conq-ico" style="background:rgba(255,255,255,0.05);color:var(--text3);">🚀</div><div><div class="conq-name">Na metade</div><div class="conq-desc">Complete 50% do curso</div></div><span class="conq-tag ct-no">Em progresso</span></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 </div>
-
 <script>
-  // TABS
-  function showTab(tab, btn) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + tab).classList.add('active');
-    document.getElementById('ticket-detail').classList.remove('show');
+  // Verificar se aluno está logado
+  verificarSessao().then(function(session) {
+    if (!session) return;
+    // Atualizar nome do aluno na sidebar
+    getDadosAluno().then(function(aluno) {
+      if (!aluno) return;
+      var nome = aluno.nome || aluno.email.split('@')[0];
+      var initials = nome.split(' ').map(function(n){ return n[0]; }).join('').slice(0,2).toUpperCase();
+      var nomeEl = document.querySelector('.user-name');
+      var avEl = document.querySelector('.avatar');
+      var saudEl = document.getElementById('saudacao');
+      if (nomeEl) nomeEl.textContent = nome;
+      if (avEl) avEl.textContent = initials;
+      if (saudEl) {
+        var h = new Date().getHours();
+        var s = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+        saudEl.textContent = s + ', ' + nome.split(' ')[0] + ' 👋';
+      }
+    });
+  });
+
+  const dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const now=new Date(),h=now.getHours();
+  document.getElementById('saudacao').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', João 👋';
+  document.getElementById('data-hoje').textContent=dias[now.getDay()]+', '+now.getDate()+' de '+meses[now.getMonth()]+' de '+now.getFullYear();
+
+  // GRÁFICO LINHA
+  new Chart(document.getElementById('chart-linha').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+      datasets:[
+        {label:'Aulas',data:[1,3,2,4,3,2,3],borderColor:'#00c8ff',backgroundColor:'rgba(0,200,255,0.08)',borderWidth:2.5,pointBackgroundColor:'#00c8ff',pointRadius:4,pointHoverRadius:6,tension:.4,fill:true},
+        {label:'Horas',data:[0.5,1.5,1,2,1.5,1,1.5],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,0.05)',borderWidth:2,pointBackgroundColor:'#00e5a0',pointRadius:3,pointHoverRadius:5,tension:.4,fill:true}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{color:'#8b96b8',font:{family:'Plus Jakarta Sans',size:11},boxWidth:12,padding:14}},
+        tooltip:{backgroundColor:'#0f1320',borderColor:'rgba(0,200,255,0.25)',borderWidth:1,titleColor:'#f0f4ff',bodyColor:'#8b96b8',titleFont:{family:'Plus Jakarta Sans',weight:'700'},bodyFont:{family:'Plus Jakarta Sans'},padding:10,cornerRadius:8}
+      },
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4a5270',font:{family:'Plus Jakarta Sans',size:11}}},
+        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4a5270',font:{family:'Plus Jakarta Sans',size:11},stepSize:1},beginAtZero:true}
+      }
+    }
+  });
+
+  // RADIAIS
+  function radial(id,pct,color){
+    new Chart(document.getElementById(id).getContext('2d'),{
+      type:'doughnut',
+      data:{datasets:[{data:[pct,100-pct],backgroundColor:[color,'rgba(255,255,255,0.06)'],borderWidth:0,hoverOffset:0}]},
+      options:{responsive:false,cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{animateRotate:true,duration:1000}}
+    });
   }
-
-  // VER TICKET
-  function verTicket(card, titulo, msg, status) {
-    document.querySelectorAll('.ticket-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-
-    document.getElementById('td-titulo').textContent = titulo;
-    document.getElementById('td-msg-text').textContent = msg;
-
-    const statusEl = document.getElementById('td-status');
-    statusEl.textContent = status;
-    statusEl.className = 'ticket-status';
-    if(status === 'Aberto') statusEl.classList.add('ts-open');
-    else if(status === 'Pendente') statusEl.classList.add('ts-pending');
-    else if(status === 'Respondido') statusEl.classList.add('ts-answered');
-    else statusEl.classList.add('ts-closed');
-
-    document.getElementById('ticket-detail').classList.add('show');
-    document.getElementById('tab-tickets').style.display = 'none';
-  }
-
-  function fecharDetalhe() {
-    document.getElementById('ticket-detail').classList.remove('show');
-    document.getElementById('tab-tickets').style.display = 'block';
-    document.querySelectorAll('.ticket-card').forEach(c => c.classList.remove('selected'));
-  }
-
-  // ENVIAR TICKET
-  function enviarTicket() {
-    alert('✅ Ticket enviado com sucesso! Você receberá uma resposta em até 48h úteis.');
-    showTab('tickets', document.querySelector('.tab'));
-    document.querySelector('.tab').classList.add('active');
-  }
-
-  // ENVIAR RESPOSTA
-  function enviarResposta() {
-    const input = document.querySelector('.reply-input');
-    const txt = input.value.trim();
-    if(!txt) return;
-    const msgs = document.getElementById('td-msgs');
-    const div = document.createElement('div');
-    div.className = 'msg-row';
-    div.innerHTML = `<div class="msg-av" style="background:var(--g1);">JS</div><div class="msg-bubble"><div class="msg-author">Você <span>Agora</span></div><div class="msg-text">${txt}</div></div>`;
-    msgs.appendChild(div);
-    input.value = '';
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  // FAQ
-  function toggleFaq(item) {
-    const a = item.querySelector('.faq-a');
-    const c = item.querySelector('.faq-chevron');
-    a.classList.toggle('open');
-    c.classList.toggle('open');
-  }
+  radial('r1',100,'#00e5a0');
+  radial('r2',50,'#00c8ff');
+  radial('r3',0,'#4a5270');
+  radial('r4',0,'#4a5270');
 </script>
 </body>
 </html>
