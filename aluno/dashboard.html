@@ -141,6 +141,22 @@
   .ct-ok{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
   .ct-no{background:rgba(255,255,255,0.05);color:var(--text3);}
 
+  /* MODAL ADMIN */
+  .overlay-admin{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:999;display:none;align-items:center;justify-content:center;}
+  .overlay-admin.open{display:flex;}
+  .modal-admin{background:#0f1320;border:1px solid rgba(255,77,141,0.25);border-radius:14px;padding:28px;width:380px;animation:modalIn .25s ease both;}
+  @keyframes modalIn{from{opacity:0;transform:scale(.94) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .modal-admin-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .modal-admin-sub{font-size:12px;color:var(--text2);margin-bottom:20px;}
+  .modal-admin-input{width:100%;background:#141828;border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .15s;margin-bottom:14px;}
+  .modal-admin-input:focus{border-color:rgba(255,77,141,0.4);}
+  .modal-admin-input::placeholder{color:var(--text3);}
+  .modal-admin-err{font-size:12px;color:var(--pink);font-weight:600;margin-bottom:12px;display:none;}
+  .modal-admin-btns{display:flex;gap:9px;}
+  .btn-admin-ok{flex:1;padding:11px;background:linear-gradient(135deg,#ff4d8d,#ff8c42);color:#fff;font-weight:700;font-size:13px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-admin-cancel{padding:11px 16px;background:transparent;border:1px solid rgba(255,255,255,0.07);color:var(--text2);font-weight:600;font-size:13px;border-radius:9px;cursor:pointer;font-family:inherit;}
+  .btn-admin-cancel:hover{color:var(--text);}
+
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
   .stat:nth-child(1){animation-delay:.04s}
   .stat:nth-child(2){animation-delay:.08s}
@@ -171,7 +187,12 @@
       <a class="nav-item" href="perfil.html"><i class="ti ti-user-circle"></i> Meu Perfil</a>
       <a class="nav-item" href="configuracoes.html"><i class="ti ti-settings"></i> Configurações</a>
     </div>
-    <div class="sidebar-bottom">
+    <div style="padding:0 10px 6px;">
+      <button onclick="abrirAdmin()" style="width:100%;display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:9px;font-size:12px;font-weight:600;color:rgba(255,77,141,0.7);background:rgba(255,77,141,0.06);border:1px solid rgba(255,77,141,0.15);cursor:pointer;font-family:inherit;transition:all .15s;">
+        <i class="ti ti-shield-check" style="font-size:15px;"></i> Painel Admin
+      </button>
+    </div>
+  <div class="sidebar-bottom">
       <div class="user-row">
         <div class="avatar">JS</div>
         <div style="flex:1;min-width:0;">
@@ -337,6 +358,54 @@
   radial('r2',0,'#4a5270');
   radial('r3',0,'#4a5270');
   radial('r4',0,'#4a5270');
+</script>
+<!-- MODAL ADMIN -->
+<div class="overlay-admin" id="overlay-admin" onclick="if(event.target===this)fecharAdmin()">
+  <div class="modal-admin">
+    <div class="modal-admin-title"><i class="ti ti-shield-check" style="font-size:18px;color:var(--pink);"></i> Acesso ao Painel Admin</div>
+    <div class="modal-admin-sub">Digite a senha de administrador para continuar.</div>
+    <input class="modal-admin-input" type="password" id="admin-senha-input" placeholder="Senha do admin" onkeydown="if(event.key==='Enter')verificarSenhaAdmin()"/>
+    <div class="modal-admin-err" id="admin-err">Senha incorreta. Tente novamente.</div>
+    <div class="modal-admin-btns">
+      <button class="btn-admin-ok" onclick="verificarSenhaAdmin()"><i class="ti ti-login" style="font-size:14px;vertical-align:-1px;"></i> Entrar</button>
+      <button class="btn-admin-cancel" onclick="fecharAdmin()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// SENHA ADMIN — altere aqui para sua senha pessoal
+var SENHA_ADMIN = 'infinity@admin2026';
+
+function abrirAdmin() {
+  document.getElementById('admin-senha-input').value = '';
+  document.getElementById('admin-err').style.display = 'none';
+  document.getElementById('overlay-admin').classList.add('open');
+  setTimeout(function(){ document.getElementById('admin-senha-input').focus(); }, 200);
+}
+
+function fecharAdmin() {
+  document.getElementById('overlay-admin').classList.remove('open');
+}
+
+function verificarSenhaAdmin() {
+  var senha = document.getElementById('admin-senha-input').value;
+  if (senha === SENHA_ADMIN) {
+    fecharAdmin();
+    window.location.href = '../admin/admin.html';
+  } else {
+    document.getElementById('admin-err').style.display = 'block';
+    document.getElementById('admin-senha-input').value = '';
+    document.getElementById('admin-senha-input').focus();
+    // Shake no modal
+    var m = document.querySelector('.modal-admin');
+    m.style.animation = 'none';
+    m.style.transform = 'translateX(-8px)';
+    setTimeout(function(){ m.style.transform = 'translateX(8px)'; }, 80);
+    setTimeout(function(){ m.style.transform = 'translateX(-5px)'; }, 160);
+    setTimeout(function(){ m.style.transform = 'translateX(0)'; }, 240);
+  }
+}
 </script>
 </body>
 </html>
