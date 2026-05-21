@@ -119,6 +119,13 @@
 
   .error-box{background:rgba(255,77,141,0.08);border:1px solid rgba(255,77,141,0.25);border-radius:8px;padding:10px 14px;display:none;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--pink);margin-bottom:14px;width:100%;}
 
+  .lembrar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;width:100%;}
+  .check-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .check-wrap input[type=checkbox]{width:16px;height:16px;accent-color:var(--cyan);cursor:pointer;border-radius:4px;}
+  .check-lbl{font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;user-select:none;}
+  .check-lbl:hover{color:var(--text);}
+  .forgot-link{font-size:12px;font-weight:600;color:var(--cyan);cursor:pointer;}
+  .forgot-link:hover{opacity:.8;}
   .btn-login{width:100%;padding:13px;background:var(--g1);color:#fff;font-weight:700;font-size:14px;border-radius:10px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .18s,transform .18s,box-shadow .18s;box-shadow:0 4px 24px rgba(0,200,255,0.25);margin-bottom:16px;}
   .btn-login:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 8px 32px rgba(0,200,255,0.35);}
   .btn-login.loading{opacity:.7;pointer-events:none;}
@@ -135,6 +142,7 @@
 
   @media(max-width:800px){.left-panel{display:none;}.right-panel{width:100%;min-width:unset;border:none;}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 <div class="login-layout">
@@ -184,7 +192,13 @@
       <label class="field-label">Senha</label>
       <div class="field-wrap"><i class="ti ti-lock field-icon"></i><input class="field-input" type="password" id="senha" placeholder="Sua senha" autocomplete="current-password"/><i class="ti ti-eye toggle-pw" id="toggle-pw" onclick="toggleSenha()"></i></div>
     </div>
-    <div class="forgot-row"><span class="forgot-link" onclick="esqueciSenha()">Esqueci minha senha</span></div>
+    <div class="lembrar-row">
+      <label class="check-wrap">
+        <input type="checkbox" id="lembrar" checked/>
+        <span class="check-lbl">Lembrar de mim</span>
+      </label>
+      <span class="forgot-link" onclick="esqueciSenha()">Esqueci minha senha</span>
+    </div>
     <button class="btn-login" id="btn-login" onclick="fazerLogin()">
       <div class="spinner" id="spinner"></div>
       <span id="btn-text"><i class="ti ti-login" style="font-size:16px;"></i> &nbsp;Entrar na minha conta</span>
@@ -229,7 +243,62 @@
   // Form
   function toggleSenha(){const i=document.getElementById('senha'),ic=document.getElementById('toggle-pw');i.type=i.type==='password'?'text':'password';ic.className=i.type==='password'?'ti ti-eye toggle-pw':'ti ti-eye-off toggle-pw';}
   document.getElementById('senha').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
-  function fazerLogin(){const email=document.getElementById('email').value.trim(),senha=document.getElementById('senha').value,btn=document.getElementById('btn-login'),spinner=document.getElementById('spinner'),btnText=document.getElementById('btn-text'),errorBox=document.getElementById('error-box');errorBox.style.display='none';if(!email||!senha){document.getElementById('error-msg').textContent='Preencha e-mail e senha para continuar.';errorBox.style.display='flex';return;}btn.classList.add('loading');spinner.style.display='block';btnText.style.display='none';setTimeout(()=>{window.location.href='aluno/dashboard.html';},1400);}
+
+  // Preencher e-mail salvo se existir
+  const emailSalvo = localStorage.getItem('il_email');
+  if (emailSalvo) {
+    document.getElementById('email').value = emailSalvo;
+    document.getElementById('lembrar').checked = true;
+  }
+
+  async function fazerLogin() {
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value;
+    const lembrar = document.getElementById('lembrar').checked;
+    const btn = document.getElementById('btn-login');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btn-text');
+    const errorBox = document.getElementById('error-box');
+
+    errorBox.style.display = 'none';
+
+    if (!email || !senha) {
+      document.getElementById('error-msg').textContent = 'Preencha e-mail e senha para continuar.';
+      errorBox.style.display = 'flex';
+      return;
+    }
+
+    btn.classList.add('loading');
+    spinner.style.display = 'block';
+    btnText.style.display = 'none';
+
+    try {
+      const _sb = supabase.createClient(
+        'https://fbjxampsauqfngdennpi.supabase.co',
+        'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
+      );
+
+      const { data, error } = await _sb.auth.signInWithPassword({ email, password: senha });
+
+      if (error) throw error;
+
+      // Salvar e-mail se "Lembrar de mim" estiver marcado
+      if (lembrar) {
+        localStorage.setItem('il_email', email);
+      } else {
+        localStorage.removeItem('il_email');
+      }
+
+      window.location.href = 'aluno/dashboard.html';
+
+    } catch(e) {
+      btn.classList.remove('loading');
+      spinner.style.display = 'none';
+      btnText.style.display = 'flex';
+      document.getElementById('error-msg').textContent = 'E-mail ou senha incorretos. Tente novamente.';
+      errorBox.style.display = 'flex';
+    }
+  }
   function esqueciSenha(){const email=document.getElementById('email').value.trim();alert(email?`Link enviado para: ${email}`:'Digite seu e-mail primeiro.');}
 </script>
 </body>
