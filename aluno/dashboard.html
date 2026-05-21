@@ -225,16 +225,16 @@
         <div>
           <h2>Continue de onde parou 🚀</h2>
           <p>Você está indo muito bem! Mantenha o ritmo e conquiste o próximo nível.</p>
-          <div class="banner-pill"><i class="ti ti-player-play" style="font-size:11px;"></i> M2 · Aula 4 — Estratégias de Escala · 58% concluído</div>
+          <div class="banner-pill" id="banner-pill"><i class="ti ti-player-play" style="font-size:11px;"></i> Clique para começar suas aulas!</div>
         </div>
         <div class="btn-play"><i class="ti ti-player-play" style="font-size:14px;"></i> Continuar aula</div>
       </a>
 
       <div class="stats">
-        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-video"></i></div><span class="stat-trend t1">+3 essa semana</span></div><div class="stat-val">18</div><div class="stat-lbl">Aulas assistidas</div></div>
-        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-clock"></i></div><span class="stat-trend t2">+2h essa semana</span></div><div class="stat-val">14h</div><div class="stat-lbl">Horas estudadas</div></div>
-        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-download"></i></div><span class="stat-trend t3">+2 esse mês</span></div><div class="stat-val">7</div><div class="stat-lbl">Materiais baixados</div></div>
-        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-chart-line"></i></div><span class="stat-trend t4">+8% essa semana</span></div><div class="stat-val">42%</div><div class="stat-lbl">Curso concluído</div></div>
+        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-video"></i></div><span class="stat-trend t1" id="trend-aulas">0 essa semana</span></div><div class="stat-val" id="val-aulas">0</div><div class="stat-lbl">Aulas assistidas</div></div>
+        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-clock"></i></div><span class="stat-trend t2" id="trend-horas">0h total</span></div><div class="stat-val" id="val-horas">0h</div><div class="stat-lbl">Horas estudadas</div></div>
+        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-download"></i></div><span class="stat-trend t3" id="trend-mods">0 módulos</span></div><div class="stat-val" id="val-mods">0</div><div class="stat-lbl">Aulas disponíveis</div></div>
+        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-chart-line"></i></div><span class="stat-trend t4" id="trend-prog">0% concluído</span></div><div class="stat-val" id="val-prog">0%</div><div class="stat-lbl">Curso concluído</div></div>
       </div>
 
       <div class="charts-grid">
@@ -246,20 +246,20 @@
           <div class="card-hd"><span class="card-title">🎯 Progresso por módulo</span></div>
           <div class="radials">
             <div class="rad-item">
-              <div class="rad-wrap"><canvas id="r1" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--green);">100%</span></div></div>
-              <span class="rad-name" style="color:var(--green);">M1</span>
+              <div class="rad-wrap"><canvas id="r1" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" id="rpct1" style="color:var(--text3);">0%</span></div></div>
+              <span class="rad-name" id="rnm1" style="color:var(--text3);">M1</span>
             </div>
             <div class="rad-item">
-              <div class="rad-wrap"><canvas id="r2" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--cyan);">50%</span></div></div>
-              <span class="rad-name" style="color:var(--cyan);">M2</span>
+              <div class="rad-wrap"><canvas id="r2" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" id="rpct2" style="color:var(--text3);">0%</span></div></div>
+              <span class="rad-name" id="rnm2" style="color:var(--text3);">M2</span>
             </div>
             <div class="rad-item">
-              <div class="rad-wrap"><canvas id="r3" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--text3);">0%</span></div></div>
-              <span class="rad-name" style="color:var(--text3);">M3</span>
+              <div class="rad-wrap"><canvas id="r3" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" id="rpct3" style="color:var(--text3);">0%</span></div></div>
+              <span class="rad-name" id="rnm3" style="color:var(--text3);">M3</span>
             </div>
             <div class="rad-item">
-              <div class="rad-wrap"><canvas id="r4" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--text3);">0%</span></div></div>
-              <span class="rad-name" style="color:var(--text3);">M4</span>
+              <div class="rad-wrap"><canvas id="r4" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" id="rpct4" style="color:var(--text3);">0%</span></div></div>
+              <span class="rad-name" id="rnm4" style="color:var(--text3);">M4</span>
             </div>
           </div>
         </div>
@@ -268,26 +268,17 @@
       <div class="bottom-grid">
         <div class="card" style="animation-delay:.28s;">
           <div class="card-hd"><span class="card-title">📚 Próximas aulas</span><a class="card-link" href="modulos.html">Ver todas</a></div>
-          <div style="text-align:center;padding:20px;color:var(--text3);">
-            <i class="ti ti-player-play" style="font-size:28px;display:block;margin-bottom:8px;"></i>
-            <p style="font-size:12px;">Nenhuma aula disponível ainda.</p>
-            <a href="modulos.html" style="font-size:11px;color:var(--cyan);font-weight:600;text-decoration:none;display:inline-block;margin-top:6px;">Ver módulos →</a>
-          </div>
+          <div id="proximas-aulas-lista"><div style="text-align:center;padding:20px;color:var(--text3);"><i class="ti ti-player-play" style="font-size:28px;display:block;margin-bottom:8px;"></i><p style="font-size:12px;">Nenhuma aula disponível ainda.</p><a href="modulos.html" style="font-size:11px;color:var(--cyan);font-weight:600;text-decoration:none;display:inline-block;margin-top:6px;">Ver módulos →</a></div></div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div class="card" style="animation-delay:.32s;">
-            <div class="card-hd"><span class="card-title">⚡ Atividade recente</span><a class="card-link" href="#">Ver tudo</a></div>
-            
-            
-            
-            
+            <div class="card-hd"><span class="card-title">⚡ Atividade recente</span></div>
+            <div id="atividade-lista"><div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma atividade ainda.</div></div>
           </div>
           <div class="card" style="animation-delay:.36s;">
             <div class="card-hd"><span class="card-title">🏆 Conquistas</span></div>
-            <div class="conq-row"><div class="conq-ico" style="background:rgba(255,184,0,0.12);color:var(--yellow);">🥇</div><div><div class="conq-name">Primeiro passo</div><div class="conq-desc">Assistiu à primeira aula</div></div><span class="conq-tag ct-ok">Conquistado</span></div>
-            <div class="conq-row"><div class="conq-ico" style="background:rgba(0,229,160,0.12);color:var(--green);">⚡</div><div><div class="conq-name">Módulo completo</div><div class="conq-desc">Concluiu o Módulo 1</div></div><span class="conq-tag ct-ok">Conquistado</span></div>
-            <div class="conq-row"><div class="conq-ico" style="background:rgba(255,255,255,0.05);color:var(--text3);">🚀</div><div><div class="conq-name">Na metade</div><div class="conq-desc">Complete 50% do curso</div></div><span class="conq-tag ct-no">Em progresso</span></div>
+            <div id="conquistas-lista"></div>
           </div>
         </div>
       </div>
@@ -320,8 +311,172 @@
   const dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
   const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const now=new Date(),h=now.getHours();
-  document.getElementById('saudacao').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', João 👋';
+  document.getElementById('saudacao').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', carregando... 👋';
   document.getElementById('data-hoje').textContent=dias[now.getDay()]+', '+now.getDate()+' de '+meses[now.getMonth()]+' de '+now.getFullYear();
+
+  // ══ CARREGAR DADOS REAIS ══
+  const _sbDash = supabase.createClient(
+    'https://fbjxampsauqfngdennpi.supabase.co',
+    'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
+  );
+
+  var _chartLinha = null;
+  var _radiais = {};
+  var coresRadial = ['#00e5a0','#00c8ff','#7c5cff','#ff4d8d','#ffb800'];
+
+  (async function carregarDados() {
+    const { data: { session } } = await _sbDash.auth.getSession();
+    if (!session) { window.location.href = '../login.html'; return; }
+    const user = session.user;
+
+    // Carregar perfil
+    const { data: profile } = await _sbDash.from('profiles').select('*').eq('id', user.id).single();
+    const nome = (profile && profile.nome) ? profile.nome : user.email.split('@')[0];
+    const h2 = new Date().getHours();
+    const s2 = h2<12?'Bom dia':h2<18?'Boa tarde':'Boa noite';
+    document.getElementById('saudacao').textContent = s2 + ', ' + nome.split(' ')[0] + ' 👋';
+    const initials = nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
+    var avEl = document.querySelector('.avatar');
+    var nomeEl = document.querySelector('.user-name');
+    if (avEl) avEl.textContent = initials;
+    if (nomeEl) nomeEl.textContent = nome;
+
+    // Carregar módulos e aulas do admin (localStorage)
+    var mods = []; try { mods = JSON.parse(localStorage.getItem('il_mods'))||[]; } catch(e){}
+    var aulas = []; try { aulas = JSON.parse(localStorage.getItem('il_aulas'))||[]; } catch(e){}
+    var aulasPublicadas = aulas.filter(function(a){return a.status!=='draft';});
+
+    // Carregar progresso do Supabase
+    var { data: progresso } = await _sbDash.from('progresso')
+      .select('*').eq('user_id', user.id).eq('concluida', true);
+    progresso = progresso || [];
+    var aulasConc = progresso.length;
+    var totalAulas = aulasPublicadas.length;
+    var pctCurso = totalAulas > 0 ? Math.round((aulasConc/totalAulas)*100) : 0;
+    var horas = Math.round(aulasConc * 0.45);
+
+    // Atualizar stats
+    document.getElementById('val-aulas').textContent = aulasConc;
+    document.getElementById('val-horas').textContent = horas+'h';
+    document.getElementById('val-mods').textContent = aulasPublicadas.length;
+    document.getElementById('val-prog').textContent = pctCurso+'%';
+    document.getElementById('trend-aulas').textContent = aulasConc+' concluída'+(aulasConc!==1?'s':'');
+    document.getElementById('trend-horas').textContent = horas+'h estudadas';
+    document.getElementById('trend-mods').textContent = mods.filter(function(m){return m.status!=='hidden';}).length+' módulo'+(mods.length!==1?'s':'');
+    document.getElementById('trend-prog').textContent = pctCurso+'% concluído';
+
+    // Banner — próxima aula a fazer
+    var aulasPendentes = aulasPublicadas.filter(function(a){
+      return !progresso.find(function(p){return p.aula_id===a.id;});
+    });
+    var bannerPill = document.getElementById('banner-pill');
+    if (aulasPendentes.length > 0) {
+      var proxAula = aulasPendentes[0];
+      var modAula = mods.find(function(m){return m.id===proxAula.moduloId;});
+      if (bannerPill) bannerPill.innerHTML = '<i class="ti ti-player-play" style="font-size:11px;"></i> '+(modAula?modAula.nome:'')+'  — '+proxAula.nome;
+    } else if (totalAulas === 0) {
+      if (bannerPill) bannerPill.innerHTML = '<i class="ti ti-player-play" style="font-size:11px;"></i> Aguardando liberação das aulas';
+    } else {
+      if (bannerPill) bannerPill.innerHTML = '🎉 Parabéns! Você concluiu todas as aulas!';
+    }
+
+    // Próximas aulas
+    var proxEl = document.getElementById('proximas-aulas-lista');
+    if (proxEl) {
+      if (aulasPendentes.length > 0) {
+        proxEl.innerHTML = aulasPendentes.slice(0,4).map(function(a){
+          var mod = mods.find(function(m){return m.id===a.moduloId;});
+          var cor = mod ? ({cyan:'#00c8ff',green:'#00e5a0',pink:'#ff4d8d',purple:'#7c5cff',yellow:'#ffb800'}[mod.cor||'cyan']||'#00c8ff') : '#00c8ff';
+          return '<a href="aulas.html" style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);text-decoration:none;transition:all .15s;">'+
+            '<div style="width:28px;height:28px;border-radius:7px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:'+cor+';flex-shrink:0;">'+
+              (mod?'M'+(mod.ordem||'?'):'?')+
+            '</div>'+
+            '<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:#f0f4ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+a.nome+'</div>'+
+            '<div style="font-size:10px;color:#8b96b8;margin-top:1px;">'+(a.duracao||'—')+' · Disponível</div></div>'+
+          '</a>';
+        }).join('');
+      } else if (totalAulas > 0) {
+        proxEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px;">🎉 Você concluiu todas as aulas!</div>';
+      }
+    }
+
+    // Atividade recente
+    var atEl = document.getElementById('atividade-lista');
+    if (atEl && progresso.length > 0) {
+      var recentes = progresso.slice(-4).reverse();
+      atEl.innerHTML = recentes.map(function(p){
+        var aula = aulas.find(function(a){return a.id===p.aula_id;});
+        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'+
+          '<div style="width:28px;height:28px;border-radius:8px;background:rgba(0,229,160,0.12);color:#00e5a0;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;"><i class="ti ti-circle-check"></i></div>'+
+          '<div><div style="font-size:12px;color:#f0f4ff;">Aula concluída — <span style="color:#8b96b8;">'+(aula?aula.nome:'Aula')+'</span></div></div>'+
+        '</div>';
+      }).join('');
+    } else if (atEl) {
+      atEl.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma atividade ainda.<br/><a href="modulos.html" style="color:var(--cyan);font-weight:600;text-decoration:none;">Comece agora →</a></div>';
+    }
+
+    // Conquistas reais
+    var conquEl = document.getElementById('conquistas-lista');
+    if (conquEl) {
+      var c1 = aulasConc >= 1;
+      var c2 = mods.some(function(m){
+        var aulasM = aulasPublicadas.filter(function(a){return a.moduloId===m.id;});
+        var concM = aulasM.filter(function(a){return progresso.find(function(p){return p.aula_id===a.id;});});
+        return aulasM.length>0 && concM.length===aulasM.length;
+      });
+      var c3 = pctCurso >= 50;
+      conquEl.innerHTML = [
+        {ico:'🥇', nome:'Primeiro passo', desc:'Assista à primeira aula', ok:c1, bg:'rgba(255,184,0,0.12)', cor:'#ffb800'},
+        {ico:'⚡', nome:'Módulo completo', desc:'Conclua um módulo inteiro', ok:c2, bg:'rgba(0,229,160,0.12)', cor:'#00e5a0'},
+        {ico:'🚀', nome:'Na metade', desc:'Complete 50% do curso', ok:c3, bg:'rgba(124,92,255,0.12)', cor:'#7c5cff'},
+      ].map(function(cq){
+        return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'+
+          '<div style="width:32px;height:32px;border-radius:9px;background:'+(cq.ok?cq.bg:'rgba(255,255,255,0.05)')+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">'+cq.ico+'</div>'+
+          '<div style="flex:1;"><div style="font-size:12px;font-weight:600;color:#f0f4ff;">'+cq.nome+'</div><div style="font-size:10px;color:#8b96b8;margin-top:1px;">'+cq.desc+'</div></div>'+
+          '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;'+(cq.ok?'background:rgba(0,229,160,0.12);color:#00e5a0;border:1px solid rgba(0,229,160,0.2)':'background:rgba(255,255,255,0.05);color:#4a5270')+'">'+(cq.ok?'Conquistado':'Pendente')+'</span>'+
+        '</div>';
+      }).join('');
+    }
+
+    // Radiais por módulo
+    var modsVisiveis = mods.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);}).slice(0,4);
+    for (var i=0; i<4; i++) {
+      var m = modsVisiveis[i];
+      var pct = 0;
+      var cor = '#4a5270';
+      var label = 'M'+(i+1);
+      if (m) {
+        var aulasM = aulasPublicadas.filter(function(a){return a.moduloId===m.id;});
+        var concM = aulasM.filter(function(a){return progresso.find(function(p){return p.aula_id===a.id;});});
+        pct = aulasM.length>0 ? Math.round((concM.length/aulasM.length)*100) : 0;
+        cor = coresRadial[i] || '#00c8ff';
+        label = 'M'+(m.ordem||i+1);
+      }
+      var pctEl = document.getElementById('rpct'+(i+1));
+      var nmEl  = document.getElementById('rnm'+(i+1));
+      if (pctEl) { pctEl.textContent = pct+'%'; pctEl.style.color = m?cor:'#4a5270'; }
+      if (nmEl)  { nmEl.textContent = label; nmEl.style.color = m?cor:'#4a5270'; }
+      _radiais['r'+(i+1)] = pct;
+    }
+
+    // Montar radiais
+    setTimeout(function(){
+      for (var k in _radiais) {
+        (function(key) {
+          var el = document.getElementById(key);
+          if (!el) return;
+          var idx = parseInt(key.replace('r',''))-1;
+          var cor = modsVisiveis[idx] ? (coresRadial[idx]||'#00c8ff') : '#4a5270';
+          new Chart(el.getContext('2d'),{
+            type:'doughnut',
+            data:{datasets:[{data:[_radiais[key],100-_radiais[key]],backgroundColor:[cor,'rgba(255,255,255,0.06)'],borderWidth:0}]},
+            options:{responsive:false,cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{animateRotate:true,duration:1000}}
+          });
+        })(k);
+      }
+    }, 100);
+
+  })(); // fim carregarDados
 
   // GRÁFICO LINHA
   new Chart(document.getElementById('chart-linha').getContext('2d'),{
