@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Infinity Live — Meu Perfil</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="auth.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#080b14;--bg2:#0c0f1d;--card:#111525;--card2:#161b2e;--hover:#1a2035;
+  --cyan:#00c8ff;--blue:#3b7fff;--purple:#7c5cff;--yellow:#ffb800;--pink:#ff4d8d;--green:#00e5a0;
+  --text:#f0f4ff;--text2:#8b96b8;--text3:#4a5270;
+  --border:rgba(255,255,255,0.07);
+  --g1:linear-gradient(135deg,#00c8ff,#3b7fff);
+  --g3:linear-gradient(135deg,#ff4d8d,#ff8c42);
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);}
+.layout{display:flex;height:100vh;}
+.sidebar{width:245px;min-width:245px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.logo-area{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:74px;}
+.logo-area img{width:128px;height:auto;object-fit:contain;}
+.logo-fb{display:none;align-items:center;gap:10px;}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;}
+.logo-name{font-size:15px;font-weight:700;}
+.nav-wrap{flex:1;padding:8px 10px;overflow-y:auto;}
+.nav-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
+.nav-item:hover{background:var(--hover);color:var(--text);}
+.nav-item.active{background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(59,127,255,0.1));color:#fff;font-weight:600;border:1px solid rgba(0,200,255,0.2);}
+.nav-item.active i{color:var(--cyan);}
+.nav-item i{font-size:18px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--g3);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.sidebar-bottom{padding:14px 10px;border-top:1px solid var(--border);}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);cursor:pointer;}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;}
+.user-name{font-size:13px;font-weight:600;color:var(--text);}
+.user-role{font-size:10px;color:var(--cyan);font-weight:600;margin-top:1px;}
+.logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;transition:all .15s;text-decoration:none;cursor:pointer;}
+.logout:hover{color:var(--pink);background:rgba(255,77,141,0.07);}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.page-title{font-size:18px;font-weight:700;}
+.page-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.content{flex:1;overflow-y:auto;padding:24px 28px;}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
+
+/* PERFIL */
+.perfil-hero{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:18px;display:flex;align-items:center;gap:24px;position:relative;overflow:hidden;}
+.perfil-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--g1);}
+.perf-av-big{width:80px;height:80px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;flex-shrink:0;border:3px solid rgba(0,200,255,0.3);}
+.perf-info{flex:1;}
+.perf-nome{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.perf-email{font-size:13px;color:var(--text2);}
+.perf-plano{display:inline-flex;align-items:center;gap:6px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.2);color:var(--cyan);padding:4px 12px;border-radius:7px;font-size:11px;font-weight:700;margin-top:8px;}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;transition:all .2s;}
+.stat-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.13);}
+.stat-val{font-size:28px;font-weight:800;color:var(--text);line-height:1;}
+.stat-lbl{font-size:12px;color:var(--text2);margin-top:5px;}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+
+.field{margin-bottom:13px;}
+.field label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
+.finput{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:inherit;font-size:13px;outline:none;transition:border-color .15s;}
+.finput:focus{border-color:rgba(0,200,255,0.35);}
+.finput:disabled{opacity:.5;cursor:not-allowed;}
+.btn{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;padding:9px 18px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn-primary{background:var(--g1);color:#fff;}
+.btn-primary:hover{opacity:.88;}
+.btn-danger{background:rgba(255,59,92,0.1);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}
+.btn-danger:hover{background:rgba(255,59,92,0.2);}
+
+.prog-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.prog-item:last-child{border-bottom:none;}
+.prog-num{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.prog-info{flex:1;min-width:0;}
+.prog-nome{font-size:12px;font-weight:600;color:var(--text);}
+.prog-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:4px;}
+.prog-fill{height:4px;border-radius:2px;}
+.prog-pct{font-size:11px;font-weight:700;flex-shrink:0;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:12px 18px;display:none;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text);z-index:999;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+.toast i{color:var(--green);font-size:18px;}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo-area">
+      <img src="../imagens/logo-infinity-live.png" alt="Infinity Live" onerror="this.style.display='none';document.getElementById('lfb').style.display='flex'"/>
+      <div class="logo-fb" id="lfb"><div class="logo-icon">∞</div><div class="logo-name">Infinity Live</div></div>
+    </div>
+    <div class="nav-wrap">
+      <div class="nav-lbl">Menu</div>
+      <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="nav-item" href="modulos.html"><i class="ti ti-player-play"></i> Aulas</a>
+      <a class="nav-item" href="materiais.html"><i class="ti ti-file-download"></i> Materiais</a>
+      <a class="nav-item" href="suporte.html"><i class="ti ti-message-circle"></i> Suporte <span class="nav-badge">2</span></a>
+      <div class="nav-lbl">Conta</div>
+      <a class="nav-item active" href="perfil.html"><i class="ti ti-user-circle"></i> Meu Perfil</a>
+      <a class="nav-item" href="configuracoes.html"><i class="ti ti-settings"></i> Configurações</a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="avatar" id="av">JS</div>
+        <div style="flex:1;min-width:0;"><div class="user-name" id="sidebar-nome">Carregando...</div><div class="user-role">◆ Membro Pro</div></div>
+      </div>
+      <a class="logout" onclick="fazerLogout()"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div><div class="page-title">Meu Perfil</div><div class="page-sub">Gerencie suas informações pessoais</div></div>
+    </div>
+    <div class="content">
+
+      <div class="perfil-hero">
+        <div class="perf-av-big" id="av-big">JS</div>
+        <div class="perf-info">
+          <div class="perf-nome" id="perf-nome">Carregando...</div>
+          <div class="perf-email" id="perf-email">-</div>
+          <div class="perf-plano"><i class="ti ti-diamond" style="font-size:12px;"></i> Membro Pro</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" id="s-aulas">0</div><div class="stat-lbl">Aulas assistidas</div></div>
+        <div class="stat-card"><div class="stat-val">0%</div><div class="stat-lbl">Curso concluído</div></div>
+        <div class="stat-card"><div class="stat-val" id="s-dias">1</div><div class="stat-lbl">Dias como membro</div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-user" style="font-size:16px;color:var(--cyan);"></i> Dados pessoais</div>
+          <div class="field"><label>Nome completo</label><input class="finput" id="inp-nome" placeholder="Seu nome"/></div>
+          <div class="field"><label>E-mail</label><input class="finput" id="inp-email" disabled/></div>
+          <button class="btn btn-primary" onclick="salvarNome()"><i class="ti ti-device-floppy" style="font-size:14px;"></i> Salvar</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-lock" style="font-size:16px;color:var(--cyan);"></i> Alterar senha</div>
+          <div class="field"><label>Nova senha</label><input class="finput" type="password" id="nova-senha" placeholder="Mínimo 6 caracteres"/></div>
+          <div class="field"><label>Confirmar senha</label><input class="finput" type="password" id="conf-senha" placeholder="Repita a nova senha"/></div>
+          <button class="btn btn-primary" onclick="alterarSenha()"><i class="ti ti-key" style="font-size:14px;"></i> Alterar senha</button>
+        </div>
+
+        <div class="card" style="grid-column:1/-1;">
+          <div class="card-title"><i class="ti ti-chart-bar" style="font-size:16px;color:var(--cyan);"></i> Progresso nos módulos</div>
+          <div id="prog-lista">
+            <div class="prog-item">
+              <div class="prog-num" style="background:rgba(0,229,160,0.12);color:var(--green);">M1</div>
+              <div class="prog-info"><div class="prog-nome">Fundamentos & Mentalidade</div><div class="prog-bar"><div class="prog-fill" style="width:100%;background:var(--green);"></div></div></div>
+              <span class="prog-pct" style="color:var(--green);">100%</span>
+            </div>
+            <div class="prog-item">
+              <div class="prog-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);">M2</div>
+              <div class="prog-info"><div class="prog-nome">Tráfego & Conversão</div><div class="prog-bar"><div class="prog-fill" style="width:50%;background:var(--cyan);"></div></div></div>
+              <span class="prog-pct" style="color:var(--cyan);">50%</span>
+            </div>
+            <div class="prog-item">
+              <div class="prog-num" style="background:rgba(255,255,255,0.05);color:var(--text3);">M3</div>
+              <div class="prog-info"><div class="prog-nome">Alta Performance & Escala</div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:var(--text3);"></div></div></div>
+              <span class="prog-pct" style="color:var(--text3);">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-circle-check"></i><span id="toast-msg">Salvo!</span></div>
+
+<script>
+const _sb = supabase.createClient(
+  'https://fbjxampsauqfngdennpi.supabase.co',
+  'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
+);
+
+(async function(){
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) { window.location.href = '../login.html'; return; }
+  const user = session.user;
+  const { data: profile } = await _sb.from('profiles').select('*').eq('id', user.id).single();
+  const nome = (profile && profile.nome) ? profile.nome : user.email.split('@')[0];
+  const initials = nome.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('av-big').textContent = initials;
+  document.getElementById('av').textContent = initials;
+  document.getElementById('sidebar-nome').textContent = nome;
+  document.getElementById('perf-nome').textContent = nome;
+  document.getElementById('perf-email').textContent = user.email;
+  document.getElementById('inp-nome').value = nome;
+  document.getElementById('inp-email').value = user.email;
+
+  // Calcular dias como membro
+  const criado = new Date(user.created_at);
+  const hoje = new Date();
+  const dias = Math.floor((hoje - criado) / (1000*60*60*24)) + 1;
+  document.getElementById('s-dias').textContent = dias;
+})();
+
+async function salvarNome() {
+  const nome = document.getElementById('inp-nome').value.trim();
+  if (!nome) return;
+  const { data: { user } } = await _sb.auth.getUser();
+  await _sb.from('profiles').update({ nome }).eq('id', user.id);
+  document.getElementById('perf-nome').textContent = nome;
+  document.getElementById('sidebar-nome').textContent = nome;
+  const initials = nome.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('av-big').textContent = initials;
+  document.getElementById('av').textContent = initials;
+  mostrarToast('Nome atualizado!');
+}
+
+async function alterarSenha() {
+  const nova = document.getElementById('nova-senha').value;
+  const conf = document.getElementById('conf-senha').value;
+  if (!nova || nova.length < 6) { mostrarToast('Senha deve ter no mínimo 6 caracteres.', true); return; }
+  if (nova !== conf) { mostrarToast('As senhas não coincidem.', true); return; }
+  const { error } = await _sb.auth.updateUser({ password: nova });
+  if (error) { mostrarToast('Erro ao alterar senha.', true); return; }
+  document.getElementById('nova-senha').value = '';
+  document.getElementById('conf-senha').value = '';
+  mostrarToast('Senha alterada com sucesso!');
+}
+
+let tt;
+function mostrarToast(msg, erro) {
+  const el = document.getElementById('toast');
+  const ic = el.querySelector('i');
+  document.getElementById('toast-msg').textContent = msg;
+  ic.style.color = erro ? 'var(--pink)' : 'var(--green)';
+  el.style.display = 'flex';
+  clearTimeout(tt);
+  tt = setTimeout(() => el.style.display = 'none', 3000);
+}
+
+async function fazerLogout() {
+  await _sb.auth.signOut();
+  window.location.href = '../login.html';
+}
+</script>
+</body>
+</html>
