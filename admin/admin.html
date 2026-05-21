@@ -254,6 +254,15 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:12px 18px;display:none;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text);z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
 .toast i{font-size:18px;color:var(--green);}
 
+/* MODAL CONFIRMAR EXCLUSÃO */
+.overlay-confirm{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(5px);z-index:9999;display:none;align-items:center;justify-content:center;}
+.overlay-confirm.open{display:flex;}
+.modal-confirm{background:var(--card);border:1px solid rgba(255,59,92,0.25);border-radius:14px;padding:28px;width:360px;text-align:center;}
+.modal-confirm-ico{width:56px;height:56px;border-radius:50%;background:rgba(255,59,92,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;}
+.modal-confirm-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.modal-confirm-msg{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;}
+.modal-confirm-btns{display:flex;gap:9px;}
+
 /* EMPTY STATE */
 .empty{text-align:center;padding:40px;color:var(--text3);}
 .empty i{font-size:36px;display:block;margin-bottom:10px;}
@@ -404,9 +413,9 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
         <div style="font-size:14px;font-weight:700;color:var(--text);">Materiais para download</div>
         <button class="btn btn-primary" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
       </div>
-      <div class="mat-row"><div class="mat-ico mi-pdf"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Guia de Tráfego Pago</div><div class="mat-meta">PDF · 8.4 MB · 187 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">187 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
-      <div class="mat-row"><div class="mat-ico mi-xls"><i class="ti ti-table"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Planilha de Metas 2025</div><div class="mat-meta">XLSX · 1.2 MB · 243 downloads</div></div><span class="mat-mod">Geral</span><span class="mat-dl">243 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
-      <div class="mat-row"><div class="mat-ico mi-zip"><i class="ti ti-file-zip"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Pack de Templates</div><div class="mat-meta">ZIP · 124 MB · 156 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">156 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
+      <div class="mat-row"><div class="mat-ico mi-pdf"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Guia de Tráfego Pago</div><div class="mat-meta">PDF · 8.4 MB · 187 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">187 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="excluirMaterial(this.closest('.mat-row').querySelector('.mat-name').textContent, this)"><i class="ti ti-trash"></i></button></div></div>
+      <div class="mat-row"><div class="mat-ico mi-xls"><i class="ti ti-table"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Planilha de Metas 2025</div><div class="mat-meta">XLSX · 1.2 MB · 243 downloads</div></div><span class="mat-mod">Geral</span><span class="mat-dl">243 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="excluirMaterial(this.closest('.mat-row').querySelector('.mat-name').textContent, this)"><i class="ti ti-trash"></i></button></div></div>
+      <div class="mat-row"><div class="mat-ico mi-zip"><i class="ti ti-file-zip"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Pack de Templates</div><div class="mat-meta">ZIP · 124 MB · 156 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">156 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="excluirMaterial(this.closest('.mat-row').querySelector('.mat-name').textContent, this)"><i class="ti ti-trash"></i></button></div></div>
     </div>
 
     <!-- CONFIG -->
@@ -577,6 +586,19 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="mfooter">
       <button class="btn btn-primary" style="flex:1;" onclick="mostrarToast('Material salvo!');fecharModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Publicar</button>
       <button class="btn btn-outline" onclick="fecharModal('modal-material')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR EXCLUSÃO -->
+<div class="overlay-confirm" id="overlay-confirm">
+  <div class="modal-confirm">
+    <div class="modal-confirm-ico"><i class="ti ti-alert-triangle"></i></div>
+    <div class="modal-confirm-title" id="confirm-title">Confirmar exclusão</div>
+    <div class="modal-confirm-msg" id="confirm-msg">Tem certeza? Esta ação não pode ser desfeita.</div>
+    <div class="modal-confirm-btns">
+      <button class="btn btn-danger" style="flex:1;" id="confirm-ok-btn" onclick="executarConfirm()"><i class="ti ti-trash" style="font-size:14px;"></i> Excluir</button>
+      <button class="btn btn-outline" onclick="fecharConfirm()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -845,18 +867,31 @@ function salvarAula() {
 function excluirAula() {
   var id = document.getElementById('aula-id').value;
   var nome = document.getElementById('aula-nome').value;
-  if (!id || !confirm('Excluir a aula "' + nome + '"?')) return;
-  setAulas(getAulas().filter(function(a){ return a.id !== id; }));
+  if (!id) return;
   fecharModal('modal-aula');
-  renderMods();
-  mostrarToast('Aula removida.');
+  confirmar(
+    'Excluir aula',
+    'Excluir a aula "' + nome + '"? Esta ação não pode ser desfeita.',
+    function() {
+      setAulas(getAulas().filter(function(a){ return a.id !== id; }));
+      renderMods();
+      mostrarToast('Aula removida.');
+    },
+    'Excluir aula'
+  );
 }
 
 function delAula(id, nome) {
-  if (!confirm('Excluir a aula "' + nome + '"?')) return;
-  setAulas(getAulas().filter(function(a){ return a.id !== id; }));
-  renderMods();
-  mostrarToast('Aula removida.');
+  confirmar(
+    'Excluir aula',
+    'Excluir a aula "' + nome + '"? Esta ação não pode ser desfeita.',
+    function() {
+      setAulas(getAulas().filter(function(a){ return a.id !== id; }));
+      renderMods();
+      mostrarToast('Aula removida.');
+    },
+    'Excluir aula'
+  );
 }
 
 // ================================================
@@ -1090,6 +1125,63 @@ function mostrarToast(msg, erro) {
 }
 
 // ================================================
+// ── CONFIRMAÇÃO DE EXCLUSÃO GENÉRICA ──
+var _confirmCallback = null;
+
+function confirmar(titulo, msg, callback, btnTxt) {
+  document.getElementById('confirm-title').textContent = titulo || 'Confirmar exclusão';
+  document.getElementById('confirm-msg').textContent = msg || 'Tem certeza? Esta ação não pode ser desfeita.';
+  document.getElementById('confirm-ok-btn').innerHTML = '<i class="ti ti-trash" style="font-size:14px;"></i> ' + (btnTxt || 'Excluir');
+  _confirmCallback = callback;
+  document.getElementById('overlay-confirm').classList.add('open');
+}
+
+function fecharConfirm() {
+  document.getElementById('overlay-confirm').classList.remove('open');
+  _confirmCallback = null;
+}
+
+function executarConfirm() {
+  if (_confirmCallback) _confirmCallback();
+  fecharConfirm();
+}
+
+// Fechar ao clicar fora
+document.getElementById('overlay-confirm').addEventListener('click', function(e) {
+  if (e.target === this) fecharConfirm();
+});
+
+// ── EXCLUIR ALUNO ──
+function confirmarExcluirAluno(id, nome) {
+  confirmar(
+    'Excluir aluno',
+    'Tem certeza que deseja excluir o aluno "' + nome + '"? O acesso será removido permanentemente.',
+    function() { excluirAluno(id); },
+    'Excluir aluno'
+  );
+}
+
+function excluirAluno(id) {
+  var alunos = getAlunos().filter(function(a){ return a.id !== id; });
+  setAlunos(alunos);
+  renderAlunos(alunos);
+  atualizarStats();
+  mostrarToast('Aluno removido.');
+}
+
+// ── EXCLUIR MATERIAL (sobrescreve o toast fake) ──
+function excluirMaterial(nome, el) {
+  confirmar(
+    'Excluir material',
+    'Tem certeza que deseja remover "' + nome + '"?',
+    function() {
+      if (el) el.closest('.mat-row').remove();
+      mostrarToast('Material removido!');
+    },
+    'Excluir material'
+  );
+}
+
 // ONLINE ANIMADO
 // ================================================
 var onlineCount = 17;
