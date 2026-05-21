@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Infinity Live — Suporte</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --bg:#080b14;--bg2:#0c0f1d;--card:#111525;--card2:#161b2e;--hover:#1a2035;
+    --cyan:#00c8ff;--blue:#3b7fff;--purple:#7c5cff;--yellow:#ffb800;--pink:#ff4d8d;--green:#00e5a0;
+    --text:#f0f4ff;--text2:#8b96b8;--text3:#4a5270;
+    --border:rgba(255,255,255,0.07);--border-cyan:rgba(0,200,255,0.25);
+    --g1:linear-gradient(135deg,#00c8ff,#3b7fff);
+    --g3:linear-gradient(135deg,#ff4d8d,#ff8c42);
+    --g4:linear-gradient(135deg,#00e5a0,#00c8ff);
+  }
+  html,body{height:100%;overflow:hidden;}
+  body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);}
+  .layout{display:flex;height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{width:245px;min-width:245px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+  .logo-area{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:74px;}
+  .logo-area img{width:128px;height:auto;object-fit:contain;}
+  .logo-fallback{display:none;align-items:center;gap:10px;}
+  .logo-icon{width:38px;height:38px;border-radius:10px;background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;}
+  .logo-name{font-size:15px;font-weight:700;color:var(--text);}
+  .logo-sub{font-size:10px;color:var(--text2);}
+  .nav-wrap{flex:1;padding:8px 10px;overflow-y:auto;}
+  .nav-section-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
+  .nav-item:hover{background:var(--hover);color:var(--text);}
+  .nav-item.active{background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(59,127,255,0.1));color:#fff;font-weight:600;border:1px solid rgba(0,200,255,0.2);}
+  .nav-item.active i{color:var(--cyan);}
+  .nav-item i{font-size:18px;flex-shrink:0;}
+  .nav-badge{margin-left:auto;background:var(--g3);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .sidebar-bottom{padding:14px 10px;border-top:1px solid var(--border);}
+  .user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;cursor:pointer;border:1px solid var(--border);transition:background .15s;}
+  .user-row:hover{background:var(--card2);}
+  .avatar{width:36px;height:36px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;}
+  .user-name{font-size:13px;font-weight:600;color:var(--text);}
+  .user-role{font-size:10px;color:var(--cyan);font-weight:600;margin-top:1px;}
+  .logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;transition:all .15s;}
+  .logout:hover{color:var(--pink);background:rgba(255,77,141,0.07);}
+
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .topbar{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .page-title{font-size:17px;font-weight:700;color:var(--text);}
+  .page-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(--green);}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:18px;transition:all .15s;position:relative;}
+  .icon-btn:hover{border-color:var(--border-cyan);color:var(--cyan);}
+  .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--pink);border-radius:50%;border:1.5px solid var(--bg2);}
+
+  /* CONTENT */
+  .content{flex:1;overflow-y:auto;padding:24px 28px;}
+  .content::-webkit-scrollbar{width:4px;}
+  .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
+
+  /* LAYOUT INTERNO */
+  .suporte-grid{display:grid;grid-template-columns:1fr 380px;gap:20px;}
+
+  /* CONTATO RÁPIDO */
+  .contato-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;}
+  .contato-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;text-decoration:none;}
+  .contato-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.14);}
+  .contato-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+  .ci-wpp{background:rgba(37,211,102,0.12);color:#25d366;}
+  .ci-tg{background:rgba(0,136,204,0.12);color:#0088cc;}
+  .ci-mail{background:rgba(0,200,255,0.12);color:var(--cyan);}
+  .ci-insta{background:rgba(255,77,141,0.12);color:var(--pink);}
+  .contato-name{font-size:13px;font-weight:700;color:var(--text);}
+  .contato-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+  .contato-arrow{margin-left:auto;color:var(--text3);font-size:18px;flex-shrink:0;}
+
+  /* TABS */
+  .tabs-row{display:flex;gap:4px;margin-bottom:16px;background:var(--card2);border-radius:10px;padding:4px;}
+  .tab{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;text-align:center;}
+  .tab:hover{color:var(--text);}
+  .tab.active{background:var(--card);color:var(--cyan);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+
+  /* TICKETS */
+  .ticket-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .18s;}
+  .ticket-card:hover{border-color:rgba(255,255,255,0.12);background:var(--hover);}
+  .ticket-card.selected{border-color:var(--cyan);background:rgba(0,200,255,0.05);}
+  .ticket-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .ticket-title{font-size:13px;font-weight:700;color:var(--text);}
+  .ticket-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;}
+  .ts-open{background:rgba(255,59,92,0.12);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}
+  .ts-answered{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+  .ts-pending{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
+  .ts-closed{background:rgba(255,255,255,0.06);color:var(--text3);}
+  .ticket-preview{font-size:12px;color:var(--text2);line-height:1.5;}
+  .ticket-meta{display:flex;align-items:center;gap:12px;margin-top:8px;font-size:11px;color:var(--text3);}
+  .ticket-meta i{font-size:13px;}
+
+  /* NOVO TICKET FORM */
+  .form-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:20px;}
+  .form-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .field{margin-bottom:14px;}
+  .field-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;letter-spacing:.3px;}
+  .field-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s;}
+  .field-input:focus{border-color:var(--border-cyan);box-shadow:0 0 0 3px rgba(0,200,255,0.07);}
+  .field-input::placeholder{color:var(--text3);}
+  .field-select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;cursor:pointer;transition:border-color .15s;}
+  .field-select:focus{border-color:var(--border-cyan);}
+  .field-textarea{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;resize:vertical;min-height:110px;line-height:1.6;transition:border-color .15s;}
+  .field-textarea:focus{border-color:var(--border-cyan);box-shadow:0 0 0 3px rgba(0,200,255,0.07);}
+  .field-textarea::placeholder{color:var(--text3);}
+  .btn-submit{width:100%;padding:12px;background:var(--g1);color:#fff;font-weight:700;font-size:13px;border-radius:10px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s;box-shadow:0 4px 20px rgba(0,200,255,0.2);}
+  .btn-submit:hover{opacity:.88;}
+
+  /* LADO DIREITO */
+  .right-col{display:flex;flex-direction:column;gap:16px;}
+
+  /* FAQ */
+  .faq-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 20px;}
+  .faq-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .faq-item{border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;}
+  .faq-item:last-child{border-bottom:none;}
+  .faq-q{display:flex;align-items:center;justify-content:space-between;padding:11px 0;font-size:13px;font-weight:600;color:var(--text);gap:10px;transition:color .15s;}
+  .faq-q:hover{color:var(--cyan);}
+  .faq-chevron{font-size:16px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+  .faq-chevron.open{transform:rotate(180deg);}
+  .faq-a{font-size:12px;color:var(--text2);line-height:1.7;padding-bottom:12px;display:none;}
+  .faq-a.open{display:block;}
+
+  /* TEMPO RESPOSTA */
+  .tempo-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 20px;}
+  .tempo-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;}
+  .tempo-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .tempo-item:last-child{border-bottom:none;}
+  .tempo-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .tempo-canal{font-size:12px;font-weight:600;color:var(--text);}
+  .tempo-prazo{font-size:11px;color:var(--text2);margin-top:1px;}
+  .tempo-badge{margin-left:auto;font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap;}
+  .tb-fast{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+  .tb-mid{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
+
+  /* TICKET ABERTO DETALHE */
+  .ticket-detail{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:20px;display:none;}
+  .ticket-detail.show{display:block;}
+  .td-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+  .td-title{font-size:15px;font-weight:700;color:var(--text);}
+  .btn-back{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:color .15s;}
+  .btn-back:hover{color:var(--cyan);}
+  .msg-row{display:flex;gap:10px;margin-bottom:14px;}
+  .msg-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px;}
+  .msg-bubble{flex:1;background:var(--card2);border-radius:10px;padding:12px 14px;}
+  .msg-bubble.mentor{background:rgba(0,200,255,0.07);border:1px solid rgba(0,200,255,0.15);}
+  .msg-author{font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .msg-author span{font-weight:400;color:var(--text3);margin-left:6px;}
+  .msg-text{font-size:12px;color:var(--text2);line-height:1.7;}
+  .reply-area{border-top:1px solid var(--border);padding-top:14px;margin-top:4px;}
+  .reply-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;resize:none;min-height:80px;line-height:1.6;transition:border-color .15s;margin-bottom:10px;}
+  .reply-input:focus{border-color:var(--border-cyan);}
+  .reply-input::placeholder{color:var(--text3);}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="auth.js"></script>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo-area">
+      <img src="../imagens/logo-infinity-live.png" alt="Infinity Live"
+        onerror="this.style.display='none';document.getElementById('lf').style.display='flex'"/>
+      <div class="logo-fallback" id="lf">
+        <div class="logo-icon">∞</div>
+        <div><div class="logo-name">Infinity Live</div><div class="logo-sub">Área de Membros</div></div>
+      </div>
+    </div>
+    <div class="nav-wrap">
+      <div class="nav-section-lbl">Menu</div>
+      <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="nav-item" href="modulos.html"><i class="ti ti-player-play"></i> Aulas</a>
+      <a class="nav-item" href="materiais.html"><i class="ti ti-file-download"></i> Materiais</a>
+      <a class="nav-item active" href="suporte.html"><i class="ti ti-message-circle"></i> Suporte <span class="nav-badge">2</span></a>
+      <div class="nav-section-lbl">Conta</div>
+      <a class="nav-item" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-user-circle"></i> Meu Perfil</a>
+      <a class="nav-item" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-settings"></i> Configurações</a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="avatar">JS</div>
+        <div style="flex:1;min-width:0;">
+          <div class="user-name">João Silva</div>
+          <div class="user-role">◆ Membro Pro</div>
+        </div>
+        <i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px;flex-shrink:0;"></i>
+      </div>
+      <div class="logout"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Suporte</div>
+        <div class="page-sub">Tire suas dúvidas e fale com o mentor</div>
+      </div>
+      <div class="topbar-right">
+        <div class="live-badge"><div class="live-dot"></div> Live ativa agora</div>
+        <div class="icon-btn"><i class="ti ti-bell"></i><div class="notif-dot"></div></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- CONTATO RÁPIDO -->
+      <div class="contato-grid">
+        <a class="contato-card" href="../login.html" onclick="event.preventDefault();fazerLogout()">
+          <div class="contato-ico ci-wpp"><i class="ti ti-brand-whatsapp"></i></div>
+          <div>
+            <div class="contato-name">WhatsApp VIP</div>
+            <div class="contato-sub">Resposta em até 24h úteis</div>
+          </div>
+          <i class="ti ti-arrow-right contato-arrow"></i>
+        </a>
+        <a class="contato-card" href="../login.html" onclick="event.preventDefault();fazerLogout()">
+          <div class="contato-ico ci-tg"><i class="ti ti-brand-telegram"></i></div>
+          <div>
+            <div class="contato-name">Grupo Telegram</div>
+            <div class="contato-sub">Comunidade exclusiva de alunos</div>
+          </div>
+          <i class="ti ti-arrow-right contato-arrow"></i>
+        </a>
+        <a class="contato-card" href="../login.html" onclick="event.preventDefault();fazerLogout()">
+          <div class="contato-ico ci-insta"><i class="ti ti-brand-instagram"></i></div>
+          <div>
+            <div class="contato-name">Instagram do Mentor</div>
+            <div class="contato-sub">Acompanhe as novidades</div>
+          </div>
+          <i class="ti ti-arrow-right contato-arrow"></i>
+        </a>
+        <a class="contato-card" href="../login.html" onclick="event.preventDefault();fazerLogout()">
+          <div class="contato-ico ci-mail"><i class="ti ti-mail"></i></div>
+          <div>
+            <div class="contato-name">E-mail de suporte</div>
+            <div class="contato-sub">suporte@infinitylive.com.br</div>
+          </div>
+          <i class="ti ti-arrow-right contato-arrow"></i>
+        </a>
+      </div>
+
+      <div class="suporte-grid">
+
+        <!-- COLUNA ESQUERDA -->
+        <div>
+
+          <!-- TABS -->
+          <div class="tabs-row">
+            <div class="tab active" onclick="showTab('tickets',this)"><i class="ti ti-ticket" style="font-size:15px;vertical-align:-2px;"></i> Meus Tickets</div>
+            <div class="tab" onclick="showTab('novo',this)"><i class="ti ti-plus" style="font-size:15px;vertical-align:-2px;"></i> Abrir Ticket</div>
+          </div>
+
+          <!-- MEUS TICKETS -->
+          <div class="tab-content active" id="tab-tickets">
+
+            <div class="ticket-card selected" onclick="verTicket(this,'Acesso ao Módulo 3','Olá! Queria saber quando o Módulo 3 será liberado para mim. Já concluí 50% do Módulo 2.','Aberto')">
+              <div class="ticket-hd">
+                <div class="ticket-title">Acesso ao Módulo 3</div>
+                <span class="ticket-status ts-open">Aberto</span>
+              </div>
+              <div class="ticket-preview">Olá! Queria saber quando o Módulo 3 será liberado para mim...</div>
+              <div class="ticket-meta">
+                <span><i class="ti ti-calendar"></i> Hoje, 14:30</span>
+                <span><i class="ti ti-tag"></i> Acesso</span>
+                <span><i class="ti ti-message-circle"></i> 1 mensagem</span>
+              </div>
+            </div>
+
+            <div class="ticket-card" onclick="verTicket(this,'Problema no download','O arquivo de templates não está abrindo corretamente no meu computador. Já tentei reinstalar...','Pendente')">
+              <div class="ticket-hd">
+                <div class="ticket-title">Problema no download</div>
+                <span class="ticket-status ts-pending">Pendente</span>
+              </div>
+              <div class="ticket-preview">O arquivo de templates não está abrindo corretamente...</div>
+              <div class="ticket-meta">
+                <span><i class="ti ti-calendar"></i> Ontem, 18h</span>
+                <span><i class="ti ti-tag"></i> Técnico</span>
+                <span><i class="ti ti-message-circle"></i> 2 mensagens</span>
+              </div>
+            </div>
+
+            <div class="ticket-card" onclick="verTicket(this,'Dúvida sobre Meta Ads','Qual o orçamento mínimo recomendado para começar a escalar campanhas no Meta Ads?','Respondido')">
+              <div class="ticket-hd">
+                <div class="ticket-title">Dúvida sobre Meta Ads</div>
+                <span class="ticket-status ts-answered">Respondido</span>
+              </div>
+              <div class="ticket-preview">Qual o orçamento mínimo para começar a escalar?</div>
+              <div class="ticket-meta">
+                <span><i class="ti ti-calendar"></i> 3 dias atrás</span>
+                <span><i class="ti ti-tag"></i> Conteúdo</span>
+                <span><i class="ti ti-message-circle"></i> 4 mensagens</span>
+              </div>
+            </div>
+
+            <div class="ticket-card" onclick="verTicket(this,'Certificado de conclusão','Quando finalizei o Módulo 1, o certificado é gerado automaticamente?','Fechado')">
+              <div class="ticket-hd">
+                <div class="ticket-title">Certificado de conclusão</div>
+                <span class="ticket-status ts-closed">Fechado</span>
+              </div>
+              <div class="ticket-preview">Quando finalizei o Módulo 1, o certificado é gerado...</div>
+              <div class="ticket-meta">
+                <span><i class="ti ti-calendar"></i> 1 semana atrás</span>
+                <span><i class="ti ti-tag"></i> Geral</span>
+                <span><i class="ti ti-message-circle"></i> 3 mensagens</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- NOVO TICKET -->
+          <div class="tab-content" id="tab-novo">
+            <div class="form-card">
+              <div class="form-title"><i class="ti ti-ticket" style="font-size:17px;color:var(--cyan);"></i> Abrir novo ticket</div>
+              <div class="field">
+                <label class="field-label">Assunto</label>
+                <input class="field-input" type="text" placeholder="Descreva brevemente sua dúvida..."/>
+              </div>
+              <div class="field">
+                <label class="field-label">Categoria</label>
+                <select class="field-select">
+                  <option>Dúvida sobre conteúdo</option>
+                  <option>Problema técnico</option>
+                  <option>Acesso bloqueado ou negado</option>
+                  <option>Download de material</option>
+                  <option>Sugestão ou feedback</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label">Módulo relacionado</label>
+                <select class="field-select">
+                  <option>Não se aplica</option>
+                  <option>Módulo 1 — Fundamentos</option>
+                  <option>Módulo 2 — Tráfego</option>
+                  <option>Módulo 3 — Performance</option>
+                  <option>Módulo 4 — Resultados</option>
+                  <option>Bônus</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label">Mensagem</label>
+                <textarea class="field-textarea" placeholder="Explique sua dúvida em detalhes. Quanto mais informações, mais rápido podemos te ajudar!"></textarea>
+              </div>
+              <button class="btn-submit" onclick="enviarTicket()">
+                <i class="ti ti-send" style="font-size:15px;"></i> Enviar ticket
+              </button>
+            </div>
+          </div>
+
+          <!-- DETALHE DO TICKET -->
+          <div class="ticket-detail" id="ticket-detail">
+            <div class="td-header">
+              <div>
+                <div class="td-title" id="td-titulo">Acesso ao Módulo 3</div>
+                <span class="ticket-status ts-open" id="td-status" style="margin-top:5px;display:inline-block;">Aberto</span>
+              </div>
+              <div class="btn-back" onclick="fecharDetalhe()"><i class="ti ti-arrow-left" style="font-size:15px;"></i> Voltar</div>
+            </div>
+
+            <div id="td-msgs">
+              <div class="msg-row">
+                <div class="msg-av" style="background:var(--g1);">JS</div>
+                <div class="msg-bubble">
+                  <div class="msg-author">Você <span>Hoje, 14:30</span></div>
+                  <div class="msg-text" id="td-msg-text">Olá! Queria saber quando o Módulo 3 será liberado para mim. Já concluí 50% do Módulo 2.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="reply-area">
+              <textarea class="reply-input" placeholder="Escreva sua resposta ou atualização..."></textarea>
+              <button class="btn-submit" style="width:auto;padding:9px 20px;" onclick="enviarResposta()">
+                <i class="ti ti-send" style="font-size:14px;"></i> Enviar
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div class="right-col">
+
+          <!-- TEMPO DE RESPOSTA -->
+          <div class="tempo-card">
+            <div class="tempo-title">⏱ Tempo de resposta</div>
+            <div class="tempo-item">
+              <div class="tempo-ico" style="background:rgba(37,211,102,0.12);color:#25d366;"><i class="ti ti-brand-whatsapp"></i></div>
+              <div><div class="tempo-canal">WhatsApp VIP</div><div class="tempo-prazo">Em até 24h úteis</div></div>
+              <span class="tempo-badge tb-fast">Rápido</span>
+            </div>
+            <div class="tempo-item">
+              <div class="tempo-ico" style="background:rgba(0,136,204,0.12);color:#0088cc;"><i class="ti ti-brand-telegram"></i></div>
+              <div><div class="tempo-canal">Grupo Telegram</div><div class="tempo-prazo">Resposta da comunidade</div></div>
+              <span class="tempo-badge tb-fast">Rápido</span>
+            </div>
+            <div class="tempo-item">
+              <div class="tempo-ico" style="background:rgba(0,200,255,0.12);color:var(--cyan);"><i class="ti ti-ticket"></i></div>
+              <div><div class="tempo-canal">Ticket de suporte</div><div class="tempo-prazo">Em até 48h úteis</div></div>
+              <span class="tempo-badge tb-mid">Médio</span>
+            </div>
+            <div class="tempo-item">
+              <div class="tempo-ico" style="background:rgba(0,200,255,0.12);color:var(--cyan);"><i class="ti ti-mail"></i></div>
+              <div><div class="tempo-canal">E-mail</div><div class="tempo-prazo">Em até 72h úteis</div></div>
+              <span class="tempo-badge tb-mid">Médio</span>
+            </div>
+          </div>
+
+          <!-- FAQ -->
+          <div class="faq-card">
+            <div class="faq-title"><i class="ti ti-help-circle" style="font-size:17px;color:var(--cyan);"></i> Perguntas frequentes</div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Como liberar o próximo módulo?<i class="ti ti-chevron-down faq-chevron"></i></div>
+              <div class="faq-a">Os módulos são liberados progressivamente conforme você avança. Conclua pelo menos 80% do módulo atual para desbloquear o próximo automaticamente.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Por quanto tempo tenho acesso?<i class="ti ti-chevron-down faq-chevron"></i></div>
+              <div class="faq-a">Seu acesso é vitalício! Uma vez liberado, o conteúdo fica disponível para você para sempre, incluindo todas as futuras atualizações e novos módulos.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Posso baixar os vídeos?<i class="ti ti-chevron-down faq-chevron"></i></div>
+              <div class="faq-a">Por questões de segurança os vídeos não estão disponíveis para download direto, mas você pode assistir em qualquer dispositivo com internet a qualquer hora.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Esqueci minha senha, o que fazer?<i class="ti ti-chevron-down faq-chevron"></i></div>
+              <div class="faq-a">Na tela de login, clique em "Esqueci minha senha" e insira seu e-mail. Você receberá um link de recuperação em poucos minutos. Verifique também o spam.</div>
+            </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">Os materiais ficam disponíveis para sempre?<i class="ti ti-chevron-down faq-chevron"></i></div>
+              <div class="faq-a">Sim! Todos os materiais para download ficam disponíveis permanentemente na sua área de membros, sem prazo de expiração.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // TABS
+  function showTab(tab, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('ticket-detail').classList.remove('show');
+  }
+
+  // VER TICKET
+  function verTicket(card, titulo, msg, status) {
+    document.querySelectorAll('.ticket-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+
+    document.getElementById('td-titulo').textContent = titulo;
+    document.getElementById('td-msg-text').textContent = msg;
+
+    const statusEl = document.getElementById('td-status');
+    statusEl.textContent = status;
+    statusEl.className = 'ticket-status';
+    if(status === 'Aberto') statusEl.classList.add('ts-open');
+    else if(status === 'Pendente') statusEl.classList.add('ts-pending');
+    else if(status === 'Respondido') statusEl.classList.add('ts-answered');
+    else statusEl.classList.add('ts-closed');
+
+    document.getElementById('ticket-detail').classList.add('show');
+    document.getElementById('tab-tickets').style.display = 'none';
+  }
+
+  function fecharDetalhe() {
+    document.getElementById('ticket-detail').classList.remove('show');
+    document.getElementById('tab-tickets').style.display = 'block';
+    document.querySelectorAll('.ticket-card').forEach(c => c.classList.remove('selected'));
+  }
+
+  // ENVIAR TICKET
+  function enviarTicket() {
+    alert('✅ Ticket enviado com sucesso! Você receberá uma resposta em até 48h úteis.');
+    showTab('tickets', document.querySelector('.tab'));
+    document.querySelector('.tab').classList.add('active');
+  }
+
+  // ENVIAR RESPOSTA
+  function enviarResposta() {
+    const input = document.querySelector('.reply-input');
+    const txt = input.value.trim();
+    if(!txt) return;
+    const msgs = document.getElementById('td-msgs');
+    const div = document.createElement('div');
+    div.className = 'msg-row';
+    div.innerHTML = `<div class="msg-av" style="background:var(--g1);">JS</div><div class="msg-bubble"><div class="msg-author">Você <span>Agora</span></div><div class="msg-text">${txt}</div></div>`;
+    msgs.appendChild(div);
+    input.value = '';
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  // FAQ
+  function toggleFaq(item) {
+    const a = item.querySelector('.faq-a');
+    const c = item.querySelector('.faq-chevron');
+    a.classList.toggle('open');
+    c.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
