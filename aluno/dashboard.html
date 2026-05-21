@@ -247,31 +247,20 @@
       <div class="bottom-grid">
         <div class="card" style="animation-delay:.28s;">
           <div class="card-hd"><span class="card-title">📚 Próximas aulas</span><a class="card-link" href="modulos.html">Ver todas</a></div>
-          <a class="nav-link-item" href="aulas.html">
-            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
-            <div class="nli-info"><div class="nli-name">Estratégias de Escala</div><div class="nli-meta">28min · Em andamento</div><div class="nli-bar"><div class="nli-fill" style="width:58%;background:var(--cyan);"></div></div></div>
-          </a>
-          <a class="nav-link-item" href="aulas.html">
-            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
-            <div class="nli-info"><div class="nli-name">Automação de Processos</div><div class="nli-meta">35min · Disponível</div></div>
-          </a>
-          <a class="nav-link-item" href="aulas.html">
-            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
-            <div class="nli-info"><div class="nli-name">Copywriting de Conversão</div><div class="nli-meta">41min · Disponível</div></div>
-          </a>
-          <a class="nav-link-item" href="modulos.html" style="opacity:.5;">
-            <div class="nli-num" style="background:rgba(255,255,255,0.05);color:var(--text3);">M3</div>
-            <div class="nli-info"><div class="nli-name" style="color:var(--text3);">Mindset de Alta Performance</div><div class="nli-meta"><i class="ti ti-lock" style="font-size:10px;"></i> Bloqueado</div></div>
-          </a>
+          <div style="text-align:center;padding:20px;color:var(--text3);">
+            <i class="ti ti-player-play" style="font-size:28px;display:block;margin-bottom:8px;"></i>
+            <p style="font-size:12px;">Nenhuma aula disponível ainda.</p>
+            <a href="modulos.html" style="font-size:11px;color:var(--cyan);font-weight:600;text-decoration:none;display:inline-block;margin-top:6px;">Ver módulos →</a>
+          </div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div class="card" style="animation-delay:.32s;">
             <div class="card-hd"><span class="card-title">⚡ Atividade recente</span><a class="card-link" href="#">Ver tudo</a></div>
-            <div class="act-row"><div class="act-ico ai-g"><i class="ti ti-circle-check"></i></div><div><div class="act-txt">Aula concluída — <span>Fundamentos do Tráfego</span></div><div class="act-time">2h atrás</div></div></div>
-            <div class="act-row"><div class="act-ico ai-p"><i class="ti ti-download"></i></div><div><div class="act-txt">Download — <span>Planilha de Metas 2025</span></div><div class="act-time">5h atrás</div></div></div>
-            <div class="act-row"><div class="act-ico ai-b"><i class="ti ti-message-circle"></i></div><div><div class="act-txt">Ticket #042 <span>respondido pelo mentor</span></div><div class="act-time">1 dia atrás</div></div></div>
-            <div class="act-row"><div class="act-ico ai-y"><i class="ti ti-trophy"></i></div><div><div class="act-txt">Módulo 1 <span>finalizado com 100%</span></div><div class="act-time">3 dias atrás</div></div></div>
+            
+            
+            
+            
           </div>
           <div class="card" style="animation-delay:.36s;">
             <div class="card-hd"><span class="card-title">🏆 Conquistas</span></div>
@@ -319,8 +308,8 @@
     data:{
       labels:['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
       datasets:[
-        {label:'Aulas',data:[1,3,2,4,3,2,3],borderColor:'#00c8ff',backgroundColor:'rgba(0,200,255,0.08)',borderWidth:2.5,pointBackgroundColor:'#00c8ff',pointRadius:4,pointHoverRadius:6,tension:.4,fill:true},
-        {label:'Horas',data:[0.5,1.5,1,2,1.5,1,1.5],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,0.05)',borderWidth:2,pointBackgroundColor:'#00e5a0',pointRadius:3,pointHoverRadius:5,tension:.4,fill:true}
+        {label:'Aulas',data:[0,0,0,0,0,0,0],borderColor:'#00c8ff',backgroundColor:'rgba(0,200,255,0.08)',borderWidth:2.5,pointBackgroundColor:'#00c8ff',pointRadius:4,pointHoverRadius:6,tension:.4,fill:true},
+        {label:'Horas',data:[0,0,0,0,0,0,0],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,0.05)',borderWidth:2,pointBackgroundColor:'#00e5a0',pointRadius:3,pointHoverRadius:5,tension:.4,fill:true}
       ]
     },
     options:{
@@ -344,8 +333,8 @@
       options:{responsive:false,cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{animateRotate:true,duration:1000}}
     });
   }
-  radial('r1',100,'#00e5a0');
-  radial('r2',50,'#00c8ff');
+  radial('r1',0,'#4a5270');
+  radial('r2',0,'#4a5270');
   radial('r3',0,'#4a5270');
   radial('r4',0,'#4a5270');
 </script>
