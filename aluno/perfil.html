@@ -94,6 +94,16 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 </style>
 </head>
 <body>
+<script>
+// Limpar dados de exemplo do localStorage
+(function(){
+  var chaves = ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado'];
+  if (!localStorage.getItem('il_limpo_v2')) {
+    chaves.forEach(function(k){ localStorage.removeItem(k); });
+    localStorage.setItem('il_limpo_v2','1');
+  }
+})();
+</script>
 <div class="layout">
   <aside class="sidebar">
     <div class="logo-area">

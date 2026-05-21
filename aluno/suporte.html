@@ -171,6 +171,16 @@
 <script src="auth.js"></script>
 </head>
 <body>
+<script>
+// Limpar dados de exemplo do localStorage
+(function(){
+  var chaves = ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado'];
+  if (!localStorage.getItem('il_limpo_v2')) {
+    chaves.forEach(function(k){ localStorage.removeItem(k); });
+    localStorage.setItem('il_limpo_v2','1');
+  }
+})();
+</script>
 <div class="layout">
 
   <!-- SIDEBAR -->
@@ -276,57 +286,13 @@
           <!-- MEUS TICKETS -->
           <div class="tab-content active" id="tab-tickets">
 
-            <div class="ticket-card selected" onclick="verTicket(this,'Acesso ao Módulo 3','Olá! Queria saber quando o Módulo 3 será liberado para mim. Já concluí 50% do Módulo 2.','Aberto')">
-              <div class="ticket-hd">
-                <div class="ticket-title">Acesso ao Módulo 3</div>
-                <span class="ticket-status ts-open">Aberto</span>
-              </div>
-              <div class="ticket-preview">Olá! Queria saber quando o Módulo 3 será liberado para mim...</div>
-              <div class="ticket-meta">
-                <span><i class="ti ti-calendar"></i> Hoje, 14:30</span>
-                <span><i class="ti ti-tag"></i> Acesso</span>
-                <span><i class="ti ti-message-circle"></i> 1 mensagem</span>
-              </div>
-            </div>
+            
 
-            <div class="ticket-card" onclick="verTicket(this,'Problema no download','O arquivo de templates não está abrindo corretamente no meu computador. Já tentei reinstalar...','Pendente')">
-              <div class="ticket-hd">
-                <div class="ticket-title">Problema no download</div>
-                <span class="ticket-status ts-pending">Pendente</span>
-              </div>
-              <div class="ticket-preview">O arquivo de templates não está abrindo corretamente...</div>
-              <div class="ticket-meta">
-                <span><i class="ti ti-calendar"></i> Ontem, 18h</span>
-                <span><i class="ti ti-tag"></i> Técnico</span>
-                <span><i class="ti ti-message-circle"></i> 2 mensagens</span>
-              </div>
-            </div>
+            
 
-            <div class="ticket-card" onclick="verTicket(this,'Dúvida sobre Meta Ads','Qual o orçamento mínimo recomendado para começar a escalar campanhas no Meta Ads?','Respondido')">
-              <div class="ticket-hd">
-                <div class="ticket-title">Dúvida sobre Meta Ads</div>
-                <span class="ticket-status ts-answered">Respondido</span>
-              </div>
-              <div class="ticket-preview">Qual o orçamento mínimo para começar a escalar?</div>
-              <div class="ticket-meta">
-                <span><i class="ti ti-calendar"></i> 3 dias atrás</span>
-                <span><i class="ti ti-tag"></i> Conteúdo</span>
-                <span><i class="ti ti-message-circle"></i> 4 mensagens</span>
-              </div>
-            </div>
+            
 
-            <div class="ticket-card" onclick="verTicket(this,'Certificado de conclusão','Quando finalizei o Módulo 1, o certificado é gerado automaticamente?','Fechado')">
-              <div class="ticket-hd">
-                <div class="ticket-title">Certificado de conclusão</div>
-                <span class="ticket-status ts-closed">Fechado</span>
-              </div>
-              <div class="ticket-preview">Quando finalizei o Módulo 1, o certificado é gerado...</div>
-              <div class="ticket-meta">
-                <span><i class="ti ti-calendar"></i> 1 semana atrás</span>
-                <span><i class="ti ti-tag"></i> Geral</span>
-                <span><i class="ti ti-message-circle"></i> 3 mensagens</span>
-              </div>
-            </div>
+            
 
           </div>
 
