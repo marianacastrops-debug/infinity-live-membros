@@ -254,16 +254,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:12px 18px;display:none;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text);z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
 .toast i{font-size:18px;color:var(--green);}
 
-/* MODAL CONFIRMAR EXCLUSÃO */
-.overlay-confirm{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(5px);z-index:9999;display:none;align-items:center;justify-content:center;}
-.overlay-confirm.open{display:flex;}
-  .overlay-confirm.aberto{display:flex;}
-.modal-confirm{background:var(--card);border:1px solid rgba(255,59,92,0.25);border-radius:14px;padding:28px;width:360px;text-align:center;}
-.modal-confirm-ico{width:56px;height:56px;border-radius:50%;background:rgba(255,59,92,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;}
-.modal-confirm-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.modal-confirm-msg{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;}
-.modal-confirm-btns{display:flex;gap:9px;}
-
 /* EMPTY STATE */
 .empty{text-align:center;padding:40px;color:var(--text3);}
 .empty i{font-size:36px;display:block;margin-bottom:10px;}
@@ -275,8 +265,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .info-box p{font-size:12px;color:var(--text2);line-height:1.5;}
 .info-box strong{color:var(--text);}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="admin-auth.js"></script>
 </head>
 <body>
 <div class="layout">
@@ -334,10 +322,10 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <!-- DASHBOARD -->
     <div class="page ativa" id="page-dashboard">
       <div class="grid4" style="margin-bottom:16px;">
-        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-users"></i></div><span class="stat-trend t1" id="st-alunos-trend">0</span></div><div class="stat-val" id="st-alunos">0</div><div class="stat-lbl">Alunos ativos</div></div>
-        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-eye"></i></div><span class="stat-trend t2" id="st-online-badge">0</span></div><div class="stat-val" id="st-online">0</div><div class="stat-lbl">Online agora</div></div>
-        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-message-circle"></i></div><span class="stat-trend t3" id="st-tickets-badge">0 abertos</span></div><div class="stat-val" id="st-tickets">0</div><div class="stat-lbl">Tickets</div></div>
-        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-stack"></i></div><span class="stat-trend t4" id="st-mods-badge">0</span></div><div class="stat-val" id="st-mods">0</div><div class="stat-lbl">Módulos</div></div>
+        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-users"></i></div><span class="stat-trend t1">+12</span></div><div class="stat-val" id="st-alunos">0</div><div class="stat-lbl">Alunos ativos</div></div>
+        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-eye"></i></div><span class="stat-trend t2" id="st-online-badge">17</span></div><div class="stat-val" id="st-online">17</div><div class="stat-lbl">Online agora</div></div>
+        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-message-circle"></i></div><span class="stat-trend t3">3 abertos</span></div><div class="stat-val">3</div><div class="stat-lbl">Tickets</div></div>
+        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-chart-bar"></i></div><span class="stat-trend t4">+5%</span></div><div class="stat-val">63%</div><div class="stat-lbl">Engajamento</div></div>
       </div>
       <div class="grid2">
         <div class="card">
@@ -375,14 +363,12 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <!-- TICKETS -->
     <div class="page" id="page-tickets">
       <div class="search-bar">
-        <div class="srch"><i class="ti ti-search"></i><input type="text" id="srch-ticket" placeholder="Buscar ticket..." oninput="filtrarTickets(this.value)"/></div>
-        <select class="fsel" id="fil-ticket" onchange="filtrarTickets(document.getElementById('srch-ticket').value)">
-          <option value="">Todos</option><option value="aberto">Abertos</option><option value="pendente">Pendentes</option><option value="respondido">Respondidos</option><option value="resolvido">Resolvidos</option>
-        </select>
-        <button class="btn btn-primary" onclick="abrirNovoTicket()"><i class="ti ti-plus" style="font-size:14px;"></i> Novo ticket</button>
+        <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Buscar ticket..."/></div>
+        <select class="fsel"><option>Todos</option><option>Abertos</option><option>Respondidos</option></select>
       </div>
-      <div id="tickets-lista"></div>
-      <div class="empty" id="empty-tickets" style="display:none;"><i class="ti ti-message-circle"></i><p style="font-size:13px;">Nenhum ticket ainda.</p></div>
+      <div class="tkt" onclick="mostrarToast('Abrindo ticket...')"><span class="tkt-num">#003</span><div class="tkt-info"><div class="tkt-title">Acesso ao Módulo 3</div><div class="tkt-user">João Silva</div></div><span class="sp sp-blk">Aberto</span><span class="tkt-time" style="margin-left:12px;">Hoje, 14h</span><button class="btn btn-primary btn-sm" style="margin-left:12px;" onclick="event.stopPropagation();mostrarToast('Respondendo ticket...')">Responder</button></div>
+      <div class="tkt" onclick="mostrarToast('Abrindo ticket...')"><span class="tkt-num">#002</span><div class="tkt-info"><div class="tkt-title">Problema no download</div><div class="tkt-user">Maria Oliveira</div></div><span class="sp" style="background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);">Pendente</span><span class="tkt-time" style="margin-left:12px;">Hoje, 11h</span><button class="btn btn-primary btn-sm" style="margin-left:12px;" onclick="event.stopPropagation();mostrarToast('Respondendo ticket...')">Responder</button></div>
+      <div class="tkt" onclick="mostrarToast('Abrindo ticket...')"><span class="tkt-num">#001</span><div class="tkt-info"><div class="tkt-title">Dúvida sobre Meta Ads</div><div class="tkt-user">Carlos Lima</div></div><span class="sp sp-ok">Respondido</span><span class="tkt-time" style="margin-left:12px;">Ontem</span><button class="btn btn-outline btn-sm" style="margin-left:12px;" onclick="event.stopPropagation();">Ver</button></div>
     </div>
 
     <!-- MÓDULOS E AULAS -->
@@ -416,9 +402,9 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
         <div style="font-size:14px;font-weight:700;color:var(--text);">Materiais para download</div>
         <button class="btn btn-primary" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
       </div>
-      <div class="mat-row"><div class="mat-ico mi-pdf"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Guia de Tráfego Pago</div><div class="mat-meta">PDF · 8.4 MB · 187 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">187 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="excluirMaterial(this.closest('.mat-row').querySelector('.mat-name').textContent, this)"><i class="ti ti-trash"></i></button></div></div>
-      <div class="mat-row"><div class="mat-ico mi-xls"><i class="ti ti-table"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Planilha de Metas 2025</div><div class="mat-meta">XLSX · 1.2 MB · 243 downloads</div></div><span class="mat-mod">Geral</span><span class="mat-dl">243 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="excluirMaterial(this.closest('.mat-row').querySelector('.mat-name').textContent, this)"><i class="ti ti-trash"></i></button></div></div>
-      <div class="mat-row"><div class="mat-ico mi-zip"><i class="ti ti-file-zip"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Pack de Templates</div><div class="mat-meta">ZIP · 124 MB · 156 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">156 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="excluirMaterial(this.closest('.mat-row').querySelector('.mat-name').textContent, this)"><i class="ti ti-trash"></i></button></div></div>
+      <div class="mat-row"><div class="mat-ico mi-pdf"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Guia de Tráfego Pago</div><div class="mat-meta">PDF · 8.4 MB · 187 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">187 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
+      <div class="mat-row"><div class="mat-ico mi-xls"><i class="ti ti-table"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Planilha de Metas 2025</div><div class="mat-meta">XLSX · 1.2 MB · 243 downloads</div></div><span class="mat-mod">Geral</span><span class="mat-dl">243 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
+      <div class="mat-row"><div class="mat-ico mi-zip"><i class="ti ti-file-zip"></i></div><div style="flex:1;min-width:0;"><div class="mat-name">Pack de Templates</div><div class="mat-meta">ZIP · 124 MB · 156 downloads</div></div><span class="mat-mod">Módulo 2</span><span class="mat-dl">156 DL</span><div style="display:flex;gap:5px;"><button class="ab ab-e" onclick="mostrarToast('Editando...')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="mostrarToast('Removido!')"><i class="ti ti-trash"></i></button></div></div>
     </div>
 
     <!-- CONFIG -->
@@ -562,7 +548,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div style="flex:1;"><div id="perf-nome" style="font-size:15px;font-weight:700;color:var(--text);">João Silva</div><div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:2px;">joao@email.com</div><span id="perf-status" class="sp sp-ok" style="display:inline-block;margin-top:5px;">Ativo</span></div>
       <div style="display:flex;gap:7px;">
         <button class="btn btn-danger btn-sm" id="btn-bloquear" onclick="alternarBloqueio()"><i class="ti ti-user-off" style="font-size:13px;"></i> Bloquear</button>
-        <button class="btn btn-sm" style="background:rgba(255,59,92,0.1);color:var(--red);border:1px solid rgba(255,59,92,0.2);" onclick="excluirAlunoDoModal()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
         <button class="btn btn-outline btn-sm" onclick="fecharModal('modal-perfil')">Fechar</button>
       </div>
     </div>
@@ -590,26 +575,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="mfooter">
       <button class="btn btn-primary" style="flex:1;" onclick="mostrarToast('Material salvo!');fecharModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Publicar</button>
       <button class="btn btn-outline" onclick="fecharModal('modal-material')">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL TICKET -->
-<div class="overlay" id="modal-ticket">
-  <div class="modal" style="width:560px;">
-    <div id="modal-ticket-body"></div>
-  </div>
-</div>
-
-<!-- MODAL CONFIRMAR EXCLUSÃO -->
-<div class="overlay-confirm" id="overlay-confirm">
-  <div class="modal-confirm">
-    <div class="modal-confirm-ico"><i class="ti ti-alert-triangle"></i></div>
-    <div class="modal-confirm-title" id="confirm-title">Confirmar exclusão</div>
-    <div class="modal-confirm-msg" id="confirm-msg">Tem certeza? Esta ação não pode ser desfeita.</div>
-    <div class="modal-confirm-btns">
-      <button class="btn btn-danger" style="flex:1;" id="confirm-ok-btn" onclick="executarConfirm()"><i class="ti ti-trash" style="font-size:14px;"></i> Excluir</button>
-      <button class="btn btn-outline" onclick="fecharConfirm()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -878,31 +843,18 @@ function salvarAula() {
 function excluirAula() {
   var id = document.getElementById('aula-id').value;
   var nome = document.getElementById('aula-nome').value;
-  if (!id) return;
+  if (!id || !confirm('Excluir a aula "' + nome + '"?')) return;
+  setAulas(getAulas().filter(function(a){ return a.id !== id; }));
   fecharModal('modal-aula');
-  confirmar(
-    'Excluir aula',
-    'Excluir a aula "' + nome + '"? Esta ação não pode ser desfeita.',
-    function() {
-      setAulas(getAulas().filter(function(a){ return a.id !== id; }));
-      renderMods();
-      mostrarToast('Aula removida.');
-    },
-    'Excluir aula'
-  );
+  renderMods();
+  mostrarToast('Aula removida.');
 }
 
 function delAula(id, nome) {
-  confirmar(
-    'Excluir aula',
-    'Excluir a aula "' + nome + '"? Esta ação não pode ser desfeita.',
-    function() {
-      setAulas(getAulas().filter(function(a){ return a.id !== id; }));
-      renderMods();
-      mostrarToast('Aula removida.');
-    },
-    'Excluir aula'
-  );
+  if (!confirm('Excluir a aula "' + nome + '"?')) return;
+  setAulas(getAulas().filter(function(a){ return a.id !== id; }));
+  renderMods();
+  mostrarToast('Aula removida.');
 }
 
 // ================================================
@@ -1021,24 +973,6 @@ function verPerfil(id) {
   abrirModal('modal-perfil');
 }
 
-function excluirAlunoDoModal() {
-  var id = document.getElementById('perf-av').dataset.alunoId;
-  var nome = document.getElementById('perf-nome').textContent;
-  fecharModal('modal-perfil');
-  confirmar(
-    'Excluir aluno',
-    'Excluir "' + nome + '" permanentemente? O acesso será removido.',
-    function() {
-      var alunos = getAlunos().filter(function(a){ return a.id !== id; });
-      setAlunos(alunos);
-      renderAlunos(alunos);
-      atualizarStats();
-      mostrarToast('Aluno excluído.');
-    },
-    'Excluir aluno'
-  );
-}
-
 function alternarBloqueio() {
   var id = document.getElementById('perf-av').dataset.alunoId;
   var alunos = getAlunos();
@@ -1154,231 +1088,6 @@ function mostrarToast(msg, erro) {
 }
 
 // ================================================
-// ── CONFIRMAÇÃO DE EXCLUSÃO GENÉRICA ──
-var _confirmCallback = null;
-
-function confirmar(titulo, msg, callback, btnTxt) {
-  document.getElementById('confirm-title').textContent = titulo || 'Confirmar exclusão';
-  document.getElementById('confirm-msg').textContent = msg || 'Tem certeza? Esta ação não pode ser desfeita.';
-  document.getElementById('confirm-ok-btn').innerHTML = '<i class="ti ti-trash" style="font-size:14px;"></i> ' + (btnTxt || 'Excluir');
-  _confirmCallback = callback;
-  document.getElementById('overlay-confirm').classList.add('aberto');
-}
-
-function fecharConfirm() {
-  document.getElementById('overlay-confirm').classList.remove('aberto');
-  _confirmCallback = null;
-}
-
-function executarConfirm() {
-  if (_confirmCallback) _confirmCallback();
-  fecharConfirm();
-}
-
-// Fechar ao clicar fora
-if (document.getElementById('overlay-confirm')) {
-  document.getElementById('overlay-confirm').addEventListener('click', function(e) {
-    if (e.target === this) fecharConfirm();
-  });
-}
-
-// ── EXCLUIR ALUNO ──
-function confirmarExcluirAluno(id, nome) {
-  confirmar(
-    'Excluir aluno',
-    'Tem certeza que deseja excluir o aluno "' + nome + '"? O acesso será removido permanentemente.',
-    function() { excluirAluno(id); },
-    'Excluir aluno'
-  );
-}
-
-function excluirAluno(id) {
-  var alunos = getAlunos().filter(function(a){ return a.id !== id; });
-  setAlunos(alunos);
-  renderAlunos(alunos);
-  atualizarStats();
-  mostrarToast('Aluno removido.');
-}
-
-// ── EXCLUIR MATERIAL (sobrescreve o toast fake) ──
-function excluirMaterial(nome, el) {
-  confirmar(
-    'Excluir material',
-    'Tem certeza que deseja remover "' + nome + '"?',
-    function() {
-      if (el) el.closest('.mat-row').remove();
-      mostrarToast('Material removido!');
-    },
-    'Excluir material'
-  );
-}
-
-// ══════════════════════════════════════
-// TICKETS
-// ══════════════════════════════════════
-var TK = 'il_tickets';
-function getTickets(){ try{return JSON.parse(localStorage.getItem(TK))||[];}catch(e){return [];} }
-function setTickets(d){ localStorage.setItem(TK,JSON.stringify(d)); }
-
-function renderTickets(lista) {
-  var el = document.getElementById('tickets-lista');
-  var empty = document.getElementById('empty-tickets');
-  if (!el) return;
-  if (!lista) lista = getTickets();
-  if (!lista.length) { el.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display='none';
-
-  var stColors = {
-    aberto:     'background:rgba(255,59,92,0.12);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2)',
-    pendente:   'background:rgba(255,184,0,0.12);color:#ffb800;border:1px solid rgba(255,184,0,0.2)',
-    respondido: 'background:rgba(0,229,160,0.12);color:#00e5a0;border:1px solid rgba(0,229,160,0.2)',
-    resolvido:  'background:rgba(255,255,255,0.06);color:#4a5270'
-  };
-  var stLabel = {aberto:'Aberto', pendente:'Pendente', respondido:'Respondido', resolvido:'Resolvido'};
-
-  el.innerHTML = lista.map(function(t, i) {
-    var st = t.status || 'aberto';
-    var num = '#' + String(lista.length - i).padStart(3,'0');
-    return '<div class="tkt" onclick="abrirTicket(''+t.id+'')">'+
-      '<span class="tkt-num">'+num+'</span>'+
-      '<div class="tkt-info"><div class="tkt-title">'+t.titulo+'</div><div class="tkt-user">'+t.aluno+'</div></div>'+
-      '<span class="sp" style="'+stColors[st]+'">'+stLabel[st]+'</span>'+
-      '<span class="tkt-time" style="margin-left:10px;">'+t.data+'</span>'+
-      (st !== 'resolvido'
-        ? '<button class="btn btn-primary btn-sm" style="margin-left:10px;" onclick="event.stopPropagation();responderTicket(''+t.id+'')">Responder</button>'
-        : '<button class="btn btn-outline btn-sm" style="margin-left:10px;" onclick="event.stopPropagation();abrirTicket(''+t.id+'')">Ver</button>'
-      )+
-      '<button class="btn btn-sm" style="margin-left:6px;background:rgba(255,59,92,0.08);color:var(--red);border:1px solid rgba(255,59,92,0.15);" onclick="event.stopPropagation();excluirTicket(''+t.id+'',''+t.titulo.replace(/'/g,"&#39;")+'')" title="Excluir"><i class="ti ti-trash" style="font-size:13px;"></i></button>'+
-    '</div>';
-  }).join('');
-  atualizarStats();
-}
-
-function filtrarTickets(q) {
-  var fil = document.getElementById('fil-ticket').value;
-  var todos = getTickets();
-  var lista = todos.filter(function(t) {
-    var matchQ = !q || t.titulo.toLowerCase().includes(q.toLowerCase()) || t.aluno.toLowerCase().includes(q.toLowerCase());
-    var matchF = !fil || t.status === fil;
-    return matchQ && matchF;
-  });
-  renderTickets(lista);
-}
-
-function abrirNovoTicket() {
-  var titulo = prompt('Título do ticket:');
-  if (!titulo) return;
-  var aluno = prompt('Nome do aluno:');
-  if (!aluno) return;
-  var tickets = getTickets();
-  tickets.unshift({
-    id: uid(),
-    titulo: titulo,
-    aluno: aluno,
-    status: 'aberto',
-    data: 'Agora',
-    msgs: []
-  });
-  setTickets(tickets);
-  renderTickets();
-  mostrarToast('Ticket criado!');
-}
-
-function abrirTicket(id) {
-  var t = getTickets().find(function(x){ return x.id===id; });
-  if (!t) return;
-  var msgs = (t.msgs||[]).map(function(m){
-    return '<div style="margin-bottom:10px;"><div style="font-size:10px;color:var(--text3);margin-bottom:3px;">'+m.autor+' · '+m.data+'</div>'+
-      '<div style="background:var(--card2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);">'+m.texto+'</div></div>';
-  }).join('') || '<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma mensagem ainda.</div>';
-
-  var html = '<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">'+
-    '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">'+t.titulo+'</div>'+
-    '<div style="font-size:12px;color:var(--text2);">'+t.aluno+' · '+t.data+'</div>'+
-  '</div>'+
-  '<div style="max-height:200px;overflow-y:auto;margin-bottom:14px;">'+msgs+'</div>'+
-  '<textarea id="tk-resp" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:80px;line-height:1.6;" placeholder="Escreva sua resposta..."></textarea>'+
-  '<div style="display:flex;gap:9px;margin-top:12px;">'+
-    '<button class="btn btn-primary" style="flex:1;" onclick="enviarResposta(''+id+'')"><i class="ti ti-send" style="font-size:14px;"></i> Enviar resposta</button>'+
-    '<select id="tk-status" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 12px;color:var(--text);font-family:inherit;font-size:12px;outline:none;">'+
-      '<option value="aberto"'+(t.status==='aberto'?' selected':'')+'>Aberto</option>'+
-      '<option value="pendente"'+(t.status==='pendente'?' selected':'')+'>Pendente</option>'+
-      '<option value="respondido"'+(t.status==='respondido'?' selected':'')+'>Respondido</option>'+
-      '<option value="resolvido"'+(t.status==='resolvido'?' selected':'')+'>Resolvido</option>'+
-    '</select>'+
-    '<button class="btn btn-outline" onclick="fecharModal('modal-ticket')">Fechar</button>'+
-  '</div>';
-
-  document.getElementById('modal-ticket-body').innerHTML = html;
-  document.getElementById('modal-ticket-body').dataset.ticketId = id;
-  abrirModal('modal-ticket');
-}
-
-function responderTicket(id) { abrirTicket(id); }
-
-function enviarResposta(id) {
-  var texto = document.getElementById('tk-resp').value.trim();
-  var novoStatus = document.getElementById('tk-status').value;
-  if (!texto && novoStatus === getTickets().find(function(x){return x.id===id;})?.status) {
-    mostrarToast('Digite uma resposta.', true); return;
-  }
-  var tickets = getTickets();
-  var t = tickets.find(function(x){ return x.id===id; });
-  if (!t) return;
-  if (texto) {
-    if (!t.msgs) t.msgs = [];
-    t.msgs.push({ autor: 'Mentor', texto: texto, data: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) });
-  }
-  t.status = novoStatus;
-  setTickets(tickets);
-  fecharModal('modal-ticket');
-  renderTickets();
-  mostrarToast('Resposta enviada!');
-}
-
-function excluirTicket(id, titulo) {
-  confirmar(
-    'Excluir ticket',
-    'Excluir o ticket "'+titulo+'"? Esta ação não pode ser desfeita.',
-    function() {
-      setTickets(getTickets().filter(function(t){ return t.id!==id; }));
-      renderTickets();
-      mostrarToast('Ticket excluído.');
-    },
-    'Excluir ticket'
-  );
-}
-
-// ══════════════════════════════════════
-// DASHBOARD DADOS REAIS
-// ══════════════════════════════════════
-function atualizarStats() {
-  var alunos  = getAlunos();
-  var mods    = getMods();
-  var aulas   = getAulas();
-  var tickets = getTickets();
-  var abertos = tickets.filter(function(t){ return t.status==='aberto'||t.status==='pendente'; }).length;
-
-  var elA = document.getElementById('st-alunos');
-  var elAt = document.getElementById('st-alunos-trend');
-  var elM = document.getElementById('st-mods');
-  var elMb = document.getElementById('st-mods-badge');
-  var elT = document.getElementById('st-tickets');
-  var elTb = document.getElementById('st-tickets-badge');
-  var elCnt = document.getElementById('cnt-alunos');
-
-  if (elA) elA.textContent = alunos.length;
-  if (elAt) elAt.textContent = '+'+alunos.length;
-  if (elM) elM.textContent = mods.length;
-  if (elMb) elMb.textContent = aulas.filter(function(a){return a.status!=='draft';}).length+' aulas';
-  if (elT) elT.textContent = tickets.length;
-  if (elTb) elTb.textContent = abertos+' aberto'+(abertos!==1?'s':'');
-  if (elCnt) elCnt.textContent = alunos.length;
-
-  // Top aulas
-  renderTopAulas();
-}
-
 // ONLINE ANIMADO
 // ================================================
 var onlineCount = 17;
@@ -1395,7 +1104,7 @@ setInterval(function() {
 // INICIALIZAR
 // ================================================
 (function init() {
-  // Limpar dados de exemplo na primeira vez
+  // Zerar dados de exemplo na primeira vez
   if (!localStorage.getItem('il_limpo_v2')) {
     ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado','il_pronto'].forEach(function(k){
       localStorage.removeItem(k);
