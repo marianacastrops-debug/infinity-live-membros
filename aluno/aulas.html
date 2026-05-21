@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Infinity Live — Dashboard</title>
+<title>Infinity Live — Aulas</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
@@ -16,143 +15,161 @@
     --border:rgba(255,255,255,0.07);--border-cyan:rgba(0,200,255,0.25);
     --g1:linear-gradient(135deg,#00c8ff,#3b7fff);
     --g3:linear-gradient(135deg,#ff4d8d,#ff8c42);
+    --g4:linear-gradient(135deg,#00e5a0,#00c8ff);
   }
   html,body{height:100%;overflow:hidden;}
   body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);}
   .layout{display:flex;height:100vh;}
-  .sidebar{width:245px;min-width:245px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+
+  /* ── NAV SIDEBAR ── */
+  .nav-sidebar{width:245px;min-width:245px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
   .logo-area{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:74px;}
   .logo-area img{width:128px;height:auto;object-fit:contain;}
   .logo-fallback{display:none;align-items:center;gap:10px;}
   .logo-icon{width:38px;height:38px;border-radius:10px;background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;}
   .logo-name{font-size:15px;font-weight:700;color:var(--text);}
-  .logo-sub{font-size:10px;color:var(--text2);}
+  .logo-sub{font-size:10px;color:var(--text2);margin-top:1px;}
+
   .nav-wrap{flex:1;padding:8px 10px;overflow-y:auto;}
-  .nav-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
+  .nav-wrap::-webkit-scrollbar{width:3px;}
+  .nav-wrap::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:3px;}
+  .nav-section-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
   .nav-item:hover{background:var(--hover);color:var(--text);}
   .nav-item.active{background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(59,127,255,0.1));color:#fff;font-weight:600;border:1px solid rgba(0,200,255,0.2);}
   .nav-item.active i{color:var(--cyan);}
   .nav-item i{font-size:18px;flex-shrink:0;}
   .nav-badge{margin-left:auto;background:var(--g3);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+
   .sidebar-bottom{padding:14px 10px;border-top:1px solid var(--border);}
-  .user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:background .15s;cursor:pointer;}
+  .user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;cursor:pointer;transition:background .15s;border:1px solid var(--border);}
   .user-row:hover{background:var(--card2);}
   .avatar{width:36px;height:36px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;}
   .user-name{font-size:13px;font-weight:600;color:var(--text);}
-  .user-role{font-size:10px;color:var(--cyan);font-weight:600;margin-top:1px;}
-  .logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;transition:all .15s;text-decoration:none;}
+  .user-role{font-size:10px;color:var(--cyan);margin-top:1px;font-weight:600;}
+  .logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;transition:all .15s;}
   .logout:hover{color:var(--pink);background:rgba(255,77,141,0.07);}
+
+  /* ── MAIN ── */
   .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-  .topbar{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-  .page-title{font-size:18px;font-weight:700;color:var(--text);}
+  .topbar{padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .page-title{font-size:17px;font-weight:700;color:var(--text);}
   .page-sub{font-size:12px;color:var(--text2);margin-top:2px;}
   .topbar-right{display:flex;align-items:center;gap:10px;}
-  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(--green);text-decoration:none;}
+  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(--green);}
   .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:18px;transition:all .15s;position:relative;text-decoration:none;}
+  .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:18px;transition:all .15s;position:relative;}
   .icon-btn:hover{border-color:var(--border-cyan);color:var(--cyan);}
   .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--pink);border-radius:50%;border:1.5px solid var(--bg2);}
-  .content{flex:1;overflow-y:auto;padding:20px 26px;}
-  .content::-webkit-scrollbar{width:4px;}
-  .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
 
-  /* BANNER */
-  .banner{display:flex;align-items:center;justify-content:space-between;gap:20px;background:var(--card);border:1px solid rgba(0,200,255,0.2);border-radius:14px;padding:20px 24px;margin-bottom:18px;position:relative;overflow:hidden;text-decoration:none;transition:border-color .18s;animation:fadeUp .4s ease both;}
-  .banner:hover{border-color:rgba(0,200,255,0.4);}
-  .banner::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--g1);}
-  .banner-glow{position:absolute;right:-30px;top:-30px;width:160px;height:160px;background:radial-gradient(circle,rgba(0,200,255,0.07),transparent 70%);pointer-events:none;}
-  .banner h2{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
-  .banner p{font-size:12px;color:var(--text2);line-height:1.6;}
-  .banner-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.2);color:var(--cyan);padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;margin-top:8px;}
-  .btn-play{background:var(--g1);color:#fff;font-weight:700;font-size:12px;padding:10px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:opacity .15s;flex-shrink:0;text-decoration:none;}
-  .btn-play:hover{opacity:.88;}
+  /* ── AULAS LAYOUT ── */
+  .aulas-body{flex:1;display:flex;overflow:hidden;}
 
-  /* STATS */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px;}
-  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .2s;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
-  .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
-  .s1::before{background:var(--g1);}
-  .s2::before{background:linear-gradient(90deg,var(--green),var(--cyan));}
-  .s3::before{background:var(--g3);}
-  .s4::before{background:linear-gradient(90deg,var(--yellow),#ff8c42);}
-  .stat:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.13);}
-  .stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-  .stat-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
-  .si1{background:rgba(0,200,255,0.12);color:var(--cyan);}
-  .si2{background:rgba(0,229,160,0.12);color:var(--green);}
-  .si3{background:rgba(255,77,141,0.12);color:var(--pink);}
-  .si4{background:rgba(255,184,0,0.12);color:var(--yellow);}
-  .stat-trend{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
-  .t1{color:var(--cyan);background:rgba(0,200,255,0.1);}
-  .t2{color:var(--green);background:rgba(0,229,160,0.1);}
-  .t3{color:var(--pink);background:rgba(255,77,141,0.1);}
-  .t4{color:var(--yellow);background:rgba(255,184,0,0.1);}
-  .stat-val{font-size:26px;font-weight:800;color:var(--text);line-height:1;}
-  .stat-lbl{font-size:11px;color:var(--text2);margin-top:3px;font-weight:500;}
+  /* MÓDULOS SIDEBAR */
+  .modulos-sidebar{width:320px;min-width:320px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+  .mod-sidebar-header{padding:16px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .mod-sidebar-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+  .prog-mini-track{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+  .prog-mini-fill{height:5px;border-radius:3px;background:var(--g1);width:42%;}
+  .prog-mini-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:5px;}
 
-  /* CHARTS GRID */
-  .charts-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:16px;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;animation:fadeUp .4s ease both;}
-  .card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .card-title{font-size:13px;font-weight:700;color:var(--text);}
-  .card-link{font-size:11px;font-weight:600;color:var(--cyan);text-decoration:none;cursor:pointer;}
-  .card-link:hover{opacity:.8;}
+  .modulos-list{flex:1;overflow-y:auto;padding:10px 0;}
+  .modulos-list::-webkit-scrollbar{width:3px;}
+  .modulos-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:3px;}
 
-  /* RADIAL */
-  .radials{display:flex;align-items:center;justify-content:space-around;padding:4px 0;}
-  .rad-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
-  .rad-wrap{position:relative;width:76px;height:76px;}
-  .rad-wrap canvas{position:absolute;top:0;left:0;}
-  .rad-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-  .rad-pct{font-size:14px;font-weight:800;}
-  .rad-name{font-size:10px;font-weight:600;}
+  /* Módulo bloco */
+  .modulo-bloco{border-bottom:1px solid var(--border);}
+  .modulo-header{display:flex;align-items:center;gap:12px;padding:12px 18px;cursor:pointer;transition:background .15s;}
+  .modulo-header:hover{background:var(--hover);}
+  .mod-badge{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+  .mb1{background:linear-gradient(135deg,rgba(0,229,160,0.2),rgba(0,200,255,0.15));color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+  .mb2{background:linear-gradient(135deg,rgba(0,200,255,0.2),rgba(59,127,255,0.15));color:var(--cyan);border:1px solid rgba(0,200,255,0.2);}
+  .mb3{background:rgba(255,255,255,0.05);color:var(--text3);border:1px solid var(--border);}
+  .mb4{background:rgba(255,255,255,0.05);color:var(--text3);border:1px solid var(--border);}
+  .mod-info{flex:1;min-width:0;}
+  .mod-name{font-size:13px;font-weight:600;color:var(--text);}
+  .mod-meta{font-size:11px;color:var(--text2);margin-top:2px;}
+  .mod-prog-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:5px;}
+  .mod-prog-fill{height:3px;border-radius:2px;}
+  .mpf1{background:var(--green);}
+  .mpf2{background:var(--cyan);}
+  .chevron{font-size:16px;color:var(--text3);transition:transform .2s;flex-shrink:0;}
+  .chevron.open{transform:rotate(180deg);}
 
-  /* BOTTOM GRID */
-  .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .nav-link-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);text-decoration:none;transition:all .15s;}
-  .nav-link-item:hover .nli-name{color:var(--cyan);}
-  .nav-link-item:last-child{border-bottom:none;}
-  .nli-num{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
-  .nli-info{flex:1;min-width:0;}
-  .nli-name{font-size:12px;font-weight:600;color:var(--text);transition:color .15s;}
-  .nli-meta{font-size:10px;color:var(--text2);margin-top:2px;}
-  .nli-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:4px;}
-  .nli-fill{height:3px;border-radius:2px;}
+  /* Aulas lista */
+  .aulas-list{padding:4px 0 8px;}
+  .aula-item{display:flex;align-items:center;gap:10px;padding:9px 18px 9px 28px;cursor:pointer;transition:background .15s;border-left:2px solid transparent;}
+  .aula-item:hover{background:var(--hover);}
+  .aula-item.playing{background:linear-gradient(90deg,rgba(0,200,255,0.08),transparent);border-left-color:var(--cyan);}
+  .aula-item.done .aula-name{color:var(--text2);}
+  .play-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+  .pc-done{background:rgba(0,229,160,0.15);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+  .pc-play{background:rgba(0,200,255,0.15);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);}
+  .pc-lock{background:rgba(255,255,255,0.05);color:var(--text3);}
+  .aula-name{font-size:12.5px;font-weight:500;color:var(--text);flex:1;}
+  .aula-dur{font-size:11px;color:var(--text3);white-space:nowrap;}
+  .playing-tag{font-size:9px;font-weight:700;background:rgba(0,200,255,0.15);color:var(--cyan);padding:2px 7px;border-radius:5px;border:1px solid rgba(0,200,255,0.2);}
 
-  .act-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-  .act-row:last-child{border-bottom:none;}
-  .act-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-  .ai-g{background:rgba(0,229,160,0.12);color:var(--green);}
-  .ai-p{background:rgba(255,77,141,0.12);color:var(--pink);}
-  .ai-b{background:rgba(0,200,255,0.12);color:var(--cyan);}
-  .ai-y{background:rgba(255,184,0,0.12);color:var(--yellow);}
-  .act-txt{font-size:11px;font-weight:500;color:var(--text);line-height:1.5;}
-  .act-txt span{color:var(--text2);}
-  .act-time{font-size:10px;color:var(--text3);margin-top:1px;}
+  /* PLAYER AREA */
+  .player-area{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
 
-  .conq-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-  .conq-row:last-child{border-bottom:none;}
-  .conq-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-  .conq-name{font-size:12px;font-weight:600;color:var(--text);}
-  .conq-desc{font-size:10px;color:var(--text2);margin-top:1px;}
-  .conq-tag{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;white-space:nowrap;}
-  .ct-ok{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
-  .ct-no{background:rgba(255,255,255,0.05);color:var(--text3);}
+  .video-wrap{background:#000;position:relative;flex-shrink:0;}
+  .video-wrap iframe{width:100%;aspect-ratio:16/9;display:block;border:none;}
+  .video-overlay-top{position:absolute;top:0;left:0;right:0;padding:14px 18px;background:linear-gradient(180deg,rgba(0,0,0,0.7),transparent);display:flex;align-items:center;gap:10px;}
+  .overlay-pill{background:rgba(0,200,255,0.2);border:1px solid rgba(0,200,255,0.3);color:var(--cyan);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;}
 
-  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-  .stat:nth-child(1){animation-delay:.04s}
-  .stat:nth-child(2){animation-delay:.08s}
-  .stat:nth-child(3){animation-delay:.12s}
-  .stat:nth-child(4){animation-delay:.16s}
+  .aula-info{padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .aula-titulo{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
+  .aula-meta-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .aula-meta-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);}
+  .aula-meta-item i{font-size:14px;}
+  .aula-actions{display:flex;align-items:center;gap:10px;margin-top:14px;}
+  .btn-concluir{background:var(--g4);color:#000;font-weight:700;font-size:12px;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:opacity .15s;}
+  .btn-concluir:hover{opacity:.88;}
+  .btn-prox{background:var(--g1);color:#fff;font-weight:700;font-size:12px;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:opacity .15s;}
+  .btn-prox:hover{opacity:.88;}
+  .btn-outline{background:transparent;color:var(--text2);font-weight:600;font-size:12px;padding:9px 16px;border-radius:9px;border:1px solid var(--border);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:all .15s;}
+  .btn-outline:hover{border-color:var(--border-cyan);color:var(--text);}
+
+  /* TABS */
+  .tabs-row{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);padding:0 22px;flex-shrink:0;}
+  .tab{padding:12px 16px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px;}
+  .tab:hover{color:var(--text);}
+  .tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+
+  .tab-content{flex:1;overflow-y:auto;padding:20px 22px;}
+  .tab-content::-webkit-scrollbar{width:4px;}
+  .tab-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
+
+  /* DESCRIÇÃO */
+  .desc-text{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:16px;}
+  .desc-topicos{display:flex;flex-direction:column;gap:8px;}
+  .desc-topico{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);}
+  .desc-topico i{font-size:16px;color:var(--green);}
+
+  /* MATERIAIS */
+  .mat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .mat-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .15s;}
+  .mat-card:hover{border-color:var(--border-cyan);}
+  .mat-ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .mic-pdf{background:rgba(255,77,141,0.12);color:var(--pink);}
+  .mic-xls{background:rgba(0,229,160,0.12);color:var(--green);}
+  .mic-zip{background:rgba(255,184,0,0.12);color:var(--yellow);}
+  .mat-name{font-size:12px;font-weight:600;color:var(--text);}
+  .mat-size{font-size:11px;color:var(--text3);margin-top:2px;}
+  .mat-dl{margin-left:auto;color:var(--cyan);font-size:18px;flex-shrink:0;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
 </head>
 <body>
 <div class="layout">
-  <aside class="sidebar">
+
+  <!-- NAV SIDEBAR -->
+  <aside class="nav-sidebar">
     <div class="logo-area">
       <img src="../imagens/logo-infinity-live.png" alt="Infinity Live"
         onerror="this.style.display='none';document.getElementById('lf').style.display='flex'"/>
@@ -162,13 +179,14 @@
       </div>
     </div>
     <div class="nav-wrap">
-      <div class="nav-lbl">Menu</div>
-      <a class="nav-item active" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
-      <a class="nav-item" href="modulos.html"><i class="ti ti-player-play"></i> Aulas</a>
+      <div class="nav-section-lbl">Menu</div>
+      <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="nav-item active" href="aulas.html"><i class="ti ti-player-play"></i> Aulas</a>
       <a class="nav-item" href="materiais.html"><i class="ti ti-file-download"></i> Materiais</a>
       <a class="nav-item" href="suporte.html"><i class="ti ti-message-circle"></i> Suporte <span class="nav-badge">2</span></a>
-      <div class="nav-lbl">Conta</div>
-      <a class="nav-item" href="#"><i class="ti ti-user-circle"></i> Meu Perfil</a>
+      <div class="nav-section-lbl">Conta</div>
+      <a class="nav-item" href="perfil.html"><i class="ti ti-user-circle"></i> Meu Perfil</a>
+      <a class="nav-item" href="configuracoes.html"><i class="ti ti-settings"></i> Configurações</a>
     </div>
     <div class="sidebar-bottom">
       <div class="user-row">
@@ -179,174 +197,284 @@
         </div>
         <i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px;flex-shrink:0;"></i>
       </div>
-      <a class="logout" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</a>
+      <div class="logout"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</div>
     </div>
   </aside>
 
+  <!-- MAIN -->
   <main class="main">
     <div class="topbar">
       <div>
-        <div class="page-title" id="saudacao">Carregando...</div>
-        <div class="page-sub" id="data-hoje"></div>
+        <div class="page-title">Aulas</div>
+        <div class="page-sub">4 módulos · 26 aulas · 12h 40min de conteúdo</div>
       </div>
       <div class="topbar-right">
-        <a class="live-badge" href="modulos.html"><div class="live-dot"></div> Live ativa agora</a>
-        <a class="icon-btn" href="suporte.html" title="Suporte"><i class="ti ti-bell"></i><div class="notif-dot"></div></a>
-        <a class="icon-btn" href="modulos.html" title="Aulas"><i class="ti ti-search"></i></a>
+        <div class="live-badge"><div class="live-dot"></div> Live ativa agora</div>
+        <div class="icon-btn"><i class="ti ti-bell"></i><div class="notif-dot"></div></div>
+        <div class="icon-btn"><i class="ti ti-search"></i></div>
       </div>
     </div>
 
-    <div class="content">
+    <div class="aulas-body">
 
-      <a class="banner" href="aulas.html">
-        <div class="banner-glow"></div>
-        <div>
-          <h2>Continue de onde parou 🚀</h2>
-          <p>Você está indo muito bem! Mantenha o ritmo e conquiste o próximo nível.</p>
-          <div class="banner-pill"><i class="ti ti-player-play" style="font-size:11px;"></i> M2 · Aula 4 — Estratégias de Escala · 58% concluído</div>
+      <!-- MÓDULOS SIDEBAR -->
+      <aside class="modulos-sidebar">
+        <div class="mod-sidebar-header">
+          <div class="mod-sidebar-title">Conteúdo do curso</div>
+          <div class="prog-mini-track"><div class="prog-mini-fill"></div></div>
+          <div class="prog-mini-label"><span>42% concluído</span><span>18 / 26 aulas</span></div>
         </div>
-        <div class="btn-play"><i class="ti ti-player-play" style="font-size:14px;"></i> Continuar aula</div>
-      </a>
 
-      <div class="stats">
-        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-video"></i></div><span class="stat-trend t1">+3 essa semana</span></div><div class="stat-val">18</div><div class="stat-lbl">Aulas assistidas</div></div>
-        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-clock"></i></div><span class="stat-trend t2">+2h essa semana</span></div><div class="stat-val">14h</div><div class="stat-lbl">Horas estudadas</div></div>
-        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-download"></i></div><span class="stat-trend t3">+2 esse mês</span></div><div class="stat-val">7</div><div class="stat-lbl">Materiais baixados</div></div>
-        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-chart-line"></i></div><span class="stat-trend t4">+8% essa semana</span></div><div class="stat-val">42%</div><div class="stat-lbl">Curso concluído</div></div>
-      </div>
+        <div class="modulos-list">
 
-      <div class="charts-grid">
-        <div class="card" style="animation-delay:.2s;">
-          <div class="card-hd"><span class="card-title">📈 Progresso semanal</span><span style="font-size:10px;color:var(--text3);">Últimos 7 dias</span></div>
-          <div style="height:160px;"><canvas id="chart-linha"></canvas></div>
-        </div>
-        <div class="card" style="animation-delay:.24s;">
-          <div class="card-hd"><span class="card-title">🎯 Progresso por módulo</span></div>
-          <div class="radials">
-            <div class="rad-item">
-              <div class="rad-wrap"><canvas id="r1" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--green);">100%</span></div></div>
-              <span class="rad-name" style="color:var(--green);">M1</span>
+          <!-- M1 -->
+          <div class="modulo-bloco">
+            <div class="modulo-header" onclick="toggleMod(this)">
+              <div class="mod-badge mb1">M1</div>
+              <div class="mod-info">
+                <div class="mod-name">Fundamentos & Mentalidade</div>
+                <div class="mod-meta">6 aulas · 2h 14min</div>
+                <div class="mod-prog-bar"><div class="mod-prog-fill mpf1" style="width:100%;"></div></div>
+              </div>
+              <i class="ti ti-chevron-down chevron open"></i>
             </div>
-            <div class="rad-item">
-              <div class="rad-wrap"><canvas id="r2" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--cyan);">50%</span></div></div>
-              <span class="rad-name" style="color:var(--cyan);">M2</span>
-            </div>
-            <div class="rad-item">
-              <div class="rad-wrap"><canvas id="r3" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--text3);">0%</span></div></div>
-              <span class="rad-name" style="color:var(--text3);">M3</span>
-            </div>
-            <div class="rad-item">
-              <div class="rad-wrap"><canvas id="r4" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--text3);">0%</span></div></div>
-              <span class="rad-name" style="color:var(--text3);">M4</span>
+            <div class="aulas-list">
+              <div class="aula-item done" onclick="selectAula(this,'Introdução à Infinity Live','18')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Introdução à Infinity Live</div>
+                <div class="aula-dur">18min</div>
+              </div>
+              <div class="aula-item done" onclick="selectAula(this,'Mentalidade de Crescimento','24')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Mentalidade de Crescimento</div>
+                <div class="aula-dur">24min</div>
+              </div>
+              <div class="aula-item done" onclick="selectAula(this,'Fundamentos do Negócio Online','31')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Fundamentos do Negócio Online</div>
+                <div class="aula-dur">31min</div>
+              </div>
+              <div class="aula-item done" onclick="selectAula(this,'Posicionamento de Marca','27')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Posicionamento de Marca</div>
+                <div class="aula-dur">27min</div>
+              </div>
+              <div class="aula-item done" onclick="selectAula(this,'Construindo Autoridade','22')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Construindo Autoridade</div>
+                <div class="aula-dur">22min</div>
+              </div>
+              <div class="aula-item done" onclick="selectAula(this,'Revisão do Módulo 1','14')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Revisão do Módulo 1</div>
+                <div class="aula-dur">14min</div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="bottom-grid">
-        <div class="card" style="animation-delay:.28s;">
-          <div class="card-hd"><span class="card-title">📚 Próximas aulas</span><a class="card-link" href="modulos.html">Ver todas</a></div>
-          <a class="nav-link-item" href="aulas.html">
-            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
-            <div class="nli-info"><div class="nli-name">Estratégias de Escala</div><div class="nli-meta">28min · Em andamento</div><div class="nli-bar"><div class="nli-fill" style="width:58%;background:var(--cyan);"></div></div></div>
-          </a>
-          <a class="nav-link-item" href="aulas.html">
-            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
-            <div class="nli-info"><div class="nli-name">Automação de Processos</div><div class="nli-meta">35min · Disponível</div></div>
-          </a>
-          <a class="nav-link-item" href="aulas.html">
-            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
-            <div class="nli-info"><div class="nli-name">Copywriting de Conversão</div><div class="nli-meta">41min · Disponível</div></div>
-          </a>
-          <a class="nav-link-item" href="modulos.html" style="opacity:.5;">
-            <div class="nli-num" style="background:rgba(255,255,255,0.05);color:var(--text3);">M3</div>
-            <div class="nli-info"><div class="nli-name" style="color:var(--text3);">Mindset de Alta Performance</div><div class="nli-meta"><i class="ti ti-lock" style="font-size:10px;"></i> Bloqueado</div></div>
-          </a>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div class="card" style="animation-delay:.32s;">
-            <div class="card-hd"><span class="card-title">⚡ Atividade recente</span><a class="card-link" href="#">Ver tudo</a></div>
-            <div class="act-row"><div class="act-ico ai-g"><i class="ti ti-circle-check"></i></div><div><div class="act-txt">Aula concluída — <span>Fundamentos do Tráfego</span></div><div class="act-time">2h atrás</div></div></div>
-            <div class="act-row"><div class="act-ico ai-p"><i class="ti ti-download"></i></div><div><div class="act-txt">Download — <span>Planilha de Metas 2025</span></div><div class="act-time">5h atrás</div></div></div>
-            <div class="act-row"><div class="act-ico ai-b"><i class="ti ti-message-circle"></i></div><div><div class="act-txt">Ticket #042 <span>respondido pelo mentor</span></div><div class="act-time">1 dia atrás</div></div></div>
-            <div class="act-row"><div class="act-ico ai-y"><i class="ti ti-trophy"></i></div><div><div class="act-txt">Módulo 1 <span>finalizado com 100%</span></div><div class="act-time">3 dias atrás</div></div></div>
+          <!-- M2 -->
+          <div class="modulo-bloco">
+            <div class="modulo-header" onclick="toggleMod(this)">
+              <div class="mod-badge mb2">M2</div>
+              <div class="mod-info">
+                <div class="mod-name">Tráfego & Conversão</div>
+                <div class="mod-meta">8 aulas · 3h 42min</div>
+                <div class="mod-prog-bar"><div class="mod-prog-fill mpf2" style="width:50%;"></div></div>
+              </div>
+              <i class="ti ti-chevron-down chevron open"></i>
+            </div>
+            <div class="aulas-list">
+              <div class="aula-item done" onclick="selectAula(this,'Introdução ao Tráfego Pago','32')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Introdução ao Tráfego Pago</div>
+                <div class="aula-dur">32min</div>
+              </div>
+              <div class="aula-item done" onclick="selectAula(this,'Meta Ads na Prática','48')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Meta Ads na Prática</div>
+                <div class="aula-dur">48min</div>
+              </div>
+              <div class="aula-item done" onclick="selectAula(this,'Google Ads do Zero','36')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Google Ads do Zero</div>
+                <div class="aula-dur">36min</div>
+              </div>
+              <div class="aula-item done" onclick="selectAula(this,'Funil de Vendas Completo','44')">
+                <div class="play-circle pc-done"><i class="ti ti-check"></i></div>
+                <div class="aula-name">Funil de Vendas Completo</div>
+                <div class="aula-dur">44min</div>
+              </div>
+              <div class="aula-item playing" id="aula-ativa" onclick="selectAula(this,'Estratégias de Escala','28')">
+                <div class="play-circle pc-play"><i class="ti ti-player-play" style="margin-left:1px;"></i></div>
+                <div class="aula-name">Estratégias de Escala</div>
+                <div class="aula-dur">28min</div>
+                <span class="playing-tag">AO VIVO</span>
+              </div>
+              <div class="aula-item" onclick="selectAula(this,'Automação de Processos','35')">
+                <div class="play-circle pc-play"><i class="ti ti-player-play" style="margin-left:1px;"></i></div>
+                <div class="aula-name">Automação de Processos</div>
+                <div class="aula-dur">35min</div>
+              </div>
+              <div class="aula-item" onclick="selectAula(this,'Copywriting de Alta Conversão','41')">
+                <div class="play-circle pc-play"><i class="ti ti-player-play" style="margin-left:1px;"></i></div>
+                <div class="aula-name">Copywriting de Alta Conversão</div>
+                <div class="aula-dur">41min</div>
+              </div>
+              <div class="aula-item" onclick="selectAula(this,'Análise e Otimização','33')">
+                <div class="play-circle pc-play"><i class="ti ti-player-play" style="margin-left:1px;"></i></div>
+                <div class="aula-name">Análise e Otimização</div>
+                <div class="aula-dur">33min</div>
+              </div>
+            </div>
           </div>
-          <div class="card" style="animation-delay:.36s;">
-            <div class="card-hd"><span class="card-title">🏆 Conquistas</span></div>
-            <div class="conq-row"><div class="conq-ico" style="background:rgba(255,184,0,0.12);color:var(--yellow);">🥇</div><div><div class="conq-name">Primeiro passo</div><div class="conq-desc">Assistiu à primeira aula</div></div><span class="conq-tag ct-ok">Conquistado</span></div>
-            <div class="conq-row"><div class="conq-ico" style="background:rgba(0,229,160,0.12);color:var(--green);">⚡</div><div><div class="conq-name">Módulo completo</div><div class="conq-desc">Concluiu o Módulo 1</div></div><span class="conq-tag ct-ok">Conquistado</span></div>
-            <div class="conq-row"><div class="conq-ico" style="background:rgba(255,255,255,0.05);color:var(--text3);">🚀</div><div><div class="conq-name">Na metade</div><div class="conq-desc">Complete 50% do curso</div></div><span class="conq-tag ct-no">Em progresso</span></div>
+
+          <!-- M3 bloqueado -->
+          <div class="modulo-bloco">
+            <div class="modulo-header" style="opacity:.5;cursor:not-allowed;">
+              <div class="mod-badge mb3">M3</div>
+              <div class="mod-info">
+                <div class="mod-name">Alta Performance & Escala</div>
+                <div class="mod-meta" style="color:var(--pink);">🔒 Bloqueado — conclua M2 primeiro</div>
+              </div>
+              <i class="ti ti-lock" style="color:var(--text3);font-size:16px;"></i>
+            </div>
+          </div>
+
+          <!-- M4 bloqueado -->
+          <div class="modulo-bloco">
+            <div class="modulo-header" style="opacity:.5;cursor:not-allowed;">
+              <div class="mod-badge mb4">M4</div>
+              <div class="mod-info">
+                <div class="mod-name">Resultados & Legado</div>
+                <div class="mod-meta" style="color:var(--pink);">🔒 Bloqueado — conclua M3 primeiro</div>
+              </div>
+              <i class="ti ti-lock" style="color:var(--text3);font-size:16px;"></i>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- PLAYER AREA -->
+      <section class="player-area">
+
+        <div class="video-wrap">
+          <div class="video-overlay-top">
+            <span class="overlay-pill">M2 · Aula 5</span>
+            <span style="font-size:12px;color:rgba(255,255,255,0.7);font-weight:600;">Estratégias de Escala com Meta Ads</span>
+          </div>
+          <!-- Player YouTube embed — substitua pelo ID do vídeo real -->
+          <iframe
+            id="player-iframe"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&color=white"
+            title="Aula atual"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <div class="aula-info">
+          <div class="aula-titulo" id="aula-titulo">Estratégias de Escala com Meta Ads</div>
+          <div class="aula-meta-row">
+            <div class="aula-meta-item"><i class="ti ti-clock"></i> <span id="aula-dur-txt">28 minutos</span></div>
+            <div class="aula-meta-item"><i class="ti ti-book"></i> Módulo 2</div>
+            <div class="aula-meta-item"><i class="ti ti-circle-check" style="color:var(--green);"></i> 4 aulas concluídas neste módulo</div>
+          </div>
+          <div class="aula-actions">
+            <button class="btn-concluir"><i class="ti ti-circle-check" style="font-size:15px;"></i> Marcar como concluída</button>
+            <button class="btn-prox"><i class="ti ti-player-skip-forward" style="font-size:15px;"></i> Próxima aula</button>
+            <button class="btn-outline"><i class="ti ti-download" style="font-size:15px;"></i> Material da aula</button>
           </div>
         </div>
-      </div>
 
+        <div class="tabs-row">
+          <div class="tab active" onclick="showTab('desc',this)">Descrição</div>
+          <div class="tab" onclick="showTab('mat',this)">Materiais</div>
+          <div class="tab" onclick="showTab('notas',this)">Minhas notas</div>
+        </div>
+
+        <div class="tab-content">
+
+          <div id="tab-desc">
+            <p class="desc-text">Nesta aula você vai aprender as principais estratégias para escalar suas campanhas no Meta Ads de forma inteligente, sem desperdiçar verba e maximizando o retorno sobre investimento.</p>
+            <div class="desc-topicos">
+              <div class="desc-topico"><i class="ti ti-circle-check"></i> Como identificar o momento certo para escalar</div>
+              <div class="desc-topico"><i class="ti ti-circle-check"></i> Escala horizontal vs escala vertical</div>
+              <div class="desc-topico"><i class="ti ti-circle-check"></i> Estrutura de campanha para alto volume</div>
+              <div class="desc-topico"><i class="ti ti-circle-check"></i> Como manter o CPA estável durante a escala</div>
+              <div class="desc-topico"><i class="ti ti-circle-check"></i> Exercício prático: monte sua estratégia de escala</div>
+            </div>
+          </div>
+
+          <div id="tab-mat" style="display:none;">
+            <div class="mat-grid">
+              <div class="mat-card">
+                <div class="mat-ico mic-pdf"><i class="ti ti-file-type-pdf"></i></div>
+                <div><div class="mat-name">Guia de Escala Meta Ads</div><div class="mat-size">PDF · 4.2 MB</div></div>
+                <i class="ti ti-download mat-dl"></i>
+              </div>
+              <div class="mat-card">
+                <div class="mat-ico mic-xls"><i class="ti ti-table"></i></div>
+                <div><div class="mat-name">Planilha de CPA e ROAS</div><div class="mat-size">XLSX · 1.1 MB</div></div>
+                <i class="ti ti-download mat-dl"></i>
+              </div>
+              <div class="mat-card">
+                <div class="mat-ico mic-zip"><i class="ti ti-file-zip"></i></div>
+                <div><div class="mat-name">Templates de Criativos</div><div class="mat-size">ZIP · 56 MB</div></div>
+                <i class="ti ti-download mat-dl"></i>
+              </div>
+              <div class="mat-card">
+                <div class="mat-ico mic-pdf"><i class="ti ti-file-type-pdf"></i></div>
+                <div><div class="mat-name">Checklist de Escala</div><div class="mat-size">PDF · 0.8 MB</div></div>
+                <i class="ti ti-download mat-dl"></i>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-notas" style="display:none;">
+            <textarea placeholder="Escreva suas anotações sobre esta aula aqui..." style="width:100%;min-height:140px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;resize:vertical;outline:none;line-height:1.7;"></textarea>
+            <button style="margin-top:10px;background:var(--g1);color:#fff;font-weight:700;font-size:12px;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px;">
+              <i class="ti ti-device-floppy" style="font-size:14px;"></i> Salvar notas
+            </button>
+          </div>
+
+        </div>
+      </section>
     </div>
   </main>
 </div>
+
 <script>
-  // Verificar se aluno está logado
-  verificarSessao().then(function(session) {
-    if (!session) return;
-    // Atualizar nome do aluno na sidebar
-    getDadosAluno().then(function(aluno) {
-      if (!aluno) return;
-      var nome = aluno.nome || aluno.email.split('@')[0];
-      var initials = nome.split(' ').map(function(n){ return n[0]; }).join('').slice(0,2).toUpperCase();
-      var nomeEl = document.querySelector('.user-name');
-      var avEl = document.querySelector('.avatar');
-      var saudEl = document.getElementById('saudacao');
-      if (nomeEl) nomeEl.textContent = nome;
-      if (avEl) avEl.textContent = initials;
-      if (saudEl) {
-        var h = new Date().getHours();
-        var s = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
-        saudEl.textContent = s + ', ' + nome.split(' ')[0] + ' 👋';
-      }
-    });
-  });
-
-  const dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const now=new Date(),h=now.getHours();
-  document.getElementById('saudacao').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', João 👋';
-  document.getElementById('data-hoje').textContent=dias[now.getDay()]+', '+now.getDate()+' de '+meses[now.getMonth()]+' de '+now.getFullYear();
-
-  // GRÁFICO LINHA
-  new Chart(document.getElementById('chart-linha').getContext('2d'),{
-    type:'line',
-    data:{
-      labels:['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-      datasets:[
-        {label:'Aulas',data:[1,3,2,4,3,2,3],borderColor:'#00c8ff',backgroundColor:'rgba(0,200,255,0.08)',borderWidth:2.5,pointBackgroundColor:'#00c8ff',pointRadius:4,pointHoverRadius:6,tension:.4,fill:true},
-        {label:'Horas',data:[0.5,1.5,1,2,1.5,1,1.5],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,0.05)',borderWidth:2,pointBackgroundColor:'#00e5a0',pointRadius:3,pointHoverRadius:5,tension:.4,fill:true}
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{labels:{color:'#8b96b8',font:{family:'Plus Jakarta Sans',size:11},boxWidth:12,padding:14}},
-        tooltip:{backgroundColor:'#0f1320',borderColor:'rgba(0,200,255,0.25)',borderWidth:1,titleColor:'#f0f4ff',bodyColor:'#8b96b8',titleFont:{family:'Plus Jakarta Sans',weight:'700'},bodyFont:{family:'Plus Jakarta Sans'},padding:10,cornerRadius:8}
-      },
-      scales:{
-        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4a5270',font:{family:'Plus Jakarta Sans',size:11}}},
-        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4a5270',font:{family:'Plus Jakarta Sans',size:11},stepSize:1},beginAtZero:true}
-      }
-    }
-  });
-
-  // RADIAIS
-  function radial(id,pct,color){
-    new Chart(document.getElementById(id).getContext('2d'),{
-      type:'doughnut',
-      data:{datasets:[{data:[pct,100-pct],backgroundColor:[color,'rgba(255,255,255,0.06)'],borderWidth:0,hoverOffset:0}]},
-      options:{responsive:false,cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{animateRotate:true,duration:1000}}
-    });
+  function toggleMod(header) {
+    const list = header.nextElementSibling;
+    const chev = header.querySelector('.chevron');
+    if (!list || !list.classList.contains('aulas-list')) return;
+    const open = list.style.display !== 'none';
+    list.style.display = open ? 'none' : 'block';
+    chev && chev.classList.toggle('open', !open);
   }
-  radial('r1',100,'#00e5a0');
-  radial('r2',50,'#00c8ff');
-  radial('r3',0,'#4a5270');
-  radial('r4',0,'#4a5270');
+
+  function selectAula(el, nome, dur) {
+    document.querySelectorAll('.aula-item').forEach(a => {
+      a.classList.remove('playing');
+      const tag = a.querySelector('.playing-tag');
+      if (tag) tag.remove();
+    });
+    el.classList.add('playing');
+    const tag = document.createElement('span');
+    tag.className = 'playing-tag';
+    tag.textContent = 'AO VIVO';
+    el.appendChild(tag);
+    document.getElementById('aula-titulo').textContent = nome;
+    document.getElementById('aula-dur-txt').textContent = dur + ' minutos';
+  }
+
+  function showTab(tab, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-desc').style.display = tab === 'desc' ? 'block' : 'none';
+    document.getElementById('tab-mat').style.display = tab === 'mat' ? 'block' : 'none';
+    document.getElementById('tab-notas').style.display = tab === 'notas' ? 'block' : 'none';
+  }
 </script>
 </body>
 </html>

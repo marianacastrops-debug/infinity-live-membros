@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Infinity Live — Materiais</title>
+<title>Infinity Live — Dashboard</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{
@@ -15,180 +16,142 @@
     --border:rgba(255,255,255,0.07);--border-cyan:rgba(0,200,255,0.25);
     --g1:linear-gradient(135deg,#00c8ff,#3b7fff);
     --g3:linear-gradient(135deg,#ff4d8d,#ff8c42);
-    --g4:linear-gradient(135deg,#00e5a0,#00c8ff);
-    --g5:linear-gradient(135deg,#ffb800,#ff8c42);
   }
   html,body{height:100%;overflow:hidden;}
   body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);}
   .layout{display:flex;height:100vh;}
-
-  /* SIDEBAR */
   .sidebar{width:245px;min-width:245px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
   .logo-area{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:74px;}
   .logo-area img{width:128px;height:auto;object-fit:contain;}
   .logo-fallback{display:none;align-items:center;gap:10px;}
   .logo-icon{width:38px;height:38px;border-radius:10px;background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;}
   .logo-name{font-size:15px;font-weight:700;color:var(--text);}
-  .logo-sub{font-size:10px;color:var(--text2);margin-top:1px;}
+  .logo-sub{font-size:10px;color:var(--text2);}
   .nav-wrap{flex:1;padding:8px 10px;overflow-y:auto;}
-  .nav-section-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
+  .nav-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
   .nav-item:hover{background:var(--hover);color:var(--text);}
   .nav-item.active{background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(59,127,255,0.1));color:#fff;font-weight:600;border:1px solid rgba(0,200,255,0.2);}
   .nav-item.active i{color:var(--cyan);}
   .nav-item i{font-size:18px;flex-shrink:0;}
   .nav-badge{margin-left:auto;background:var(--g3);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
   .sidebar-bottom{padding:14px 10px;border-top:1px solid var(--border);}
-  .user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;cursor:pointer;transition:background .15s;border:1px solid var(--border);}
+  .user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:background .15s;cursor:pointer;}
   .user-row:hover{background:var(--card2);}
   .avatar{width:36px;height:36px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;}
   .user-name{font-size:13px;font-weight:600;color:var(--text);}
-  .user-role{font-size:10px;color:var(--cyan);margin-top:1px;font-weight:600;}
-  .logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;transition:all .15s;}
+  .user-role{font-size:10px;color:var(--cyan);font-weight:600;margin-top:1px;}
+  .logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;transition:all .15s;text-decoration:none;}
   .logout:hover{color:var(--pink);background:rgba(255,77,141,0.07);}
-
-  /* MAIN */
   .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   .topbar{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-  .page-title{font-size:17px;font-weight:700;color:var(--text);}
+  .page-title{font-size:18px;font-weight:700;color:var(--text);}
   .page-sub{font-size:12px;color:var(--text2);margin-top:2px;}
   .topbar-right{display:flex;align-items:center;gap:10px;}
-  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(--green);}
+  .live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(--green);text-decoration:none;}
   .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:18px;transition:all .15s;position:relative;}
+  .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:18px;transition:all .15s;position:relative;text-decoration:none;}
   .icon-btn:hover{border-color:var(--border-cyan);color:var(--cyan);}
   .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--pink);border-radius:50%;border:1.5px solid var(--bg2);}
-
-  /* CONTENT */
-  .content{flex:1;overflow-y:auto;padding:24px 28px;}
+  .content{flex:1;overflow-y:auto;padding:20px 26px;}
   .content::-webkit-scrollbar{width:4px;}
   .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
 
+  /* BANNER */
+  .banner{display:flex;align-items:center;justify-content:space-between;gap:20px;background:var(--card);border:1px solid rgba(0,200,255,0.2);border-radius:14px;padding:20px 24px;margin-bottom:18px;position:relative;overflow:hidden;text-decoration:none;transition:border-color .18s;animation:fadeUp .4s ease both;}
+  .banner:hover{border-color:rgba(0,200,255,0.4);}
+  .banner::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--g1);}
+  .banner-glow{position:absolute;right:-30px;top:-30px;width:160px;height:160px;background:radial-gradient(circle,rgba(0,200,255,0.07),transparent 70%);pointer-events:none;}
+  .banner h2{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .banner p{font-size:12px;color:var(--text2);line-height:1.6;}
+  .banner-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.2);color:var(--cyan);padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;margin-top:8px;}
+  .btn-play{background:var(--g1);color:#fff;font-weight:700;font-size:12px;padding:10px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:opacity .15s;flex-shrink:0;text-decoration:none;}
+  .btn-play:hover{opacity:.88;}
+
   /* STATS */
-  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
-  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .2s;position:relative;overflow:hidden;}
-  .stat:hover{border-color:rgba(255,255,255,0.13);transform:translateY(-2px);}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px;}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .2s;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
   .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;}
   .s1::before{background:var(--g1);}
-  .s2::before{background:var(--g4);}
-  .s3::before{background:var(--g5);}
-  .s4::before{background:var(--g3);}
+  .s2::before{background:linear-gradient(90deg,var(--green),var(--cyan));}
+  .s3::before{background:var(--g3);}
+  .s4::before{background:linear-gradient(90deg,var(--yellow),#ff8c42);}
+  .stat:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.13);}
   .stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
   .stat-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
   .si1{background:rgba(0,200,255,0.12);color:var(--cyan);}
   .si2{background:rgba(0,229,160,0.12);color:var(--green);}
-  .si3{background:rgba(255,184,0,0.12);color:var(--yellow);}
-  .si4{background:rgba(255,77,141,0.12);color:var(--pink);}
-  .stat-val{font-size:24px;font-weight:800;color:var(--text);line-height:1;}
-  .stat-label{font-size:11px;color:var(--text2);margin-top:3px;font-weight:500;}
+  .si3{background:rgba(255,77,141,0.12);color:var(--pink);}
+  .si4{background:rgba(255,184,0,0.12);color:var(--yellow);}
+  .stat-trend{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .t1{color:var(--cyan);background:rgba(0,200,255,0.1);}
+  .t2{color:var(--green);background:rgba(0,229,160,0.1);}
+  .t3{color:var(--pink);background:rgba(255,77,141,0.1);}
+  .t4{color:var(--yellow);background:rgba(255,184,0,0.1);}
+  .stat-val{font-size:26px;font-weight:800;color:var(--text);line-height:1;}
+  .stat-lbl{font-size:11px;color:var(--text2);margin-top:3px;font-weight:500;}
 
-  /* SEARCH + FILTROS */
-  .filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-  .search-wrap{flex:1;position:relative;}
-  .search-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text3);}
-  .search-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px 10px 38px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s;}
-  .search-input:focus{border-color:var(--border-cyan);}
-  .search-input::placeholder{color:var(--text3);}
-  .filter-tabs{display:flex;gap:6px;}
-  .ftab{padding:8px 16px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;border:1px solid var(--border);color:var(--text2);}
-  .ftab:hover{border-color:var(--border-cyan);color:var(--text);}
-  .ftab.active{background:rgba(0,200,255,0.12);color:var(--cyan);border-color:rgba(0,200,255,0.25);}
+  /* CHARTS GRID */
+  .charts-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:16px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;animation:fadeUp .4s ease both;}
+  .card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .card-title{font-size:13px;font-weight:700;color:var(--text);}
+  .card-link{font-size:11px;font-weight:600;color:var(--cyan);text-decoration:none;cursor:pointer;}
+  .card-link:hover{opacity:.8;}
 
-  /* SEÇÃO */
-  .sec-title-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-  .sec-title{font-size:14px;font-weight:700;color:var(--text);}
-  .sec-count{font-size:11px;font-weight:700;color:var(--text3);background:var(--card2);padding:2px 9px;border-radius:20px;}
+  /* RADIAL */
+  .radials{display:flex;align-items:center;justify-content:space-around;padding:4px 0;}
+  .rad-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .rad-wrap{position:relative;width:76px;height:76px;}
+  .rad-wrap canvas{position:absolute;top:0;left:0;}
+  .rad-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+  .rad-pct{font-size:14px;font-weight:800;}
+  .rad-name{font-size:10px;font-weight:600;}
 
-  /* GRID DE MATERIAIS */
-  .mat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+  /* BOTTOM GRID */
+  .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .nav-link-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);text-decoration:none;transition:all .15s;}
+  .nav-link-item:hover .nli-name{color:var(--cyan);}
+  .nav-link-item:last-child{border-bottom:none;}
+  .nli-num{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+  .nli-info{flex:1;min-width:0;}
+  .nli-name{font-size:12px;font-weight:600;color:var(--text);transition:color .15s;}
+  .nli-meta{font-size:10px;color:var(--text2);margin-top:2px;}
+  .nli-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:4px;}
+  .nli-fill{height:3px;border-radius:2px;}
 
-  .mat-card{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:14px;overflow:hidden;
-    transition:all .22s;cursor:pointer;
-    animation:fadeUp .4s ease both;
-  }
-  .mat-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.35);}
+  .act-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .act-row:last-child{border-bottom:none;}
+  .act-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+  .ai-g{background:rgba(0,229,160,0.12);color:var(--green);}
+  .ai-p{background:rgba(255,77,141,0.12);color:var(--pink);}
+  .ai-b{background:rgba(0,200,255,0.12);color:var(--cyan);}
+  .ai-y{background:rgba(255,184,0,0.12);color:var(--yellow);}
+  .act-txt{font-size:11px;font-weight:500;color:var(--text);line-height:1.5;}
+  .act-txt span{color:var(--text2);}
+  .act-time{font-size:10px;color:var(--text3);margin-top:1px;}
 
-  /* capa do material */
-  .mat-capa{height:120px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-  .mat-capa-ico{font-size:44px;position:relative;z-index:2;}
-  .mat-capa-glow{position:absolute;width:100px;height:100px;border-radius:50%;opacity:.25;top:50%;left:50%;transform:translate(-50%,-50%);}
-  .mat-capa-num{position:absolute;right:10px;bottom:-5px;font-size:56px;font-weight:800;opacity:.06;line-height:1;}
-
-  /* tipos de arquivo */
-  .t-pdf .mat-capa{background:linear-gradient(160deg,#1a0510,#280a18);}
-  .t-pdf .mat-capa-ico{color:var(--pink);}
-  .t-pdf .mat-capa-glow{background:radial-gradient(circle,var(--pink),transparent);}
-  .t-pdf .mat-capa-num{color:var(--pink);}
-
-  .t-xls .mat-capa{background:linear-gradient(160deg,#051a10,#0a2818);}
-  .t-xls .mat-capa-ico{color:var(--green);}
-  .t-xls .mat-capa-glow{background:radial-gradient(circle,var(--green),transparent);}
-  .t-xls .mat-capa-num{color:var(--green);}
-
-  .t-zip .mat-capa{background:linear-gradient(160deg,#1a1000,#281800);}
-  .t-zip .mat-capa-ico{color:var(--yellow);}
-  .t-zip .mat-capa-glow{background:radial-gradient(circle,var(--yellow),transparent);}
-  .t-zip .mat-capa-num{color:var(--yellow);}
-
-  .t-mp4 .mat-capa{background:linear-gradient(160deg,#050d1a,#0a1428);}
-  .t-mp4 .mat-capa-ico{color:var(--cyan);}
-  .t-mp4 .mat-capa-glow{background:radial-gradient(circle,var(--cyan),transparent);}
-  .t-mp4 .mat-capa-num{color:var(--cyan);}
-
-  .t-doc .mat-capa{background:linear-gradient(160deg,#0a0518,#140a28);}
-  .t-doc .mat-capa-ico{color:var(--purple);}
-  .t-doc .mat-capa-glow{background:radial-gradient(circle,var(--purple),transparent);}
-  .t-doc .mat-capa-num{color:var(--purple);}
-
-  /* body do card */
-  .mat-body{padding:14px 16px 16px;}
-  .mat-modulo{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
-  .mat-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3;}
-  .mat-desc{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:12px;}
-  .mat-footer{display:flex;align-items:center;justify-content:space-between;}
-  .mat-size{font-size:11px;color:var(--text3);font-weight:600;}
-  .btn-dl{display:flex;align-items:center;gap:5px;background:var(--g1);color:#fff;font-weight:700;font-size:11px;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .15s;}
-  .btn-dl:hover{opacity:.85;}
-
-  /* novo badge */
-  .new-badge{position:absolute;top:10px;right:10px;background:var(--g3);color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:5px;letter-spacing:.5px;z-index:3;}
-
-  /* BÔNUS */
-  .bonus-banner{background:var(--card);border:1px solid rgba(255,184,0,0.2);border-radius:14px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;}
-  .bonus-banner::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--g5);}
-  .bonus-glow{position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,184,0,0.08),transparent 70%);pointer-events:none;}
-  .bonus-ico{width:52px;height:52px;border-radius:14px;background:rgba(255,184,0,0.15);color:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
-  .bonus-text h3{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
-  .bonus-text p{font-size:12px;color:var(--text2);}
-
-  /* LISTA DE TODOS */
-  .mat-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
-  .mat-list-item{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:12px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .18s;}
-  .mat-list-item:hover{border-color:rgba(255,255,255,0.13);background:var(--card2);transform:translateX(3px);}
-  .mat-list-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-  .mat-list-name{font-size:13px;font-weight:600;color:var(--text);}
-  .mat-list-meta{font-size:11px;color:var(--text2);margin-top:2px;}
-  .mat-list-mod{font-size:10px;font-weight:700;padding:2px 9px;border-radius:6px;background:rgba(255,255,255,0.06);color:var(--text3);white-space:nowrap;}
-  .mat-list-size{font-size:11px;color:var(--text3);white-space:nowrap;}
+  .conq-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .conq-row:last-child{border-bottom:none;}
+  .conq-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .conq-name{font-size:12px;font-weight:600;color:var(--text);}
+  .conq-desc{font-size:10px;color:var(--text2);margin-top:1px;}
+  .conq-tag{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;white-space:nowrap;}
+  .ct-ok{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+  .ct-no{background:rgba(255,255,255,0.05);color:var(--text3);}
 
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-  .mat-card:nth-child(1){animation-delay:.04s}
-  .mat-card:nth-child(2){animation-delay:.08s}
-  .mat-card:nth-child(3){animation-delay:.12s}
-  .mat-card:nth-child(4){animation-delay:.16s}
-  .mat-card:nth-child(5){animation-delay:.20s}
-  .mat-card:nth-child(6){animation-delay:.24s}
+  .stat:nth-child(1){animation-delay:.04s}
+  .stat:nth-child(2){animation-delay:.08s}
+  .stat:nth-child(3){animation-delay:.12s}
+  .stat:nth-child(4){animation-delay:.16s}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
 </head>
 <body>
 <div class="layout">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo-area">
       <img src="../imagens/logo-infinity-live.png" alt="Infinity Live"
@@ -199,14 +162,13 @@
       </div>
     </div>
     <div class="nav-wrap">
-      <div class="nav-section-lbl">Menu</div>
-      <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <div class="nav-lbl">Menu</div>
+      <a class="nav-item active" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
       <a class="nav-item" href="modulos.html"><i class="ti ti-player-play"></i> Aulas</a>
-      <a class="nav-item active" href="materiais.html"><i class="ti ti-file-download"></i> Materiais</a>
+      <a class="nav-item" href="materiais.html"><i class="ti ti-file-download"></i> Materiais</a>
       <a class="nav-item" href="suporte.html"><i class="ti ti-message-circle"></i> Suporte <span class="nav-badge">2</span></a>
-      <div class="nav-section-lbl">Conta</div>
-      <a class="nav-item" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-user-circle"></i> Meu Perfil</a>
-      <a class="nav-item" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-settings"></i> Configurações</a>
+      <div class="nav-lbl">Conta</div>
+      <a class="nav-item" href="#"><i class="ti ti-user-circle"></i> Meu Perfil</a>
     </div>
     <div class="sidebar-bottom">
       <div class="user-row">
@@ -217,224 +179,174 @@
         </div>
         <i class="ti ti-chevron-right" style="color:var(--text3);font-size:16px;flex-shrink:0;"></i>
       </div>
-      <div class="logout"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</div>
+      <a class="logout" href="../login.html" onclick="event.preventDefault();fazerLogout()"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</a>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
     <div class="topbar">
       <div>
-        <div class="page-title">Materiais</div>
-        <div class="page-sub">Todos os arquivos disponíveis para você</div>
+        <div class="page-title" id="saudacao">Carregando...</div>
+        <div class="page-sub" id="data-hoje"></div>
       </div>
       <div class="topbar-right">
-        <div class="live-badge"><div class="live-dot"></div> Live ativa agora</div>
-        <div class="icon-btn"><i class="ti ti-bell"></i><div class="notif-dot"></div></div>
-        <div class="icon-btn"><i class="ti ti-search"></i></div>
+        <a class="live-badge" href="modulos.html"><div class="live-dot"></div> Live ativa agora</a>
+        <a class="icon-btn" href="suporte.html" title="Suporte"><i class="ti ti-bell"></i><div class="notif-dot"></div></a>
+        <a class="icon-btn" href="modulos.html" title="Aulas"><i class="ti ti-search"></i></a>
       </div>
     </div>
 
     <div class="content">
 
-      <!-- STATS -->
-      <div class="stats-row">
-        <div class="stat s1">
-          <div class="stat-top"><div class="stat-ico si1"><i class="ti ti-files"></i></div></div>
-          <div class="stat-val">12</div><div class="stat-label">Materiais disponíveis</div>
+      <a class="banner" href="aulas.html">
+        <div class="banner-glow"></div>
+        <div>
+          <h2>Continue de onde parou 🚀</h2>
+          <p>Você está indo muito bem! Mantenha o ritmo e conquiste o próximo nível.</p>
+          <div class="banner-pill"><i class="ti ti-player-play" style="font-size:11px;"></i> M2 · Aula 4 — Estratégias de Escala · 58% concluído</div>
         </div>
-        <div class="stat s2">
-          <div class="stat-top"><div class="stat-ico si2"><i class="ti ti-download"></i></div></div>
-          <div class="stat-val">7</div><div class="stat-label">Já baixados por você</div>
+        <div class="btn-play"><i class="ti ti-player-play" style="font-size:14px;"></i> Continuar aula</div>
+      </a>
+
+      <div class="stats">
+        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-video"></i></div><span class="stat-trend t1">+3 essa semana</span></div><div class="stat-val">18</div><div class="stat-lbl">Aulas assistidas</div></div>
+        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-clock"></i></div><span class="stat-trend t2">+2h essa semana</span></div><div class="stat-val">14h</div><div class="stat-lbl">Horas estudadas</div></div>
+        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-download"></i></div><span class="stat-trend t3">+2 esse mês</span></div><div class="stat-val">7</div><div class="stat-lbl">Materiais baixados</div></div>
+        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-chart-line"></i></div><span class="stat-trend t4">+8% essa semana</span></div><div class="stat-val">42%</div><div class="stat-lbl">Curso concluído</div></div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="card" style="animation-delay:.2s;">
+          <div class="card-hd"><span class="card-title">📈 Progresso semanal</span><span style="font-size:10px;color:var(--text3);">Últimos 7 dias</span></div>
+          <div style="height:160px;"><canvas id="chart-linha"></canvas></div>
         </div>
-        <div class="stat s3">
-          <div class="stat-top"><div class="stat-ico si3"><i class="ti ti-database"></i></div></div>
-          <div class="stat-val">1.2GB</div><div class="stat-label">Total disponível</div>
-        </div>
-        <div class="stat s4">
-          <div class="stat-top"><div class="stat-ico si4"><i class="ti ti-star"></i></div></div>
-          <div class="stat-val">3</div><div class="stat-label">Novos esta semana</div>
+        <div class="card" style="animation-delay:.24s;">
+          <div class="card-hd"><span class="card-title">🎯 Progresso por módulo</span></div>
+          <div class="radials">
+            <div class="rad-item">
+              <div class="rad-wrap"><canvas id="r1" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--green);">100%</span></div></div>
+              <span class="rad-name" style="color:var(--green);">M1</span>
+            </div>
+            <div class="rad-item">
+              <div class="rad-wrap"><canvas id="r2" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--cyan);">50%</span></div></div>
+              <span class="rad-name" style="color:var(--cyan);">M2</span>
+            </div>
+            <div class="rad-item">
+              <div class="rad-wrap"><canvas id="r3" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--text3);">0%</span></div></div>
+              <span class="rad-name" style="color:var(--text3);">M3</span>
+            </div>
+            <div class="rad-item">
+              <div class="rad-wrap"><canvas id="r4" width="76" height="76"></canvas><div class="rad-center"><span class="rad-pct" style="color:var(--text3);">0%</span></div></div>
+              <span class="rad-name" style="color:var(--text3);">M4</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- SEARCH + FILTROS -->
-      <div class="filter-bar">
-        <div class="search-wrap">
-          <i class="ti ti-search"></i>
-          <input class="search-input" type="text" placeholder="Buscar material..." oninput="buscar(this.value)"/>
-        </div>
-        <div class="filter-tabs">
-          <div class="ftab active" onclick="filtrar('todos',this)">Todos</div>
-          <div class="ftab" onclick="filtrar('pdf',this)">PDF</div>
-          <div class="ftab" onclick="filtrar('xls',this)">Planilhas</div>
-          <div class="ftab" onclick="filtrar('zip',this)">Templates</div>
-          <div class="ftab" onclick="filtrar('mp4',this)">Vídeos</div>
-        </div>
-      </div>
-
-      <!-- DESTAQUES -->
-      <div class="sec-title-row">
-        <div class="sec-title">Destaques</div>
-        <div class="sec-count">6 materiais</div>
-      </div>
-
-      <div class="mat-grid" id="mat-grid">
-
-        <div class="mat-card t-pdf" data-tipo="pdf">
-          <div class="mat-capa">
-            <div class="mat-capa-glow"></div>
-            <div class="mat-capa-ico"><i class="ti ti-file-type-pdf"></i></div>
-            <div class="mat-capa-num">PDF</div>
-          </div>
-          <div class="mat-body">
-            <div class="mat-modulo">Módulo 2</div>
-            <div class="mat-name">Guia Completo de Tráfego Pago</div>
-            <div class="mat-desc">Manual com estratégias avançadas para Meta Ads e Google Ads do zero ao avançado.</div>
-            <div class="mat-footer">
-              <span class="mat-size"><i class="ti ti-file" style="font-size:12px;vertical-align:-1px;"></i> PDF · 8.4 MB</span>
-              <button class="btn-dl"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button>
-            </div>
-          </div>
+      <div class="bottom-grid">
+        <div class="card" style="animation-delay:.28s;">
+          <div class="card-hd"><span class="card-title">📚 Próximas aulas</span><a class="card-link" href="modulos.html">Ver todas</a></div>
+          <a class="nav-link-item" href="aulas.html">
+            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
+            <div class="nli-info"><div class="nli-name">Estratégias de Escala</div><div class="nli-meta">28min · Em andamento</div><div class="nli-bar"><div class="nli-fill" style="width:58%;background:var(--cyan);"></div></div></div>
+          </a>
+          <a class="nav-link-item" href="aulas.html">
+            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
+            <div class="nli-info"><div class="nli-name">Automação de Processos</div><div class="nli-meta">35min · Disponível</div></div>
+          </a>
+          <a class="nav-link-item" href="aulas.html">
+            <div class="nli-num" style="background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);">M2</div>
+            <div class="nli-info"><div class="nli-name">Copywriting de Conversão</div><div class="nli-meta">41min · Disponível</div></div>
+          </a>
+          <a class="nav-link-item" href="modulos.html" style="opacity:.5;">
+            <div class="nli-num" style="background:rgba(255,255,255,0.05);color:var(--text3);">M3</div>
+            <div class="nli-info"><div class="nli-name" style="color:var(--text3);">Mindset de Alta Performance</div><div class="nli-meta"><i class="ti ti-lock" style="font-size:10px;"></i> Bloqueado</div></div>
+          </a>
         </div>
 
-        <div class="mat-card t-xls" data-tipo="xls">
-          <div class="mat-capa">
-            <div class="mat-capa-glow"></div>
-            <div class="mat-capa-ico"><i class="ti ti-table"></i></div>
-            <div class="mat-capa-num">XLS</div>
-            <div class="new-badge">NOVO</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="card" style="animation-delay:.32s;">
+            <div class="card-hd"><span class="card-title">⚡ Atividade recente</span><a class="card-link" href="#">Ver tudo</a></div>
+            <div class="act-row"><div class="act-ico ai-g"><i class="ti ti-circle-check"></i></div><div><div class="act-txt">Aula concluída — <span>Fundamentos do Tráfego</span></div><div class="act-time">2h atrás</div></div></div>
+            <div class="act-row"><div class="act-ico ai-p"><i class="ti ti-download"></i></div><div><div class="act-txt">Download — <span>Planilha de Metas 2025</span></div><div class="act-time">5h atrás</div></div></div>
+            <div class="act-row"><div class="act-ico ai-b"><i class="ti ti-message-circle"></i></div><div><div class="act-txt">Ticket #042 <span>respondido pelo mentor</span></div><div class="act-time">1 dia atrás</div></div></div>
+            <div class="act-row"><div class="act-ico ai-y"><i class="ti ti-trophy"></i></div><div><div class="act-txt">Módulo 1 <span>finalizado com 100%</span></div><div class="act-time">3 dias atrás</div></div></div>
           </div>
-          <div class="mat-body">
-            <div class="mat-modulo">Geral</div>
-            <div class="mat-name">Planilha de Metas 2025</div>
-            <div class="mat-desc">Planilha interativa para acompanhar suas metas de faturamento e crescimento mensal.</div>
-            <div class="mat-footer">
-              <span class="mat-size"><i class="ti ti-file" style="font-size:12px;vertical-align:-1px;"></i> XLSX · 1.2 MB</span>
-              <button class="btn-dl"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button>
-            </div>
+          <div class="card" style="animation-delay:.36s;">
+            <div class="card-hd"><span class="card-title">🏆 Conquistas</span></div>
+            <div class="conq-row"><div class="conq-ico" style="background:rgba(255,184,0,0.12);color:var(--yellow);">🥇</div><div><div class="conq-name">Primeiro passo</div><div class="conq-desc">Assistiu à primeira aula</div></div><span class="conq-tag ct-ok">Conquistado</span></div>
+            <div class="conq-row"><div class="conq-ico" style="background:rgba(0,229,160,0.12);color:var(--green);">⚡</div><div><div class="conq-name">Módulo completo</div><div class="conq-desc">Concluiu o Módulo 1</div></div><span class="conq-tag ct-ok">Conquistado</span></div>
+            <div class="conq-row"><div class="conq-ico" style="background:rgba(255,255,255,0.05);color:var(--text3);">🚀</div><div><div class="conq-name">Na metade</div><div class="conq-desc">Complete 50% do curso</div></div><span class="conq-tag ct-no">Em progresso</span></div>
           </div>
         </div>
-
-        <div class="mat-card t-zip" data-tipo="zip">
-          <div class="mat-capa">
-            <div class="mat-capa-glow"></div>
-            <div class="mat-capa-ico"><i class="ti ti-file-zip"></i></div>
-            <div class="mat-capa-num">ZIP</div>
-            <div class="new-badge">NOVO</div>
-          </div>
-          <div class="mat-body">
-            <div class="mat-modulo">Módulo 2</div>
-            <div class="mat-name">Pack de Templates de Criativos</div>
-            <div class="mat-desc">30 templates editáveis para stories, posts e anúncios de alta conversão.</div>
-            <div class="mat-footer">
-              <span class="mat-size"><i class="ti ti-file" style="font-size:12px;vertical-align:-1px;"></i> ZIP · 124 MB</span>
-              <button class="btn-dl"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mat-card t-pdf" data-tipo="pdf">
-          <div class="mat-capa">
-            <div class="mat-capa-glow"></div>
-            <div class="mat-capa-ico"><i class="ti ti-checklist"></i></div>
-            <div class="mat-capa-num">PDF</div>
-          </div>
-          <div class="mat-body">
-            <div class="mat-modulo">Módulo 1</div>
-            <div class="mat-name">Checklist de Lançamento</div>
-            <div class="mat-desc">Passo a passo completo para lançar sua oferta com máxima conversão.</div>
-            <div class="mat-footer">
-              <span class="mat-size"><i class="ti ti-file" style="font-size:12px;vertical-align:-1px;"></i> PDF · 3.1 MB</span>
-              <button class="btn-dl"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mat-card t-mp4" data-tipo="mp4">
-          <div class="mat-capa">
-            <div class="mat-capa-glow"></div>
-            <div class="mat-capa-ico"><i class="ti ti-video"></i></div>
-            <div class="mat-capa-num">MP4</div>
-            <div class="new-badge">NOVO</div>
-          </div>
-          <div class="mat-body">
-            <div class="mat-modulo">Bônus</div>
-            <div class="mat-name">Aula Bônus: VSL Matadora</div>
-            <div class="mat-desc">Aula exclusiva sobre como criar uma Video Sales Letter que vende no automático.</div>
-            <div class="mat-footer">
-              <span class="mat-size"><i class="ti ti-file" style="font-size:12px;vertical-align:-1px;"></i> MP4 · 890 MB</span>
-              <button class="btn-dl"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mat-card t-xls" data-tipo="xls">
-          <div class="mat-capa">
-            <div class="mat-capa-glow"></div>
-            <div class="mat-capa-ico"><i class="ti ti-calculator"></i></div>
-            <div class="mat-capa-num">XLS</div>
-          </div>
-          <div class="mat-body">
-            <div class="mat-modulo">Módulo 2</div>
-            <div class="mat-name">Calculadora de ROI e ROAS</div>
-            <div class="mat-desc">Calcule o retorno sobre investimento em suas campanhas de tráfego pago.</div>
-            <div class="mat-footer">
-              <span class="mat-size"><i class="ti ti-file" style="font-size:12px;vertical-align:-1px;"></i> XLSX · 0.8 MB</span>
-              <button class="btn-dl"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- TODOS OS MATERIAIS -->
-      <div class="sec-title-row">
-        <div class="sec-title">Todos os materiais</div>
-        <div class="sec-count" id="total-count">12 arquivos</div>
-      </div>
-
-      <div class="mat-list" id="mat-list">
-        <div class="mat-list-item" data-tipo="pdf"><div class="mat-list-ico" style="background:rgba(255,77,141,0.12);color:var(--pink);"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Guia Completo de Tráfego Pago</div><div class="mat-list-meta">PDF · 8.4 MB</div></div><span class="mat-list-mod">Módulo 2</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="xls"><div class="mat-list-ico" style="background:rgba(0,229,160,0.12);color:var(--green);"><i class="ti ti-table"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Planilha de Metas 2025</div><div class="mat-list-meta">XLSX · 1.2 MB</div></div><span class="mat-list-mod">Geral</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="zip"><div class="mat-list-ico" style="background:rgba(255,184,0,0.12);color:var(--yellow);"><i class="ti ti-file-zip"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Pack de Templates de Criativos</div><div class="mat-list-meta">ZIP · 124 MB</div></div><span class="mat-list-mod">Módulo 2</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="pdf"><div class="mat-list-ico" style="background:rgba(255,77,141,0.12);color:var(--pink);"><i class="ti ti-checklist"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Checklist de Lançamento</div><div class="mat-list-meta">PDF · 3.1 MB</div></div><span class="mat-list-mod">Módulo 1</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="mp4"><div class="mat-list-ico" style="background:rgba(0,200,255,0.12);color:var(--cyan);"><i class="ti ti-video"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Aula Bônus: VSL Matadora</div><div class="mat-list-meta">MP4 · 890 MB</div></div><span class="mat-list-mod">Bônus</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="xls"><div class="mat-list-ico" style="background:rgba(0,229,160,0.12);color:var(--green);"><i class="ti ti-calculator"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Calculadora de ROI e ROAS</div><div class="mat-list-meta">XLSX · 0.8 MB</div></div><span class="mat-list-mod">Módulo 2</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="pdf"><div class="mat-list-ico" style="background:rgba(255,77,141,0.12);color:var(--pink);"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">E-book: Copywriting para Iniciantes</div><div class="mat-list-meta">PDF · 5.6 MB</div></div><span class="mat-list-mod">Módulo 1</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="zip"><div class="mat-list-ico" style="background:rgba(255,184,0,0.12);color:var(--yellow);"><i class="ti ti-file-zip"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Scripts de Vendas Prontos</div><div class="mat-list-meta">ZIP · 2.3 MB</div></div><span class="mat-list-mod">Módulo 2</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="xls"><div class="mat-list-ico" style="background:rgba(0,229,160,0.12);color:var(--green);"><i class="ti ti-table"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Planilha de Funil de Vendas</div><div class="mat-list-meta">XLSX · 1.8 MB</div></div><span class="mat-list-mod">Módulo 2</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="pdf"><div class="mat-list-ico" style="background:rgba(124,92,255,0.12);color:var(--purple);"><i class="ti ti-file-type-pdf"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Manual de Posicionamento de Marca</div><div class="mat-list-meta">PDF · 4.2 MB</div></div><span class="mat-list-mod">Módulo 1</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="mp4"><div class="mat-list-ico" style="background:rgba(0,200,255,0.12);color:var(--cyan);"><i class="ti ti-video"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Aula Bônus: IA no Marketing</div><div class="mat-list-meta">MP4 · 640 MB</div></div><span class="mat-list-mod">Bônus</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
-        <div class="mat-list-item" data-tipo="zip"><div class="mat-list-ico" style="background:rgba(255,184,0,0.12);color:var(--yellow);"><i class="ti ti-file-zip"></i></div><div style="flex:1;min-width:0;"><div class="mat-list-name">Pack de Artes para Stories</div><div class="mat-list-meta">ZIP · 88 MB</div></div><span class="mat-list-mod">Bônus</span><button class="btn-dl" style="margin-left:12px;"><i class="ti ti-download" style="font-size:13px;"></i> Baixar</button></div>
       </div>
 
     </div>
   </main>
 </div>
-
 <script>
-  function filtrar(tipo, btn) {
-    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.mat-card').forEach(c => {
-      c.style.display = (tipo === 'todos' || c.dataset.tipo === tipo) ? 'block' : 'none';
+  // Verificar se aluno está logado
+  verificarSessao().then(function(session) {
+    if (!session) return;
+    // Atualizar nome do aluno na sidebar
+    getDadosAluno().then(function(aluno) {
+      if (!aluno) return;
+      var nome = aluno.nome || aluno.email.split('@')[0];
+      var initials = nome.split(' ').map(function(n){ return n[0]; }).join('').slice(0,2).toUpperCase();
+      var nomeEl = document.querySelector('.user-name');
+      var avEl = document.querySelector('.avatar');
+      var saudEl = document.getElementById('saudacao');
+      if (nomeEl) nomeEl.textContent = nome;
+      if (avEl) avEl.textContent = initials;
+      if (saudEl) {
+        var h = new Date().getHours();
+        var s = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+        saudEl.textContent = s + ', ' + nome.split(' ')[0] + ' 👋';
+      }
     });
-    document.querySelectorAll('.mat-list-item').forEach(c => {
-      c.style.display = (tipo === 'todos' || c.dataset.tipo === tipo) ? 'flex' : 'none';
-    });
-  }
+  });
 
-  function buscar(q) {
-    const t = q.toLowerCase();
-    document.querySelectorAll('.mat-list-item').forEach(item => {
-      const nome = item.querySelector('.mat-list-name').textContent.toLowerCase();
-      item.style.display = nome.includes(t) ? 'flex' : 'none';
-    });
-    document.querySelectorAll('.mat-card').forEach(item => {
-      const nome = item.querySelector('.mat-name').textContent.toLowerCase();
-      item.style.display = nome.includes(t) ? 'block' : 'none';
+  const dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const now=new Date(),h=now.getHours();
+  document.getElementById('saudacao').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', João 👋';
+  document.getElementById('data-hoje').textContent=dias[now.getDay()]+', '+now.getDate()+' de '+meses[now.getMonth()]+' de '+now.getFullYear();
+
+  // GRÁFICO LINHA
+  new Chart(document.getElementById('chart-linha').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+      datasets:[
+        {label:'Aulas',data:[1,3,2,4,3,2,3],borderColor:'#00c8ff',backgroundColor:'rgba(0,200,255,0.08)',borderWidth:2.5,pointBackgroundColor:'#00c8ff',pointRadius:4,pointHoverRadius:6,tension:.4,fill:true},
+        {label:'Horas',data:[0.5,1.5,1,2,1.5,1,1.5],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,0.05)',borderWidth:2,pointBackgroundColor:'#00e5a0',pointRadius:3,pointHoverRadius:5,tension:.4,fill:true}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{color:'#8b96b8',font:{family:'Plus Jakarta Sans',size:11},boxWidth:12,padding:14}},
+        tooltip:{backgroundColor:'#0f1320',borderColor:'rgba(0,200,255,0.25)',borderWidth:1,titleColor:'#f0f4ff',bodyColor:'#8b96b8',titleFont:{family:'Plus Jakarta Sans',weight:'700'},bodyFont:{family:'Plus Jakarta Sans'},padding:10,cornerRadius:8}
+      },
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4a5270',font:{family:'Plus Jakarta Sans',size:11}}},
+        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4a5270',font:{family:'Plus Jakarta Sans',size:11},stepSize:1},beginAtZero:true}
+      }
+    }
+  });
+
+  // RADIAIS
+  function radial(id,pct,color){
+    new Chart(document.getElementById(id).getContext('2d'),{
+      type:'doughnut',
+      data:{datasets:[{data:[pct,100-pct],backgroundColor:[color,'rgba(255,255,255,0.06)'],borderWidth:0,hoverOffset:0}]},
+      options:{responsive:false,cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{animateRotate:true,duration:1000}}
     });
   }
+  radial('r1',100,'#00e5a0');
+  radial('r2',50,'#00c8ff');
+  radial('r3',0,'#4a5270');
+  radial('r4',0,'#4a5270');
 </script>
 </body>
 </html>
