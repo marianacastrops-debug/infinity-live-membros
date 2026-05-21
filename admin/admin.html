@@ -257,6 +257,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 /* MODAL CONFIRMAR EXCLUSÃO */
 .overlay-confirm{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(5px);z-index:9999;display:none;align-items:center;justify-content:center;}
 .overlay-confirm.open{display:flex;}
+  .overlay-confirm.aberto{display:flex;}
 .modal-confirm{background:var(--card);border:1px solid rgba(255,59,92,0.25);border-radius:14px;padding:28px;width:360px;text-align:center;}
 .modal-confirm-ico{width:56px;height:56px;border-radius:50%;background:rgba(255,59,92,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;}
 .modal-confirm-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
@@ -278,17 +279,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 <script src="admin-auth.js"></script>
 </head>
 <body>
-<script>
-// Limpar todos os dados de exemplo
-(function(){
-  if (!localStorage.getItem('il_limpo_v2')) {
-    ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado','il_pronto'].forEach(function(k){
-      localStorage.removeItem(k);
-    });
-    localStorage.setItem('il_limpo_v2','1');
-  }
-})();
-</script>
 <div class="layout">
 
 <!-- SIDEBAR -->
@@ -1172,11 +1162,11 @@ function confirmar(titulo, msg, callback, btnTxt) {
   document.getElementById('confirm-msg').textContent = msg || 'Tem certeza? Esta ação não pode ser desfeita.';
   document.getElementById('confirm-ok-btn').innerHTML = '<i class="ti ti-trash" style="font-size:14px;"></i> ' + (btnTxt || 'Excluir');
   _confirmCallback = callback;
-  document.getElementById('overlay-confirm').classList.add('open');
+  document.getElementById('overlay-confirm').classList.add('aberto');
 }
 
 function fecharConfirm() {
-  document.getElementById('overlay-confirm').classList.remove('open');
+  document.getElementById('overlay-confirm').classList.remove('aberto');
   _confirmCallback = null;
 }
 
@@ -1186,9 +1176,11 @@ function executarConfirm() {
 }
 
 // Fechar ao clicar fora
-document.getElementById('overlay-confirm').addEventListener('click', function(e) {
-  if (e.target === this) fecharConfirm();
-});
+if (document.getElementById('overlay-confirm')) {
+  document.getElementById('overlay-confirm').addEventListener('click', function(e) {
+    if (e.target === this) fecharConfirm();
+  });
+}
 
 // ── EXCLUIR ALUNO ──
 function confirmarExcluirAluno(id, nome) {
@@ -1404,11 +1396,11 @@ setInterval(function() {
 // ================================================
 (function init() {
   // Limpar dados de exemplo na primeira vez
-  if (!localStorage.getItem('il_zerado')) {
-    localStorage.removeItem('il_mods');
-    localStorage.removeItem('il_aulas');
-    localStorage.removeItem('il_alunos');
-    localStorage.setItem('il_zerado', '1');
+  if (!localStorage.getItem('il_limpo_v2')) {
+    ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado','il_pronto'].forEach(function(k){
+      localStorage.removeItem(k);
+    });
+    localStorage.setItem('il_limpo_v2','1');
   }
   // garantir que só o dashboard aparece
   var todas = document.querySelectorAll('.page');
