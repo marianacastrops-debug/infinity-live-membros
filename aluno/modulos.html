@@ -214,31 +214,31 @@ const _sb=supabase.createClient(
 );
 
 (async function init(){
+  var SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
+  var SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+  var HDRS={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+
   // Verificar sessão
   var sess=await _sb.auth.getSession();
   if(!sess.data.session){window.location.href='../login.html';return;}
   var user=sess.data.session.user;
 
-  // Perfil
-  var perfRes=await _sb.from('profiles').select('*').eq('id',user.id).single();
-  var nome=(perfRes.data&&perfRes.data.nome)?perfRes.data.nome:user.email.split('@')[0];
-  var inits=nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
-  document.getElementById('av').textContent=inits;
-  document.getElementById('user-nome').textContent=nome;
+  // Perfil (em paralelo com módulos)
+  _sb.from('profiles').select('*').eq('id',user.id).single().then(function(res){
+    var nome=(res.data&&res.data.nome)?res.data.nome:user.email.split('@')[0];
+    var inits=nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
+    document.getElementById('av').textContent=inits;
+    document.getElementById('user-nome').textContent=nome;
+  });
 
-  // Buscar módulos e aulas do Supabase (sem depender de autenticação)
+  // Buscar módulos e aulas via fetch direto
   var modsVisiveis=[], aulasPublicadas=[];
   try{
-    // Usar fetch direto para evitar problemas de sessão com RLS
-    var sbUrl='https://fbjxampsauqfngdennpi.supabase.co';
-    var sbKey='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
-    var headers={'apikey':sbKey,'Authorization':'Bearer '+sbKey,'Content-Type':'application/json'};
-    
-    var rM=await fetch(sbUrl+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:headers});
-    var rA=await fetch(sbUrl+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:headers});
+    var rM=await fetch(SB_URL+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:HDRS});
+    var rA=await fetch(SB_URL+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:HDRS});
     var todosM=await rM.json();
     var todasA=await rA.json();
-    
+    console.log('Módulos recebidos:',todosM.length, todosM);
     if(Array.isArray(todosM)&&todosM.length>0){
       modsVisiveis=todosM
         .filter(function(m){return m.status!=='hidden';})
@@ -251,14 +251,7 @@ const _sb=supabase.createClient(
         .map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
     }
   }catch(e){
-    console.warn('Erro ao buscar módulos:',e);
-    // Fallback localStorage
-    try{
-      var lsM=JSON.parse(localStorage.getItem('il_mods'))||[];
-      var lsA=JSON.parse(localStorage.getItem('il_aulas'))||[];
-      modsVisiveis=lsM.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-      aulasPublicadas=lsA.filter(function(a){return a.status!=='draft';});
-    }catch(e2){}
+    console.error('Erro ao buscar módulos:',e);
   }
 
   // Progresso do Supabase
