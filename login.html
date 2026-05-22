@@ -275,7 +275,14 @@
     try {
       const _sb = supabase.createClient(
         'https://fbjxampsauqfngdennpi.supabase.co',
-        'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
+        'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg',
+        {
+          auth: {
+            persistSession: true,
+            storageKey: 'il_session',
+            autoRefreshToken: true
+          }
+        }
       );
 
       const { data, error } = await _sb.auth.signInWithPassword({ email, password: senha });
