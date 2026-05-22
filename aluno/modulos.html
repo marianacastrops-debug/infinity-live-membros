@@ -498,4 +498,21 @@ async function fazerLogout(){await _sb.auth.signOut();window.location.href='../l
         }
       }catch(e){}
     })();
-  }
+  }  // Buscar módulos e aulas do Supabase
+  var SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
+  var SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+  var HDRS={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+  var mods=[], aulas=[];
+  try{
+    var [rM,rA]=await Promise.all([
+      fetch(SB_URL+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:HDRS}),
+      fetch(SB_URL+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:HDRS})
+    ]);
+    var dm=await rM.json();
+    var da=await rA.json();
+    if(Array.isArray(dm)) mods=dm;
+    if(Array.isArray(da)) aulas=da;
+    console.log('Módulos:', mods.length, 'Aulas:', aulas.length);
+  }catch(e){console.error('Erro ao buscar:',e);}
+
+
