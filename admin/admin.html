@@ -713,11 +713,59 @@ function salvarMod(){
   if(!nome){alert('O nome é obrigatório.');return;}
   var editId=document.getElementById('mod-id').value;
   var mods=getMods();
-  var img=document.getElementById('img-prev').src;
-  if(img===window.location.href||img==='')img='';
-  var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||mods.length+1};
-  if(editId){var i=mods.findIndex(function(m){return m.id===editId;});if(i!==-1)mods[i]=dados;}else mods.push(dados);
-  setMods(mods);fecharModal('modal-modulo');renderMods();toast(editId?'Módulo atualizado!':'Módulo criado!');
+  var imgEl=document.getElementById('img-prev');
+  var img=imgEl.src||'';
+  // Se a imagem for base64 muito grande, comprimir
+  if(img.startsWith('data:image')){
+    try{
+      var canvas=document.createElement('canvas');
+      var ctx2d=canvas.getContext('2d');
+      var tempImg=new Image();
+      tempImg.onload=function(){
+        // Redimensionar para max 600px mantendo proporção
+        var maxW=600,maxH=800;
+        var w=tempImg.width,h=tempImg.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+        canvas.width=w;canvas.height=h;
+        ctx2d.drawImage(tempImg,0,0,w,h);
+        var imgComprimida=canvas.toDataURL('image/jpeg',0.75);
+        _salvarModComImg(editId,nome,imgComprimida,mods);
+      };
+      tempImg.src=img;
+    }catch(e){
+      _salvarModComImg(editId,nome,img,mods);
+    }
+  } else {
+    _salvarModComImg(editId,nome,img,mods);
+  }
+}
+
+function _salvarModComImg(editId,nome,img,mods){
+  try{
+    var dados={
+      id:editId||uid(),
+      nome:nome,
+      desc:document.getElementById('mod-desc').value.trim(),
+      imagem:img,
+      status:document.getElementById('mod-status').value,
+      cor:document.getElementById('mod-cor').value,
+      ordem:parseInt(document.getElementById('mod-ordem').value)||mods.length+1
+    };
+    if(editId){var i=mods.findIndex(function(m){return m.id===editId;});if(i!==-1)mods[i]=dados;}
+    else mods.push(dados);
+    setMods(mods);
+    fecharModal('modal-modulo');
+    renderMods();
+    toast(editId?'Módulo atualizado!':'Módulo criado!');
+  }catch(e){
+    console.error('Erro ao salvar módulo:',e);
+    if(e.name==='QuotaExceededError'||String(e).includes('quota')||String(e).includes('storage')){
+      alert('Imagem muito grande! Use uma imagem menor (abaixo de 2MB) ou comprimida. Tente salvar sem imagem primeiro.');
+    } else {
+      alert('Erro ao salvar. Tente novamente.');
+    }
+  }
 }
 
 function excluirMod(){
