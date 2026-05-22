@@ -252,6 +252,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .toast{position:fixed;bottom:22px;right:22px;background:var(--card);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:11px 16px;display:none;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--text);z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,0.4);}
 .toast i{font-size:17px;color:var(--green);}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 <div class="layout">
@@ -518,12 +519,48 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 
 <script>
 // ================================================
-// STORAGE
+// SUPABASE
+// ================================================
+var _sbAdmin = supabase.createClient(
+  'https://fbjxampsauqfngdennpi.supabase.co',
+  'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
+);
+
+// ================================================
+// STORAGE — localStorage para alunos/tickets, Supabase para módulos/aulas
 // ================================================
 var MK='il_mods',AK='il_aulas',ALK='il_alunos',TK='il_tickets',MaTK='il_materiais';
+
+// getMods e getAulas ainda usam localStorage como cache
+// setMods e setAulas salvam em AMBOS (localStorage + Supabase)
 function getMods(){try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return[];}}
-function setMods(d){localStorage.setItem(MK,JSON.stringify(d));}
 function getAulas(){try{return JSON.parse(localStorage.getItem(AK))||[];}catch(e){return[];}}
+
+async function syncModsDoSupabase(){
+  try{
+    var res=await _sbAdmin.from('modulos').select('*').order('ordem');
+    if(res.data&&res.data.length){
+      var mods=res.data.map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
+      localStorage.setItem(MK,JSON.stringify(mods));
+      return mods;
+    }
+  }catch(e){console.error('Erro sync mods:',e);}
+  return getMods();
+}
+
+async function syncAulasDoSupabase(){
+  try{
+    var res=await _sbAdmin.from('aulas').select('*').order('ordem');
+    if(res.data&&res.data.length){
+      var aulas=res.data.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
+      localStorage.setItem(AK,JSON.stringify(aulas));
+      return aulas;
+    }
+  }catch(e){console.error('Erro sync aulas:',e);}
+  return getAulas();
+}
+
+function setMods(d){localStorage.setItem(MK,JSON.stringify(d));}
 function setAulas(d){localStorage.setItem(AK,JSON.stringify(d));}
 function getAlunos(){try{return JSON.parse(localStorage.getItem(ALK))||[];}catch(e){return[];}}
 function setAlunos(d){localStorage.setItem(ALK,JSON.stringify(d));}
@@ -741,30 +778,23 @@ function salvarMod(){
   }
 }
 
-function _salvarModComImg(editId,nome,img,mods){
+async function _salvarModComImg(editId,nome,img,mods){
   try{
-    var dados={
-      id:editId||uid(),
-      nome:nome,
-      desc:document.getElementById('mod-desc').value.trim(),
-      imagem:img,
-      status:document.getElementById('mod-status').value,
-      cor:document.getElementById('mod-cor').value,
-      ordem:parseInt(document.getElementById('mod-ordem').value)||mods.length+1
-    };
-    if(editId){var i=mods.findIndex(function(m){return m.id===editId;});if(i!==-1)mods[i]=dados;}
+    var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||mods.length+1};
+    // Salvar no Supabase
+    var sbRow={id:dados.id,nome:dados.nome,descricao:dados.desc,imagem:dados.imagem,status:dados.status,cor:dados.cor,ordem:dados.ordem};
+    if(editId){await _sbAdmin.from('modulos').update(sbRow).eq('id',editId);}
+    else{await _sbAdmin.from('modulos').insert(sbRow);}
+    // Atualizar cache
+    if(editId){var idx=mods.findIndex(function(m){return m.id===editId;});if(idx!==-1)mods[idx]=dados;}
     else mods.push(dados);
+    _modsCache=mods;
     setMods(mods);
-    fecharModal('modal-modulo');
-    renderMods();
-    toast(editId?'Módulo atualizado!':'Módulo criado!');
+    fecharModal('modal-modulo');renderMods();toast(editId?'Modulo atualizado!':'Modulo criado!');
   }catch(e){
-    console.error('Erro ao salvar módulo:',e);
-    if(e.name==='QuotaExceededError'||String(e).includes('quota')||String(e).includes('storage')){
-      alert('Imagem muito grande! Use uma imagem menor (abaixo de 2MB) ou comprimida. Tente salvar sem imagem primeiro.');
-    } else {
-      alert('Erro ao salvar. Tente novamente.');
-    }
+    console.error('Erro:',e);
+    if(String(e).includes('quota')||String(e).includes('storage')){alert('Imagem muito grande! Use uma menor.');}
+    else{alert('Erro ao salvar: '+e.message);}
   }
 }
 
@@ -773,7 +803,10 @@ function excluirMod(){
   if(!id)return;
   var nome=document.getElementById('mod-nome').value;
   fecharModal('modal-modulo');
-  confirmar('Excluir módulo','Excluir "'+nome+'"? As aulas vinculadas também serão removidas.',function(){
+  confirmar('Excluir módulo','Excluir "'+nome+'"? As aulas vinculadas também serão removidas.',async function(){
+    await _sbAdmin.from('modulos').delete().eq('id',id);
+    _sbAdmin.from('modulos').delete().eq('id',id);
+    _modsCache=null;_aulasCache=null;
     setMods(getMods().filter(function(m){return m.id!==id;}));
     setAulas(getAulas().filter(function(a){return a.moduloId!==id;}));
     renderMods();toast('Módulo excluído.');
@@ -827,6 +860,15 @@ function salvarAula(){
   var embed=m?'https://www.youtube.com/embed/'+m[1]:url;
   var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:embed,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim()};
   if(editId){var i=aulas.findIndex(function(a){return a.id===editId;});if(i!==-1)aulas[i]=dados;}else aulas.push(dados);
+  // Salvar no Supabase
+  var sbAula={id:dados.id,modulo_id:dados.moduloId,nome:dados.nome,url:dados.url,embed:dados.embed,duracao:dados.duracao,status:dados.status,descricao:dados.desc,ordem:aulas.filter(function(a){return a.moduloId===dados.moduloId;}).length};
+  if(editId){await _sbAdmin.from('aulas').update(sbAula).eq('id',editId);}
+  else{await _sbAdmin.from('aulas').insert(sbAula);}
+  // Salvar no Supabase
+  var sbAula={id:dados.id,modulo_id:dados.moduloId,nome:dados.nome,url:dados.url,embed:dados.embed,duracao:dados.duracao,status:dados.status,descricao:dados.desc,ordem:aulas.filter(function(a){return a.moduloId===dados.moduloId;}).length+1};
+  if(editId){_sbAdmin.from('aulas').update(sbAula).eq('id',editId);}
+  else{_sbAdmin.from('aulas').insert(sbAula);}
+  _aulasCache=null;
   setAulas(aulas);fecharModal('modal-aula');renderMods();toast(editId?'Aula atualizada!':'Aula adicionada!');
 }
 
@@ -840,7 +882,8 @@ function excluirAula(){
   },'Excluir aula');
 }
 
-function delAula(id){
+async function delAula(id){
+  await _sbAdmin.from('aulas').delete().eq('id',id);
   setAulas(getAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
 }
 
@@ -1135,8 +1178,8 @@ setInterval(function(){
 // ================================================
 // INIT — zerar localStorage e iniciar
 // ================================================
-(function(){
-  // Sempre que abrir, zerar dados de exemplo
+(async function(){
+  // Limpar dados de exemplo antigos
   if(!localStorage.getItem('il_admin_pronto_v4')){
     ['il_mods','il_aulas','il_alunos','il_tickets','il_materiais',
      'il_zerado','il_pronto','il_limpo_v2','il_limpo_v3'].forEach(function(k){localStorage.removeItem(k);});
@@ -1146,6 +1189,9 @@ setInterval(function(){
   document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
   document.getElementById('pg-dashboard').style.display='block';
   document.getElementById('pg-dashboard').classList.add('ativa');
+  // Sincronizar módulos e aulas do Supabase
+  await syncModsDoSupabase();
+  await syncAulasDoSupabase();
   atualizarStats();
 })();
 </script>
