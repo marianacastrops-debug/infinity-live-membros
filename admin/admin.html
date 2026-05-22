@@ -1218,23 +1218,6 @@ async function sincronizarComSupabase(){
   var erros=[];
 
   // Comprimir imagem base64
-  async function comprimir(src){
-    return new Promise(function(ok){
-      if(!src||!src.startsWith('data:image')){ok(src||'');return;}
-      var i=new Image();
-      i.onload=function(){
-        var cv=document.createElement('canvas');
-        var mW=400,mH=600,w=i.width,h=i.height;
-        if(w>mW){h=Math.round(h*mW/w);w=mW;}
-        if(h>mH){w=Math.round(w*mH/h);h=mH;}
-        cv.width=w;cv.height=h;
-        cv.getContext('2d').drawImage(i,0,0,w,h);
-        ok(cv.toDataURL('image/jpeg',0.7));
-      };
-      i.onerror=function(){ok('');};
-      i.src=src;
-    });
-  }
 
   try{
     // Limpar módulos e aulas antigas do Supabase
