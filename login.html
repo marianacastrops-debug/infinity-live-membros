@@ -210,6 +210,21 @@
 </div>
 
 <script>
+  // Cliente Supabase global com sessão persistente
+  const _sb = supabase.createClient(
+    'https://fbjxampsauqfngdennpi.supabase.co',
+    'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg',
+    { auth: { persistSession: true, storageKey: 'il_session', autoRefreshToken: true } }
+  );
+
+  // Verificar se já está logado
+  (async function(){
+    try {
+      const { data: { session } } = await _sb.auth.getSession();
+      if (session) window.location.href = 'aluno/dashboard.html';
+    } catch(e) {}
+  })();
+
   // Partículas
   const pc = document.getElementById('particles');
   for(let i=0;i<30;i++){const p=document.createElement('div');p.className='particle';const s=Math.random()*2.5+1;p.style.cssText=`left:${Math.random()*100}%;bottom:${Math.random()*20}%;width:${s}px;height:${s}px;animation-duration:${Math.random()*5+4}s;animation-delay:${Math.random()*5}s;background:rgba(${Math.random()>.5?'0,200,255':'59,127,255'},${Math.random()*.7+.3});`;pc.appendChild(p);}
@@ -273,18 +288,6 @@
     btnText.style.display = 'none';
 
     try {
-      const _sb = supabase.createClient(
-        'https://fbjxampsauqfngdennpi.supabase.co',
-        'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg',
-        {
-          auth: {
-            persistSession: true,
-            storageKey: 'il_session',
-            autoRefreshToken: true
-          }
-        }
-      );
-
       const { data, error } = await _sb.auth.signInWithPassword({ email, password: senha });
 
       if (error) throw error;
