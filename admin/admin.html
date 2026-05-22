@@ -6,30 +6,20 @@
 <title>Infinity Live — Admin</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --bg:#060810;--bg2:#0a0d18;--card:#0f1320;--card2:#141828;--hover:#181e30;
-  --cyan:#00c8ff;--yellow:#ffb800;--pink:#ff4d8d;--green:#00e5a0;--red:#ff3b5c;--purple:#7c5cff;
-  --text:#f0f4ff;--text2:#8b96b8;--text3:#4a5270;
-  --border:rgba(255,255,255,0.07);
-  --g1:linear-gradient(135deg,#00c8ff,#3b7fff);
-  --g3:linear-gradient(135deg,#ff4d8d,#ff8c42);
-  --g4:linear-gradient(135deg,#00e5a0,#00c8ff);
-}
+:root{--bg:#060810;--bg2:#0a0d18;--card:#0f1320;--card2:#141828;--hover:#181e30;--cyan:#00c8ff;--yellow:#ffb800;--pink:#ff4d8d;--green:#00e5a0;--red:#ff3b5c;--purple:#7c5cff;--text:#f0f4ff;--text2:#8b96b8;--text3:#4a5270;--border:rgba(255,255,255,0.07);--g1:linear-gradient(135deg,#00c8ff,#3b7fff);--g3:linear-gradient(135deg,#ff4d8d,#ff8c42);}
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);}
 .layout{display:flex;height:100vh;}
-
-/* SIDEBAR */
 .sidebar{width:230px;min-width:230px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
 .logo-area{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:64px;}
-.logo-area img{width:110px;height:auto;object-fit:contain;}
+.logo-area img{width:110px;object-fit:contain;}
 .logo-fb{display:none;align-items:center;gap:8px;}
 .logo-icon{width:32px;height:32px;border-radius:8px;background:var(--g1);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px;}
-.logo-txt{font-size:13px;font-weight:700;color:var(--text);}
+.logo-txt{font-size:13px;font-weight:700;}
 .admin-badge{margin:8px 10px 2px;background:rgba(255,77,141,0.1);border:1px solid rgba(255,77,141,0.2);border-radius:8px;padding:6px 10px;display:flex;align-items:center;gap:7px;}
-.admin-badge i{color:var(--pink);font-size:14px;}
 .admin-badge-txt{font-size:11px;font-weight:700;color:var(--pink);}
 .admin-badge-sub{font-size:10px;color:var(--text3);}
 .nav-wrap{flex:1;padding:4px 8px;overflow-y:auto;}
@@ -42,53 +32,44 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .nav-cnt{margin-left:auto;background:var(--g3);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;}
 .sidebar-bottom{padding:8px;border-top:1px solid var(--border);}
 .mentor-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card);border-radius:9px;border:1px solid var(--border);}
-.m-av{width:30px;height:30px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff;flex-shrink:0;}
-.m-name{font-size:12px;font-weight:600;color:var(--text);}
+.m-av{width:30px;height:30px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff;}
+.m-name{font-size:12px;font-weight:600;}
 .m-role{font-size:10px;color:var(--pink);font-weight:600;}
-
-/* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .topbar{padding:11px 20px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.tb-title{font-size:15px;font-weight:700;color:var(--text);}
+.tb-title{font-size:15px;font-weight:700;}
 .tb-sub{font-size:11px;color:var(--text2);margin-top:1px;}
 .tb-right{display:flex;align-items:center;gap:8px;}
 .live-pill{display:flex;align-items:center;gap:5px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:5px 11px;border-radius:7px;font-size:11px;font-weight:700;color:var(--green);}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* CONTENT */
 .content{flex:1;overflow-y:auto;padding:16px 20px;}
 .content::-webkit-scrollbar{width:4px;}
 .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:4px;}
-
-/* PÁGINAS */
 .pg{display:none;}
 .pg.ativa{display:block;}
-
-/* BTN */
 .btn{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;padding:8px 15px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap;}
 .btn:hover{opacity:.85;}
 .btn-p{background:var(--g1);color:#fff;}
+.btn-g{background:linear-gradient(135deg,#00e5a0,#00c8ff);color:#000;}
 .btn-d{background:var(--g3);color:#fff;}
 .btn-o{background:transparent;border:1px solid var(--border);color:var(--text2);}
 .btn-o:hover{border-color:rgba(0,200,255,0.3);color:var(--text);}
 .btn-sm{font-size:11px;padding:5px 10px;}
-
-/* CARD */
+.btn-cyan{background:transparent;border:1px solid rgba(0,200,255,0.3);color:var(--cyan);}
+.btn-cyan:hover{background:rgba(0,200,255,0.1);}
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
 .card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.card-title{font-size:13px;font-weight:700;color:var(--text);}
+.card-title{font-size:13px;font-weight:700;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-
-/* STATS */
 .stat{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:13px;position:relative;overflow:hidden;transition:transform .18s;}
 .stat:hover{transform:translateY(-2px);}
 .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .s1::before{background:var(--g1);}
-.s2::before{background:var(--g4);}
+.s2::before{background:linear-gradient(90deg,#00e5a0,#00c8ff);}
 .s3::before{background:var(--g3);}
-.s4::before{background:linear-gradient(90deg,var(--yellow),#ff8c42);}
+.s4::before{background:linear-gradient(90deg,#ffb800,#ff8c42);}
 .stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
 .stat-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
 .si1{background:rgba(0,200,255,0.12);color:var(--cyan);}
@@ -100,10 +81,8 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .sb2{color:var(--green);background:rgba(0,229,160,0.1);}
 .sb3{color:var(--pink);background:rgba(255,77,141,0.1);}
 .sb4{color:var(--yellow);background:rgba(255,184,0,0.1);}
-.stat-val{font-size:22px;font-weight:800;color:var(--text);line-height:1;}
+.stat-val{font-size:22px;font-weight:800;line-height:1;}
 .stat-lbl{font-size:11px;color:var(--text2);margin-top:3px;}
-
-/* TABELA */
 .search-bar{display:flex;gap:8px;margin-bottom:12px;}
 .srch{flex:1;position:relative;}
 .srch i{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);}
@@ -123,24 +102,18 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .sp-ok{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
 .sp-blk{background:rgba(255,59,92,0.12);color:var(--red);border:1px solid rgba(255,59,92,0.2);}
 .sp-new{background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);}
-.pmini{width:65px;height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
-.pmini-f{height:3px;border-radius:2px;background:var(--g1);}
 .acts{display:flex;gap:4px;}
 .rb{width:25px;height:25px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all .12s;border:none;}
 .rb-v{background:rgba(0,200,255,0.08);color:var(--cyan);}
 .rb-v:hover{background:rgba(0,200,255,0.2);}
-.rb-b{background:rgba(255,59,92,0.08);color:var(--red);}
-.rb-b:hover{background:rgba(255,59,92,0.2);}
 .rb-d{background:rgba(255,59,92,0.08);color:var(--red);}
 .rb-d:hover{background:rgba(255,59,92,0.2);}
-
-/* MÓDULOS */
 .mod-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
 .mod-hd{display:flex;align-items:center;gap:11px;padding:13px 15px;}
 .mod-thumb{width:50px;height:65px;border-radius:7px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
 .mod-thumb-ph{width:50px;height:65px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);}
 .mod-info{flex:1;min-width:0;}
-.mod-nome{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.mod-nome{font-size:13px;font-weight:700;margin-bottom:2px;}
 .mod-meta{font-size:11px;color:var(--text2);}
 .mod-acts{display:flex;gap:6px;flex-shrink:0;}
 .st{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:4px;display:inline-block;}
@@ -151,7 +124,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .aula-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--card2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border);}
 .aula-n{font-size:11px;font-weight:700;color:var(--text3);width:18px;text-align:center;flex-shrink:0;}
 .aula-info{flex:1;min-width:0;}
-.aula-nome{font-size:12px;font-weight:600;color:var(--text);}
+.aula-nome{font-size:12px;font-weight:600;}
 .aula-url{font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .aula-dur{font-size:10px;color:var(--text3);flex-shrink:0;}
 .aula-acts{display:flex;gap:3px;flex-shrink:0;}
@@ -160,40 +133,16 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .ab-e:hover{background:rgba(0,200,255,0.2);}
 .ab-d{background:rgba(255,59,92,0.08);color:var(--red);}
 .ab-d:hover{background:rgba(255,59,92,0.2);}
-
-/* MATERIAIS */
-.mat-upload{border:2px dashed rgba(0,200,255,0.2);border-radius:11px;padding:20px;text-align:center;cursor:pointer;transition:all .18s;margin-bottom:12px;background:var(--card2);}
-.mat-upload:hover{border-color:rgba(0,200,255,0.4);background:rgba(0,200,255,0.04);}
-.mat-upload i{font-size:28px;color:var(--cyan);display:block;margin-bottom:5px;}
-.mat-upload p{font-size:13px;font-weight:600;color:var(--text2);}
-.mat-upload small{font-size:11px;color:var(--text3);}
-
-/* TICKETS */
 .tkt{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:6px;border:1px solid var(--border);}
 .tkt-num{font-size:11px;font-weight:700;color:var(--text3);width:34px;flex-shrink:0;}
 .tkt-info{flex:1;min-width:0;}
-.tkt-title{font-size:12px;font-weight:600;color:var(--text);}
+.tkt-title{font-size:12px;font-weight:600;}
 .tkt-user{font-size:11px;color:var(--text2);margin-top:1px;}
 .tkt-time{font-size:10px;color:var(--text3);white-space:nowrap;}
-
-/* CONFIG */
-.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.tgl-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-.tgl-row:last-child{border-bottom:none;}
-.tgl-lbl{font-size:13px;font-weight:600;color:var(--text);}
-.tgl-sub{font-size:11px;color:var(--text2);margin-top:2px;}
-.tgl{width:38px;height:20px;border-radius:10px;background:rgba(255,255,255,0.1);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none;}
-.tgl.on{background:var(--cyan);}
-.tgl::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;}
-.tgl.on::after{transform:translateX(18px);}
-
-/* MODAIS */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;}
 .overlay.aberto{display:flex;}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:480px;max-height:88vh;overflow-y:auto;}
-.modal::-webkit-scrollbar{width:3px;}
-.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-.modal-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:3px;}
 .modal-sub{font-size:12px;color:var(--text2);margin-bottom:16px;}
 .mf{margin-bottom:12px;}
 .ml{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px;display:block;}
@@ -205,32 +154,30 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .mta::placeholder{color:var(--text3);}
 .msel{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;cursor:pointer;}
 .mfooter{display:flex;gap:8px;margin-top:16px;}
-.hint{font-size:11px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:4px;}
-.hint i{font-size:13px;color:var(--cyan);}
 .grid2m{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-
-/* UPLOAD IMG */
-.upload-area{width:100%;height:140px;border:2px dashed rgba(0,200,255,0.25);border-radius:9px;background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .18s;margin-top:6px;}
-.upload-area:hover{border-color:rgba(0,200,255,0.5);background:rgba(0,200,255,0.04);}
-.upload-area i{font-size:26px;color:var(--cyan);}
+.upload-area{width:100%;height:130px;border:2px dashed rgba(0,200,255,0.25);border-radius:9px;background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .18s;margin-top:6px;}
+.upload-area:hover{border-color:rgba(0,200,255,0.5);}
+.upload-area i{font-size:24px;color:var(--cyan);}
 .upload-area strong{font-size:12px;color:var(--text2);}
 .upload-area span{font-size:11px;color:var(--text3);}
 .img-prev-box{position:relative;margin-top:6px;display:none;}
-.img-prev-box img{width:100%;height:140px;object-fit:cover;border-radius:9px;border:1px solid var(--border);cursor:pointer;}
+.img-prev-box img{width:100%;height:130px;object-fit:cover;border-radius:9px;border:1px solid var(--border);cursor:pointer;}
 .btn-rem-img{position:absolute;top:7px;right:7px;background:rgba(255,59,92,0.9);color:#fff;border:none;border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
-.prog-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-top:6px;display:none;overflow:hidden;}
-.prog-fill{height:3px;background:var(--g1);border-radius:2px;width:0;transition:width .3s;}
-
-/* CONFIRM */
 .overlay-confirm{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;}
 .overlay-confirm.aberto{display:flex;}
 .modal-confirm{background:var(--card);border:1px solid rgba(255,59,92,0.25);border-radius:14px;padding:24px;width:340px;text-align:center;}
 .modal-confirm-ico{width:50px;height:50px;border-radius:50%;background:rgba(255,59,92,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px;}
-.modal-confirm-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.modal-confirm-title{font-size:15px;font-weight:700;margin-bottom:5px;}
 .modal-confirm-msg{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:18px;}
 .modal-confirm-btns{display:flex;gap:8px;}
-
-/* ATIVIDADE */
+.tgl-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.tgl-row:last-child{border-bottom:none;}
+.tgl-lbl{font-size:13px;font-weight:600;}
+.tgl-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.tgl{width:38px;height:20px;border-radius:10px;background:rgba(255,255,255,0.1);position:relative;cursor:pointer;transition:background .2s;border:none;}
+.tgl.on{background:var(--cyan);}
+.tgl::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;}
+.tgl.on::after{transform:translateX(18px);}
 .act-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .act-item:last-child{border-bottom:none;}
 .act-ico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
@@ -238,50 +185,40 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .ai-p{background:rgba(255,77,141,0.12);color:var(--pink);}
 .ai-b{background:rgba(0,200,255,0.12);color:var(--cyan);}
 .ai-y{background:rgba(255,184,0,0.12);color:var(--yellow);}
-.ai-r{background:rgba(255,59,92,0.12);color:var(--red);}
-.act-txt{font-size:12px;color:var(--text);line-height:1.4;}
+.act-txt{font-size:12px;line-height:1.4;}
 .act-txt span{color:var(--text2);}
 .act-time{font-size:10px;color:var(--text3);margin-top:1px;}
-
-/* EMPTY */
 .empty{text-align:center;padding:36px 16px;color:var(--text3);}
 .empty i{font-size:32px;display:block;margin-bottom:8px;}
 .empty p{font-size:12px;}
-
-/* TOAST */
-.toast{position:fixed;bottom:22px;right:22px;background:var(--card);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:11px 16px;display:none;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--text);z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,0.4);}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--card);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:11px 16px;display:none;align-items:center;gap:9px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,0.4);}
 .toast i{font-size:17px;color:var(--green);}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 <div class="layout">
-
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo-area">
     <img src="../imagens/logo-infinity-live.png" alt="logo" onerror="this.style.display='none';document.getElementById('lfb').style.display='flex'"/>
     <div class="logo-fb" id="lfb"><div class="logo-icon">∞</div><div class="logo-txt">Infinity Live</div></div>
   </div>
-  <div class="admin-badge"><i class="ti ti-shield-check"></i><div><div class="admin-badge-txt">Painel Admin</div><div class="admin-badge-sub">Acesso total</div></div></div>
+  <div class="admin-badge"><i class="ti ti-shield-check" style="color:var(--pink);font-size:14px;"></i><div><div class="admin-badge-txt">Painel Admin</div><div class="admin-badge-sub">Acesso total</div></div></div>
   <div class="nav-wrap">
     <div class="nav-lbl">Geral</div>
-    <button class="nav-btn ativo" onclick="irPara('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
-    <button class="nav-btn" onclick="irPara('alunos',this)"><i class="ti ti-users"></i> Alunos <span class="nav-cnt" id="cnt-alunos">0</span></button>
-    <button class="nav-btn" onclick="irPara('tickets',this)"><i class="ti ti-message-circle"></i> Tickets <span class="nav-cnt" id="cnt-tickets">0</span></button>
+    <button class="nav-btn ativo" id="nav-dashboard" onclick="irPara('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
+    <button class="nav-btn" id="nav-alunos" onclick="irPara('alunos',this)"><i class="ti ti-users"></i> Alunos <span class="nav-cnt" id="cnt-alunos">0</span></button>
+    <button class="nav-btn" id="nav-tickets" onclick="irPara('tickets',this)"><i class="ti ti-message-circle"></i> Tickets <span class="nav-cnt" id="cnt-tickets">0</span></button>
     <div class="nav-lbl">Conteúdo</div>
-    <button class="nav-btn" onclick="irPara('modulos',this)"><i class="ti ti-stack"></i> Módulos & Aulas</button>
-    <button class="nav-btn" onclick="irPara('preview',this)"><i class="ti ti-eye"></i> Ver como aluno</button>
-    <button class="nav-btn" onclick="irPara('materiais',this)"><i class="ti ti-file-upload"></i> Materiais</button>
+    <button class="nav-btn" id="nav-modulos" onclick="irPara('modulos',this)"><i class="ti ti-stack"></i> Módulos &amp; Aulas</button>
+    <button class="nav-btn" id="nav-preview" onclick="irPara('preview',this)"><i class="ti ti-eye"></i> Ver como aluno</button>
+    <button class="nav-btn" id="nav-materiais" onclick="irPara('materiais',this)"><i class="ti ti-file-upload"></i> Materiais</button>
     <div class="nav-lbl">Sistema</div>
-    <button class="nav-btn" onclick="irPara('config',this)"><i class="ti ti-settings"></i> Configurações</button>
+    <button class="nav-btn" id="nav-config" onclick="irPara('config',this)"><i class="ti ti-settings"></i> Configurações</button>
   </div>
   <div class="sidebar-bottom">
     <div class="mentor-row"><div class="m-av">M</div><div style="flex:1;min-width:0;"><div class="m-name">Mentor</div><div class="m-role">◆ Admin</div></div></div>
   </div>
 </aside>
-
-<!-- MAIN -->
 <main class="main">
   <div class="topbar">
     <div><div class="tb-title" id="pg-titulo">Dashboard</div><div class="tb-sub" id="pg-sub">Visão geral da plataforma</div></div>
@@ -292,101 +229,82 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
   </div>
   <div class="content">
 
-    <!-- DASHBOARD -->
     <div class="pg ativa" id="pg-dashboard">
       <div class="grid4" style="margin-bottom:14px;">
         <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-users"></i></div><span class="stat-badge sb1" id="st-alunos-b">0</span></div><div class="stat-val" id="st-alunos">0</div><div class="stat-lbl">Alunos</div></div>
-        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-stack"></i></div><span class="stat-badge sb2" id="st-mods-b">0</span></div><div class="stat-val" id="st-mods">0</div><div class="stat-lbl">Módulos</div></div>
+        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-stack"></i></div><span class="stat-badge sb2" id="st-mods-b">0 aulas</span></div><div class="stat-val" id="st-mods">0</div><div class="stat-lbl">Módulos</div></div>
         <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-message-circle"></i></div><span class="stat-badge sb3" id="st-tickets-b">0 abertos</span></div><div class="stat-val" id="st-tickets">0</div><div class="stat-lbl">Tickets</div></div>
-        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-video"></i></div><span class="stat-badge sb4" id="st-aulas-b">0</span></div><div class="stat-val" id="st-aulas">0</div><div class="stat-lbl">Aulas publicadas</div></div>
+        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-video"></i></div><span class="stat-badge sb4" id="st-aulas-b">publicadas</span></div><div class="stat-val" id="st-aulas">0</div><div class="stat-lbl">Aulas</div></div>
       </div>
       <div class="grid2">
-        <div class="card"><div class="card-hd"><span class="card-title">Atividade recente</span></div><div id="atividade-lista"><div class="empty" style="padding:16px;"><i class="ti ti-activity" style="font-size:22px;"></i><p>Nenhuma atividade ainda.</p></div></div></div>
-        <div class="card"><div class="card-hd"><span class="card-title">Aulas mais assistidas</span></div><div id="top-aulas-lista"><div class="empty" style="padding:16px;"><i class="ti ti-video" style="font-size:22px;"></i><p>Adicione aulas para ver o ranking.</p></div></div></div>
+        <div class="card"><div class="card-hd"><span class="card-title">Atividade recente</span></div><div class="empty" style="padding:16px;"><i class="ti ti-activity" style="font-size:22px;"></i><p>Nenhuma atividade ainda.</p></div></div>
+        <div class="card"><div class="card-hd"><span class="card-title">Aulas mais assistidas</span></div><div id="top-aulas-lista"><div class="empty" style="padding:16px;"><i class="ti ti-video" style="font-size:22px;"></i><p>Adicione aulas para ver.</p></div></div></div>
       </div>
     </div>
 
-    <!-- ALUNOS -->
     <div class="pg" id="pg-alunos">
       <div class="search-bar">
-        <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Buscar por nome ou e-mail..." oninput="filtrarAlunos(this.value)"/></div>
+        <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Buscar aluno..." oninput="filtrarAlunos(this.value)"/></div>
         <select class="fsel" onchange="filtrarStatusAluno(this.value)"><option value="">Todos</option><option value="ativo">Ativos</option><option value="bloqueado">Bloqueados</option><option value="novo">Novos</option></select>
         <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Adicionar</button>
       </div>
-      <div class="card" style="padding:0;">
-        <table><thead><tr><th>Aluno</th><th>E-mail</th><th>Progresso</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="tbody-alunos"></tbody></table>
-      </div>
-      <div class="empty" id="empty-alunos" style="display:none;"><i class="ti ti-users"></i><p>Nenhum aluno cadastrado.<br/>Clique em <strong>Adicionar</strong> para começar.</p></div>
+      <div class="card" style="padding:0;"><table><thead><tr><th>Aluno</th><th>E-mail</th><th>Progresso</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tbody-alunos"></tbody></table></div>
+      <div class="empty" id="empty-alunos" style="display:none;"><i class="ti ti-users"></i><p>Nenhum aluno. Clique em Adicionar.</p></div>
     </div>
 
-    <!-- TICKETS -->
     <div class="pg" id="pg-tickets">
       <div class="search-bar">
-        <div class="srch"><i class="ti ti-search"></i><input type="text" id="srch-ticket" placeholder="Buscar ticket..." oninput="filtrarTickets(this.value)"/></div>
-        <select class="fsel" id="fil-ticket" onchange="filtrarTickets(document.getElementById('srch-ticket').value)"><option value="">Todos</option><option value="aberto">Abertos</option><option value="pendente">Pendentes</option><option value="respondido">Respondidos</option><option value="resolvido">Resolvidos</option></select>
-        <button class="btn btn-p" onclick="novoTicket()"><i class="ti ti-plus" style="font-size:14px;"></i> Novo ticket</button>
+        <div class="srch"><i class="ti ti-search"></i><input type="text" id="srch-tkt" placeholder="Buscar ticket..." oninput="filtrarTickets(this.value)"/></div>
+        <select class="fsel" id="fil-tkt" onchange="filtrarTickets(document.getElementById('srch-tkt').value)"><option value="">Todos</option><option value="aberto">Abertos</option><option value="pendente">Pendentes</option><option value="respondido">Respondidos</option><option value="resolvido">Resolvidos</option></select>
+        <button class="btn btn-p" onclick="novoTicket()"><i class="ti ti-plus" style="font-size:14px;"></i> Novo</button>
       </div>
       <div id="tickets-lista"></div>
-      <div class="empty" id="empty-tickets"><i class="ti ti-message-circle"></i><p>Nenhum ticket ainda.</p></div>
+      <div class="empty" id="empty-tkt"><i class="ti ti-message-circle"></i><p>Nenhum ticket ainda.</p></div>
     </div>
 
-    <!-- MÓDULOS -->
     <div class="pg" id="pg-modulos">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-        <div><div style="font-size:13px;font-weight:700;color:var(--text);">Módulos & Aulas</div><div style="font-size:11px;color:var(--text2);margin-top:2px;" id="mods-count">0 módulo(s)</div></div>
+        <div><div style="font-size:13px;font-weight:700;">Módulos &amp; Aulas</div><div style="font-size:11px;color:var(--text2);margin-top:2px;" id="mods-count">0 módulo(s)</div></div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-o" onclick="sincronizarComSupabase()" id="btn-sync" style="border-color:rgba(0,200,255,0.3);color:var(--cyan);"><i class="ti ti-cloud-upload" style="font-size:14px;"></i> Publicar no site</button>
+          <button class="btn btn-cyan" id="btn-sync" onclick="publicarNoSite()"><i class="ti ti-cloud-upload" style="font-size:14px;"></i> Publicar no site</button>
           <button class="btn btn-p" onclick="abrirNovoMod()"><i class="ti ti-folder-plus" style="font-size:14px;"></i> Novo módulo</button>
         </div>
       </div>
       <div id="mods-lista"></div>
-      <div class="empty" id="empty-mods"><i class="ti ti-stack-2"></i><p>Nenhum módulo ainda.<br/>Clique em <strong>Novo módulo</strong> para começar.</p></div>
+      <div class="empty" id="empty-mods"><i class="ti ti-stack-2"></i><p>Nenhum módulo ainda.<br/>Clique em <strong>Novo módulo</strong>.</p></div>
     </div>
 
-    <!-- PREVIEW -->
     <div class="pg" id="pg-preview">
-      <div style="background:rgba(255,77,141,0.05);border:1px solid rgba(255,77,141,0.15);border-radius:11px;padding:11px 15px;margin-bottom:14px;display:flex;align-items:center;gap:9px;"><i class="ti ti-eye" style="font-size:16px;color:var(--pink);flex-shrink:0;"></i><p style="font-size:12px;color:var(--text2);">Visão do aluno — como os módulos aparecem na área de membros.</p></div>
-      <div style="height:90px;background:linear-gradient(135deg,#040710,#071428);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;overflow:hidden;"><img src="../imagens/logo-infinity-live.png" style="height:55px;object-fit:contain;filter:drop-shadow(0 0 16px rgba(0,200,255,0.4));" onerror="this.style.display='none'"/></div>
+      <div style="background:rgba(0,200,255,0.05);border:1px solid rgba(0,200,255,0.15);border-radius:11px;padding:11px 15px;margin-bottom:14px;display:flex;align-items:center;gap:9px;"><i class="ti ti-eye" style="font-size:16px;color:var(--cyan);flex-shrink:0;"></i><p style="font-size:12px;color:var(--text2);">Visão do aluno — como os módulos aparecem na área de membros.</p></div>
       <div id="preview-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;"></div>
-      <div class="empty" id="empty-preview"><i class="ti ti-stack-2"></i><p>Crie módulos para ver o preview aqui.</p></div>
+      <div class="empty" id="empty-preview"><i class="ti ti-stack-2"></i><p>Crie módulos para ver o preview.</p></div>
     </div>
 
-    <!-- MATERIAIS -->
     <div class="pg" id="pg-materiais">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-        <div style="font-size:13px;font-weight:700;color:var(--text);">Materiais para download</div>
+        <div style="font-size:13px;font-weight:700;">Materiais para download</div>
         <button class="btn btn-p" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
       </div>
-      <div id="mats-lista"><div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado ainda.</p></div></div>
+      <div id="mats-lista"><div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado.</p></div></div>
     </div>
 
-    <!-- CONFIG -->
     <div class="pg" id="pg-config">
-      <div class="config-grid">
+      <div class="grid2">
         <div>
           <div class="card">
             <div class="card-hd"><span class="card-title">Plataforma</span></div>
-            <div class="mf"><label class="ml">Nome da plataforma</label><input class="mi" value="Infinity Live"/></div>
-            <div class="mf"><label class="ml">URL</label><input class="mi" value="membros.infinitylive.com.br"/></div>
+            <div class="mf"><label class="ml">Nome</label><input class="mi" value="Infinity Live"/></div>
             <div class="mf"><label class="ml">E-mail de suporte</label><input class="mi" value="suporte@infinitylive.com.br"/></div>
             <div class="mf"><label class="ml">WhatsApp VIP</label><input class="mi" value="+55 11 99999-9999"/></div>
-            <div class="mf"><label class="ml">Telegram</label><input class="mi" value="t.me/infinitylive"/></div>
             <button class="btn btn-p" onclick="toast('Configurações salvas!')"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar</button>
           </div>
         </div>
         <div>
-          <div class="card" style="margin-bottom:12px;">
+          <div class="card">
             <div class="card-hd"><span class="card-title">Funcionalidades</span></div>
             <div class="tgl-row"><div><div class="tgl-lbl">Progresso de aulas</div><div class="tgl-sub">Rastrear aulas assistidas</div></div><button class="tgl on" onclick="this.classList.toggle('on')"></button></div>
             <div class="tgl-row"><div><div class="tgl-lbl">Módulos bloqueados</div><div class="tgl-sub">Liberar progressivamente</div></div><button class="tgl on" onclick="this.classList.toggle('on')"></button></div>
             <div class="tgl-row"><div><div class="tgl-lbl">Sistema de tickets</div><div class="tgl-sub">Suporte via tickets</div></div><button class="tgl on" onclick="this.classList.toggle('on')"></button></div>
-            <div class="tgl-row"><div><div class="tgl-lbl">Badge Live ativa</div><div class="tgl-sub">Mostrar quando ao vivo</div></div><button class="tgl" onclick="this.classList.toggle('on')"></button></div>
-          </div>
-          <div class="card">
-            <div class="card-hd"><span class="card-title">Integrações</span></div>
-            <div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--card2);border-radius:9px;border:1px solid var(--border);margin-bottom:7px;"><i class="ti ti-brand-youtube" style="font-size:17px;color:#ff0000;"></i><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--text);">YouTube</div><div style="font-size:10px;color:var(--text2);">Embed de vídeos</div></div><span class="sp sp-ok">Ativo</span></div>
-            <div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--card2);border-radius:9px;border:1px solid var(--border);"><i class="ti ti-shopping-cart" style="font-size:17px;color:var(--yellow);"></i><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--text);">Hotmart / Kiwify</div><div style="font-size:10px;color:var(--text2);">Liberação automática</div></div><button class="btn btn-o btn-sm" onclick="toast('Em breve!')">Configurar</button></div>
           </div>
         </div>
       </div>
@@ -396,7 +314,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 </main>
 </div>
 
-<!-- MODAIS -->
 <div class="overlay" id="modal-modulo">
   <div class="modal">
     <div class="modal-title" id="mod-modal-titulo">Criar módulo</div>
@@ -407,9 +324,8 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="mf">
       <label class="ml">Imagem de capa</label>
       <input type="file" id="mod-img-file" accept="image/*" style="display:none;" onchange="uploadImg(this)"/>
-      <div class="upload-area" id="upload-area" onclick="document.getElementById('mod-img-file').click()"><i class="ti ti-cloud-upload"></i><strong>Clique para fazer upload</strong><span>JPG, PNG, WEBP — máx 5MB</span></div>
-      <div class="img-prev-box" id="img-prev-box"><img id="img-prev" src="" alt="preview" onclick="document.getElementById('mod-img-file').click()"/><button class="btn-rem-img" onclick="removerImg()"><i class="ti ti-trash" style="font-size:11px;"></i> Remover</button></div>
-      <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+      <div class="upload-area" id="upload-area" onclick="document.getElementById('mod-img-file').click()"><i class="ti ti-cloud-upload"></i><strong>Clique para upload</strong><span>JPG, PNG — máx 5MB</span></div>
+      <div class="img-prev-box" id="img-prev-box"><img id="img-prev" src="" alt="preview" onclick="document.getElementById('mod-img-file').click()"/><button class="btn-rem-img" onclick="removerImg()">Remover</button></div>
     </div>
     <div class="grid2m">
       <div class="mf"><label class="ml">Status</label><select class="msel" id="mod-status"><option value="visible">Visível</option><option value="locked">Bloqueado</option><option value="hidden">Oculto</option></select></div>
@@ -418,7 +334,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="mf"><label class="ml">Ordem</label><input class="mi" id="mod-ordem" type="number" min="1" placeholder="1"/></div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarMod()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar módulo</button>
-      <button class="btn btn-d btn-sm" id="btn-del-mod" style="display:none;" onclick="excluirMod()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
+      <button class="btn btn-d btn-sm" id="btn-del-mod" style="display:none;" onclick="excluirModAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
       <button class="btn btn-o" onclick="fecharModal('modal-modulo')">Cancelar</button>
     </div>
   </div>
@@ -431,8 +347,8 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <input type="hidden" id="aula-id"/>
     <input type="hidden" id="aula-mod-id"/>
     <div class="mf"><label class="ml">Título *</label><input class="mi" id="aula-nome" placeholder="Ex: Meta Ads na Prática"/></div>
-    <div class="mf"><label class="ml">URL do vídeo *</label><input class="mi" id="aula-url" placeholder="https://www.youtube.com/watch?v=..." oninput="gerarEmbed(this.value)"/><div class="hint"><i class="ti ti-brand-youtube" style="color:#ff0000;"></i>Cole a URL completa do YouTube.</div></div>
-    <div class="mf"><label class="ml">Embed (gerado automaticamente)</label><input class="mi" id="aula-embed" readonly style="opacity:.5;font-size:11px;" placeholder="Aparece após colar a URL..."/></div>
+    <div class="mf"><label class="ml">URL do YouTube *</label><input class="mi" id="aula-url" placeholder="https://youtube.com/watch?v=..." oninput="gerarEmbed(this.value)"/></div>
+    <div class="mf"><label class="ml">Embed (automático)</label><input class="mi" id="aula-embed" readonly style="opacity:.5;font-size:11px;" placeholder="Gerado após colar a URL..."/></div>
     <div class="grid2m">
       <div class="mf"><label class="ml">Duração</label><input class="mi" id="aula-dur" placeholder="Ex: 28min"/></div>
       <div class="mf"><label class="ml">Status</label><select class="msel" id="aula-status"><option value="published">Publicada</option><option value="draft">Rascunho</option></select></div>
@@ -440,7 +356,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="mf"><label class="ml">Descrição</label><textarea class="mta" id="aula-desc" placeholder="Tópicos desta aula..."></textarea></div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarAula()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar aula</button>
-      <button class="btn btn-d btn-sm" id="btn-del-aula" style="display:none;" onclick="excluirAula()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
+      <button class="btn btn-d btn-sm" id="btn-del-aula" style="display:none;" onclick="excluirAulaAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
       <button class="btn btn-o" onclick="fecharModal('modal-aula')">Cancelar</button>
     </div>
   </div>
@@ -450,10 +366,9 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
   <div class="modal">
     <div class="modal-title">Adicionar aluno</div>
     <div class="modal-sub">O aluno receberá os dados de acesso por e-mail ou WhatsApp.</div>
-    <div class="mf"><label class="ml">Nome completo *</label><input class="mi" id="aluno-nome" placeholder="Ex: João Silva"/></div>
+    <div class="mf"><label class="ml">Nome *</label><input class="mi" id="aluno-nome" placeholder="Ex: João Silva"/></div>
     <div class="mf"><label class="ml">E-mail *</label><input class="mi" id="aluno-email" type="email" placeholder="joao@email.com"/></div>
-    <div class="mf"><label class="ml">Senha inicial</label><input class="mi" id="aluno-senha" placeholder="Deixe em branco para gerar automaticamente"/></div>
-    <div class="mf"><label class="ml">Plano</label><select class="msel"><option>Membro Pro — Acesso completo</option><option>Membro Basic — Módulos 1 e 2</option></select></div>
+    <div class="mf"><label class="ml">Senha inicial</label><input class="mi" id="aluno-senha" placeholder="Deixe em branco para gerar"/></div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarAluno()"><i class="ti ti-user-plus" style="font-size:13px;"></i> Adicionar aluno</button>
       <button class="btn btn-o" onclick="fecharModal('modal-aluno')">Cancelar</button>
@@ -465,42 +380,37 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
   <div class="modal">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);">
       <div id="perf-av" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;background:var(--g1);">?</div>
-      <div style="flex:1;"><div id="perf-nome" style="font-size:14px;font-weight:700;color:var(--text);"></div><div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:1px;"></div><span id="perf-status" class="sp sp-ok" style="display:inline-block;margin-top:4px;">Ativo</span></div>
+      <div style="flex:1;"><div id="perf-nome" style="font-size:14px;font-weight:700;"></div><div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:1px;"></div><span id="perf-status" class="sp sp-ok" style="display:inline-block;margin-top:4px;">Ativo</span></div>
       <div style="display:flex;gap:6px;">
-        <button class="btn btn-d btn-sm" id="btn-bloquear" onclick="alternarBloqueio()"><i class="ti ti-user-off" style="font-size:12px;"></i> Bloquear</button>
-        <button class="btn btn-d btn-sm" onclick="excluirAlunoModal()" style="background:rgba(255,59,92,0.1);color:var(--red);border:1px solid rgba(255,59,92,0.2);"><i class="ti ti-trash" style="font-size:12px;"></i></button>
+        <button class="btn btn-d btn-sm" id="btn-bloquear" onclick="alternarBloqueio()">Bloquear</button>
+        <button class="btn btn-sm" style="background:rgba(255,59,92,0.1);color:var(--red);border:1px solid rgba(255,59,92,0.2);" onclick="excluirAlunoModal()"><i class="ti ti-trash" style="font-size:12px;"></i></button>
         <button class="btn btn-o btn-sm" onclick="fecharModal('modal-perfil')">Fechar</button>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px;">
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-aulas" style="font-size:18px;font-weight:800;color:var(--text);">0</div><div style="font-size:10px;color:var(--text3);">Aulas vistas</div></div>
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--text);">0h</div><div style="font-size:10px;color:var(--text3);">Estudadas</div></div>
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--text);">0</div><div style="font-size:10px;color:var(--text3);">Downloads</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;">
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-aulas" style="font-size:18px;font-weight:800;">0</div><div style="font-size:10px;color:var(--text3);">Aulas</div></div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;">0%</div><div style="font-size:10px;color:var(--text3);">Progresso</div></div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-status-dt" style="font-size:12px;font-weight:700;color:var(--text2);">—</div><div style="font-size:10px;color:var(--text3);">Membro desde</div></div>
     </div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text2);">Progresso</span><span id="perf-prog" style="font-weight:700;color:var(--cyan);">0%</span></div>
-    <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div id="perf-prog-bar" style="height:5px;border-radius:3px;background:var(--g1);width:0%;"></div></div>
-    <div style="font-size:12px;color:var(--text2);margin-top:10px;">Membro desde: <strong style="color:var(--text);">01/01/2026</strong></div>
   </div>
 </div>
 
 <div class="overlay" id="modal-ticket">
-  <div class="modal" style="width:520px;">
-    <div id="modal-ticket-body"></div>
-  </div>
+  <div class="modal" style="width:520px;"><div id="modal-ticket-body"></div></div>
 </div>
 
 <div class="overlay" id="modal-material">
   <div class="modal">
     <div class="modal-title">Adicionar material</div>
-    <div class="modal-sub">O arquivo ficará disponível para download pelos alunos.</div>
+    <div class="modal-sub">Disponibilize arquivos para os alunos baixarem.</div>
     <div class="mf"><label class="ml">Nome *</label><input class="mi" id="mat-nome" placeholder="Ex: Guia de Tráfego Pago"/></div>
-    <div class="mf"><label class="ml">Link do arquivo</label><input class="mi" id="mat-url" placeholder="https://drive.google.com/..."/><div class="hint"><i class="ti ti-info-circle"></i>Google Drive, Dropbox ou qualquer link direto.</div></div>
+    <div class="mf"><label class="ml">Link do arquivo</label><input class="mi" id="mat-url" placeholder="https://drive.google.com/..."/></div>
     <div class="grid2m">
       <div class="mf"><label class="ml">Tipo</label><select class="msel" id="mat-tipo"><option>PDF</option><option>Planilha (XLSX)</option><option>ZIP</option><option>Vídeo (MP4)</option></select></div>
       <div class="mf"><label class="ml">Módulo</label><select class="msel" id="mat-mod"><option>Geral</option><option>Módulo 1</option><option>Módulo 2</option><option>Módulo 3</option><option>Bônus</option></select></div>
     </div>
     <div class="mfooter">
-      <button class="btn btn-p" style="flex:1;" onclick="salvarMaterial()"><i class="ti ti-upload" style="font-size:13px;"></i> Publicar material</button>
+      <button class="btn btn-p" style="flex:1;" onclick="salvarMaterial()"><i class="ti ti-upload" style="font-size:13px;"></i> Publicar</button>
       <button class="btn btn-o" onclick="fecharModal('modal-material')">Cancelar</button>
     </div>
   </div>
@@ -512,7 +422,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="modal-confirm-title" id="confirm-titulo">Confirmar exclusão</div>
     <div class="modal-confirm-msg" id="confirm-msg">Tem certeza? Esta ação não pode ser desfeita.</div>
     <div class="modal-confirm-btns">
-      <button class="btn btn-d" style="flex:1;" onclick="executarConfirm()"><i class="ti ti-trash" style="font-size:13px;"></i> Excluir</button>
+      <button class="btn btn-d" style="flex:1;" id="confirm-ok-btn" onclick="executarConfirm()">Excluir</button>
       <button class="btn btn-o" onclick="fecharConfirm()">Cancelar</button>
     </div>
   </div>
@@ -521,107 +431,49 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 <div class="toast" id="toast"><i class="ti ti-circle-check"></i><span id="toast-msg">Salvo!</span></div>
 
 <script>
-// ================================================
-// SUPABASE
-// ================================================
-var _sbAdmin = supabase.createClient(
-  'https://fbjxampsauqfngdennpi.supabase.co',
-  'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
-);
-
-// ================================================
-// STORAGE — localStorage para alunos/tickets, Supabase para módulos/aulas
-// ================================================
-var MK='il_mods',AK='il_aulas',ALK='il_alunos',TK='il_tickets',MaTK='il_materiais';
-
-// getMods e getAulas ainda usam localStorage como cache
-// setMods e setAulas salvam em AMBOS (localStorage + Supabase)
-function getMods(){try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return[];}}
-function getAulas(){try{return JSON.parse(localStorage.getItem(AK))||[];}catch(e){return[];}}
-
-async function syncModsDoSupabase(){
-  try{
-    var res=await _sbAdmin.from('modulos').select('*').order('ordem');
-    if(res.data&&res.data.length){
-      var mods=res.data.map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
-      localStorage.setItem(MK,JSON.stringify(mods));
-      return mods;
-    }
-  }catch(e){console.error('Erro sync mods:',e);}
-  return getMods();
-}
-
-async function syncAulasDoSupabase(){
-  try{
-    var res=await _sbAdmin.from('aulas').select('*').order('ordem');
-    if(res.data&&res.data.length){
-      var aulas=res.data.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
-      localStorage.setItem(AK,JSON.stringify(aulas));
-      return aulas;
-    }
-  }catch(e){console.error('Erro sync aulas:',e);}
-  return getAulas();
-}
-
-function setMods(d){localStorage.setItem(MK,JSON.stringify(d));}
-function setAulas(d){localStorage.setItem(AK,JSON.stringify(d));}
-function getAlunos(){try{return JSON.parse(localStorage.getItem(ALK))||[];}catch(e){return[];}}
-function setAlunos(d){localStorage.setItem(ALK,JSON.stringify(d));}
-function getTickets(){try{return JSON.parse(localStorage.getItem(TK))||[];}catch(e){return[];}}
-function setTickets(d){localStorage.setItem(TK,JSON.stringify(d));}
-function getMateriais(){try{return JSON.parse(localStorage.getItem(MaTK))||[];}catch(e){return[];}}
-function setMateriais(d){localStorage.setItem(MaTK,JSON.stringify(d));}
+var _SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
+var _SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+var _sb=supabase.createClient(_SB_URL,_SB_KEY);
+var MK='il_mods',AK='il_aulas',ALK='il_alunos',TK='il_tickets',MTK='il_materiais';
+function gMods(){try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return[];}}
+function sMods(d){try{localStorage.setItem(MK,JSON.stringify(d));}catch(e){}}
+function gAulas(){try{return JSON.parse(localStorage.getItem(AK))||[];}catch(e){return[];}}
+function sAulas(d){try{localStorage.setItem(AK,JSON.stringify(d));}catch(e){}}
+function gAlunos(){try{return JSON.parse(localStorage.getItem(ALK))||[];}catch(e){return[];}}
+function sAlunos(d){try{localStorage.setItem(ALK,JSON.stringify(d));}catch(e){}}
+function gTickets(){try{return JSON.parse(localStorage.getItem(TK))||[];}catch(e){return[];}}
+function sTickets(d){try{localStorage.setItem(TK,JSON.stringify(d));}catch(e){}}
+function gMats(){try{return JSON.parse(localStorage.getItem(MTK))||[];}catch(e){return[];}}
+function sMats(d){try{localStorage.setItem(MTK,JSON.stringify(d));}catch(e){}}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+var CORES={cyan:{bg:'rgba(0,200,255,0.15)',cor:'#00c8ff',brd:'rgba(0,200,255,0.25)'},green:{bg:'rgba(0,229,160,0.15)',cor:'#00e5a0',brd:'rgba(0,229,160,0.25)'},pink:{bg:'rgba(255,77,141,0.15)',cor:'#ff4d8d',brd:'rgba(255,77,141,0.25)'},purple:{bg:'rgba(124,92,255,0.15)',cor:'#7c5cff',brd:'rgba(124,92,255,0.25)'},yellow:{bg:'rgba(255,184,0,0.15)',cor:'#ffb800',brd:'rgba(255,184,0,0.25)'}};
 
-var CORES={
-  cyan:{bg:'rgba(0,200,255,0.15)',cor:'#00c8ff',brd:'rgba(0,200,255,0.25)'},
-  green:{bg:'rgba(0,229,160,0.15)',cor:'#00e5a0',brd:'rgba(0,229,160,0.25)'},
-  pink:{bg:'rgba(255,77,141,0.15)',cor:'#ff4d8d',brd:'rgba(255,77,141,0.25)'},
-  purple:{bg:'rgba(124,92,255,0.15)',cor:'#7c5cff',brd:'rgba(124,92,255,0.25)'},
-  yellow:{bg:'rgba(255,184,0,0.15)',cor:'#ffb800',brd:'rgba(255,184,0,0.25)'}
-};
-
-// ================================================
-// NAVEGAÇÃO
-// ================================================
 function irPara(pg,el){
   document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('ativo');});
   var alvo=document.getElementById('pg-'+pg);
   if(alvo){alvo.style.display='block';alvo.classList.add('ativa');}
   if(el)el.classList.add('ativo');
-  var titulos={
-    dashboard:['Dashboard','Visão geral da plataforma'],
-    alunos:['Alunos','Gerencie os membros'],
-    tickets:['Tickets','Central de atendimento'],
-    modulos:['Módulos & Aulas','Crie e organize o conteúdo'],
-    preview:['Ver como aluno','Prévia da área de membros'],
-    materiais:['Materiais','Arquivos para download'],
-    config:['Configurações','Personalize a plataforma']
-  };
+  var titulos={dashboard:['Dashboard','Visão geral da plataforma'],alunos:['Alunos','Gerencie os membros'],tickets:['Tickets','Central de atendimento'],modulos:['Módulos & Aulas','Crie e organize o conteúdo'],preview:['Ver como aluno','Prévia da área de membros'],materiais:['Materiais','Arquivos para download'],config:['Configurações','Personalize a plataforma']};
   var t=titulos[pg]||[pg,''];
   document.getElementById('pg-titulo').textContent=t[0];
   document.getElementById('pg-sub').textContent=t[1];
   if(pg==='modulos')renderMods();
   if(pg==='tickets')renderTickets();
-  if(pg==='alunos')renderAlunos(getAlunos());
+  if(pg==='alunos')renderAlunos(gAlunos());
   if(pg==='preview')renderPreview();
-  if(pg==='materiais')renderMateriais();
+  if(pg==='materiais')renderMats();
   if(pg==='dashboard')atualizarStats();
 }
 
-// ================================================
-// MODAIS
-// ================================================
 function abrirModal(id){document.getElementById(id).classList.add('aberto');}
 function fecharModal(id){document.getElementById(id).classList.remove('aberto');}
 document.addEventListener('click',function(e){if(e.target.classList.contains('overlay'))e.target.classList.remove('aberto');});
 
 var _confirmCb=null;
-function confirmar(titulo,msg,cb,btnTxt){
-  document.getElementById('confirm-titulo').textContent=titulo||'Confirmar exclusão';
-  document.getElementById('confirm-msg').textContent=msg||'Tem certeza? Esta ação não pode ser desfeita.';
-  document.getElementById('overlay-confirm').querySelector('.btn-d').innerHTML='<i class="ti ti-trash" style="font-size:13px;"></i> '+(btnTxt||'Excluir');
+function confirmar(titulo,msg,cb){
+  document.getElementById('confirm-titulo').textContent=titulo||'Confirmar';
+  document.getElementById('confirm-msg').textContent=msg||'Tem certeza?';
   _confirmCb=cb;
   document.getElementById('overlay-confirm').classList.add('aberto');
 }
@@ -629,92 +481,48 @@ function fecharConfirm(){document.getElementById('overlay-confirm').classList.re
 function executarConfirm(){if(_confirmCb)_confirmCb();fecharConfirm();}
 document.getElementById('overlay-confirm').addEventListener('click',function(e){if(e.target===this)fecharConfirm();});
 
-// ================================================
-// TOAST
-// ================================================
 var _toastT;
 function toast(msg,erro){
   var el=document.getElementById('toast');
-  var ic=el.querySelector('i');
+  el.querySelector('i').style.color=erro?'var(--pink)':'var(--green)';
   document.getElementById('toast-msg').textContent=msg;
-  ic.style.color=erro?'var(--pink)':'var(--green)';
   el.style.display='flex';
   clearTimeout(_toastT);
-  _toastT=setTimeout(function(){el.style.display='none';},2800);
+  _toastT=setTimeout(function(){el.style.display='none';},3000);
 }
 
-// ================================================
-// STATS
-// ================================================
 function atualizarStats(){
-  var a=getAlunos(),m=getMods(),au=getAulas().filter(function(x){return x.status!=='draft';}),t=getTickets();
-  var abertos=t.filter(function(x){return x.status==='aberto'||x.status==='pendente';}).length;
-  var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
-  set('st-alunos',a.length); set('st-alunos-b',a.length);
+  var a=gAlunos(),m=gMods(),au=gAulas().filter(function(x){return x.status!=='draft';}),t=gTickets();
+  var ab=t.filter(function(x){return x.status==='aberto'||x.status==='pendente';}).length;
+  function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  set('st-alunos',a.length);set('st-alunos-b',a.length);
   set('st-mods',m.filter(function(x){return x.status!=='hidden';}).length);
   set('st-mods-b',au.length+' aulas');
-  set('st-tickets',t.length); set('st-tickets-b',abertos+' aberto'+(abertos!==1?'s':''));
-  set('st-aulas',au.length); set('st-aulas-b',au.length+' publicadas');
-  set('cnt-alunos',a.length); set('cnt-tickets',t.length);
-  // Top aulas
-  var topEl=document.getElementById('top-aulas-lista');
-  if(topEl){
-    if(!au.length){topEl.innerHTML='<div class="empty" style="padding:14px;"><i class="ti ti-video" style="font-size:22px;"></i><p>Adicione aulas para ver o ranking.</p></div>';return;}
-    topEl.innerHTML=au.slice(0,5).map(function(a,i){
-      var mod=getMods().find(function(x){return x.id===a.moduloId;});
-      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
-        +'<span style="font-size:10px;font-weight:800;color:'+(i===0?'var(--yellow)':'var(--text3)')+';width:16px;">'+(i+1)+'</span>'
-        +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+a.nome+'</div>'
-        +'<div style="font-size:10px;color:var(--text2);">'+(mod?mod.nome:'—')+'</div></div>'
-        +'<span style="font-size:11px;font-weight:700;color:var(--cyan);">'+(Math.floor(Math.random()*300+50))+'</span></div>';
-    }).join('');
-  }
+  set('st-tickets',t.length);set('st-tickets-b',ab+' aberto'+(ab!==1?'s':''));
+  set('st-aulas',au.length);
+  set('cnt-alunos',a.length);set('cnt-tickets',t.length);
 }
 
-// ================================================
-// MÓDULOS
-// ================================================
 function renderMods(){
-  var mods=getMods().sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-  var aulas=getAulas();
-  var lista=document.getElementById('mods-lista');
+  var mods=gMods().sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
+  var aulas=gAulas();
+  var el=document.getElementById('mods-lista');
   var empty=document.getElementById('empty-mods');
   var cnt=document.getElementById('mods-count');
   var pub=aulas.filter(function(a){return a.status!=='draft';});
   if(cnt)cnt.textContent=mods.length+' módulo(s) · '+pub.length+' aula(s) publicada(s)';
-  if(!mods.length){lista.innerHTML='';empty.style.display='block';return;}
+  if(!mods.length){el.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  var stLbl={visible:'Visível',locked:'Bloqueado',hidden:'Oculto'};
-  var stCls={visible:'st-v',locked:'st-l',hidden:'st-h'};
-  lista.innerHTML=mods.map(function(m){
+  var stL={visible:'Visível',locked:'Bloqueado',hidden:'Oculto'};
+  var stC={visible:'st-v',locked:'st-l',hidden:'st-h'};
+  el.innerHTML=mods.map(function(m){
     var am=aulas.filter(function(a){return a.moduloId===m.id;});
     var c=CORES[m.cor||'cyan'];
-    var thumb=m.imagem
-      ?'<img class="mod-thumb" src="'+m.imagem+'" alt="capa" onerror="this.style.display=\'none\'">'
-      :'<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';border-color:'+c.brd+'"><i class="ti ti-photo-off"></i></div>';
+    var thumb=m.imagem?'<img class="mod-thumb" src="'+m.imagem+'" onerror="this.style.display=\'none\'">':'<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';"><i class="ti ti-photo-off"></i></div>';
     var aulasHtml=am.length?am.map(function(a,i){
-      return '<div class="aula-item">'
-        +'<span class="aula-n">'+(i+1)+'</span>'
-        +'<div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div>'
-        +'<div class="aula-url">'+(a.embed||a.url||'—')+'</div></div>'
-        +'<span class="aula-dur">'+(a.duracao||'—')+'</span>'
-        +'<div class="aula-acts">'
-        +'<button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button>'
-        +'<button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')},\'Excluir\')"><i class="ti ti-trash"></i></button>'
-        +'</div></div>';
+      return '<div class="aula-item"><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
     }).join(''):'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
-    return '<div class="mod-card">'
-      +'<div class="mod-hd">'+thumb
-      +'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stCls[m.status||'visible']+'">'+stLbl[m.status||'visible']+'</span></div>'
-      +'<div class="mod-acts">'
-      +'<button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button>'
-      +'<button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button>'
-      +'</div></div>'
-      +'<div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">Aulas</div>'
-      +aulasHtml
-      +'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')">'
-      +'<i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button>'
-      +'</div></div>';
+    return '<div class="mod-card"><div class="mod-hd">'+thumb+'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stC[m.status||'visible']+'">'+stL[m.status||'visible']+'</span></div><div class="mod-acts"><button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button><button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button></div></div><div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">AULAS</div>'+aulasHtml+'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button></div></div>';
   }).join('');
   atualizarStats();
 }
@@ -726,14 +534,14 @@ function abrirNovoMod(){
   document.getElementById('mod-desc').value='';
   document.getElementById('mod-status').value='visible';
   document.getElementById('mod-cor').value='cyan';
-  document.getElementById('mod-ordem').value=getMods().length+1;
+  document.getElementById('mod-ordem').value=gMods().length+1;
   document.getElementById('btn-del-mod').style.display='none';
   removerImg();
   abrirModal('modal-modulo');
 }
 
 function editarMod(id){
-  var m=getMods().find(function(x){return x.id===id;});
+  var m=gMods().find(function(x){return x.id===id;});
   if(!m)return;
   document.getElementById('mod-modal-titulo').textContent='Editar módulo';
   document.getElementById('mod-id').value=m.id;
@@ -741,9 +549,9 @@ function editarMod(id){
   document.getElementById('mod-desc').value=m.desc||'';
   document.getElementById('mod-status').value=m.status||'visible';
   document.getElementById('mod-cor').value=m.cor||'cyan';
-  document.getElementById('mod-ordem').value=m.ordem||'';
+  document.getElementById('mod-ordem').value=m.ordem||1;
   document.getElementById('btn-del-mod').style.display='flex';
-  if(m.imagem){document.getElementById('img-prev').src=m.imagem;document.getElementById('img-prev-box').style.display='block';document.getElementById('upload-area').style.display='none';}
+  if(m.imagem&&m.imagem.length>5){document.getElementById('img-prev').src=m.imagem;document.getElementById('img-prev-box').style.display='block';document.getElementById('upload-area').style.display='none';}
   else removerImg();
   abrirModal('modal-modulo');
 }
@@ -752,108 +560,49 @@ function salvarMod(){
   var nome=document.getElementById('mod-nome').value.trim();
   if(!nome){alert('O nome é obrigatório.');return;}
   var editId=document.getElementById('mod-id').value;
-  var mods=getMods();
-  var imgEl=document.getElementById('img-prev');
-  var img=imgEl.src||'';
-  // Se a imagem for base64 muito grande, comprimir
+  var img=document.getElementById('img-prev').src||'';
+  if(img===window.location.href||img.length<10)img='';
   if(img.startsWith('data:image')){
-    try{
-      var canvas=document.createElement('canvas');
-      var ctx2d=canvas.getContext('2d');
-      var tempImg=new Image();
-      tempImg.onload=function(){
-        // Redimensionar para max 600px mantendo proporção
-        var maxW=600,maxH=800;
-        var w=tempImg.width,h=tempImg.height;
-        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
-        if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
-        canvas.width=w;canvas.height=h;
-        ctx2d.drawImage(tempImg,0,0,w,h);
-        var imgComprimida=canvas.toDataURL('image/jpeg',0.75);
-        _salvarModComImg(editId,nome,imgComprimida,mods);
-      };
-      tempImg.src=img;
-    }catch(e){
-      _salvarModComImg(editId,nome,img,mods);
-    }
-  } else {
-    _salvarModComImg(editId,nome,img,mods);
-  }
-}
-
-async function _salvarModComImg(editId,nome,img,mods){
-  // Comprimir imagem base64 para max 400x600 JPEG 70%
-  async function comprimir(src){
-    return new Promise(function(ok){
-      if(!src||!src.startsWith('data:image')){ok(src);return;}
-      var i=new Image();
-      i.onload=function(){
-        var c2=document.createElement('canvas');
-        var mW=400,mH=600,w=i.width,h=i.height;
-        if(w>mW){h=Math.round(h*mW/w);w=mW;}
-        if(h>mH){w=Math.round(w*mH/h);h=mH;}
-        c2.width=w;c2.height=h;
-        c2.getContext('2d').drawImage(i,0,0,w,h);
-        ok(c2.toDataURL('image/jpeg',0.7));
-      };
-      i.onerror=function(){ok(src);};
-      i.src=src;
-    });
-  }
-
-  try{
-    var imgFinal=await comprimir(img);
-    var dados={
-      id:editId||uid(),
-      nome:nome,
-      desc:document.getElementById('mod-desc').value.trim(),
-      imagem:imgFinal,
-      status:document.getElementById('mod-status').value,
-      cor:document.getElementById('mod-cor').value,
-      ordem:parseInt(document.getElementById('mod-ordem').value)||mods.length+1
+    var c2=document.createElement('canvas');
+    var tempImg=new Image();
+    tempImg.onload=function(){
+      var mW=400,mH=600,w=tempImg.width,h=tempImg.height;
+      if(w>mW){h=Math.round(h*mW/w);w=mW;}
+      if(h>mH){w=Math.round(w*mH/h);h=mH;}
+      c2.width=w;c2.height=h;
+      c2.getContext('2d').drawImage(tempImg,0,0,w,h);
+      _fazerSalvarMod(editId,nome,c2.toDataURL('image/jpeg',0.7));
     };
-    var sbRow={id:dados.id,nome:dados.nome,descricao:dados.desc,imagem:dados.imagem,status:dados.status,cor:dados.cor,ordem:dados.ordem};
-    var res;
-    if(editId){res=await _sbAdmin.from('modulos').update(sbRow).eq('id',editId);}
-    else{res=await _sbAdmin.from('modulos').insert(sbRow);}
-    
-    if(res&&res.error){
-      console.error('Supabase erro:',res.error);
-      alert('Erro ao salvar no banco: '+res.error.message);
-      return;
-    }
-    
-    if(editId){var idx=mods.findIndex(function(m){return m.id===editId;});if(idx!==-1)mods[idx]=dados;}
-    else mods.push(dados);
-    _modsCache=mods;
-    setMods(mods);
-    fecharModal('modal-modulo');
-    renderMods();
-    toast(editId?'Módulo atualizado!':'Módulo criado e salvo!');
-  }catch(e){
-    console.error('Erro ao salvar:',e);
-    alert('Erro: '+e.message+'. Verifique o console.');
+    tempImg.onerror=function(){_fazerSalvarMod(editId,nome,'');};
+    tempImg.src=img;
+  } else {
+    _fazerSalvarMod(editId,nome,img);
   }
 }
 
-function excluirMod(){
-  var id=document.getElementById('mod-id').value;
-  if(!id)return;
-  var nome=document.getElementById('mod-nome').value;
+function _fazerSalvarMod(editId,nome,img){
+  var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||gMods().length+1};
+  var mods=gMods();
+  if(editId){var i=mods.findIndex(function(m){return m.id===editId;});if(i!==-1)mods[i]=dados;}
+  else mods.push(dados);
+  sMods(mods);
   fecharModal('modal-modulo');
-  confirmar('Excluir módulo','Excluir "'+nome+'"? As aulas vinculadas também serão removidas.',async function(){
-    await _sbAdmin.from('modulos').delete().eq('id',id);
-    _sbAdmin.from('modulos').delete().eq('id',id);
-    _modsCache=null;_aulasCache=null;
-    setMods(getMods().filter(function(m){return m.id!==id;}));
-    setAulas(getAulas().filter(function(a){return a.moduloId!==id;}));
-    renderMods();toast('Módulo excluído.');
-  },'Excluir módulo');
+  renderMods();
+  toast(editId?'Módulo atualizado!':'Módulo criado! Clique em "Publicar no site" para os alunos verem.');
 }
 
-// ================================================
-// AULAS
-// ================================================
+function excluirModAtual(){
+  var id=document.getElementById('mod-id').value;
+  var nome=document.getElementById('mod-nome').value;
+  if(!id)return;
+  fecharModal('modal-modulo');
+  confirmar('Excluir módulo','Excluir "'+nome+'" e todas as suas aulas?',function(){
+    sMods(gMods().filter(function(m){return m.id!==id;}));
+    sAulas(gAulas().filter(function(a){return a.moduloId!==id;}));
+    renderMods();toast('Módulo excluído.');
+  });
+}
+
 function novaAula(modId){
   document.getElementById('aula-modal-titulo').textContent='Adicionar aula';
   document.getElementById('aula-id').value='';
@@ -865,7 +614,7 @@ function novaAula(modId){
 }
 
 function editarAula(id){
-  var a=getAulas().find(function(x){return x.id===id;});
+  var a=gAulas().find(function(x){return x.id===id;});
   if(!a)return;
   document.getElementById('aula-modal-titulo').textContent='Editar aula';
   document.getElementById('aula-id').value=a.id;
@@ -882,72 +631,53 @@ function editarAula(id){
 
 function gerarEmbed(url){
   var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  var el=document.getElementById('aula-embed');
-  if(el)el.value=m?'https://www.youtube.com/embed/'+m[1]:'';
+  document.getElementById('aula-embed').value=m?'https://www.youtube.com/embed/'+m[1]:'';
 }
 
 function salvarAula(){
   var nome=document.getElementById('aula-nome').value.trim();
   var url=document.getElementById('aula-url').value.trim();
   if(!nome){alert('O título é obrigatório.');return;}
-  if(!url){alert('A URL do vídeo é obrigatória.');return;}
+  if(!url){alert('A URL é obrigatória.');return;}
   var editId=document.getElementById('aula-id').value;
   var modId=document.getElementById('aula-mod-id').value;
-  var aulas=getAulas();
   var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  var embed=m?'https://www.youtube.com/embed/'+m[1]:url;
-  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:embed,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim()};
-  if(editId){var i=aulas.findIndex(function(a){return a.id===editId;});if(i!==-1)aulas[i]=dados;}else aulas.push(dados);
-  // Salvar no Supabase
-  var sbAula={id:dados.id,modulo_id:dados.moduloId,nome:dados.nome,url:dados.url,embed:dados.embed,duracao:dados.duracao,status:dados.status,descricao:dados.desc,ordem:aulas.filter(function(a){return a.moduloId===dados.moduloId;}).length};
-  if(editId){await _sbAdmin.from('aulas').update(sbAula).eq('id',editId);}
-  else{await _sbAdmin.from('aulas').insert(sbAula);}
-  // Salvar no Supabase
-  var sbAula={id:dados.id,modulo_id:dados.moduloId,nome:dados.nome,url:dados.url,embed:dados.embed,duracao:dados.duracao,status:dados.status,descricao:dados.desc,ordem:aulas.filter(function(a){return a.moduloId===dados.moduloId;}).length+1};
-  if(editId){_sbAdmin.from('aulas').update(sbAula).eq('id',editId);}
-  else{_sbAdmin.from('aulas').insert(sbAula);}
-  _aulasCache=null;
-  setAulas(aulas);fecharModal('modal-aula');renderMods();toast(editId?'Aula atualizada!':'Aula adicionada!');
+  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:m?'https://www.youtube.com/embed/'+m[1]:url,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim()};
+  var aulas=gAulas();
+  if(editId){var i=aulas.findIndex(function(a){return a.id===editId;});if(i!==-1)aulas[i]=dados;}
+  else aulas.push(dados);
+  sAulas(aulas);
+  fecharModal('modal-aula');
+  renderMods();
+  toast(editId?'Aula atualizada!':'Aula adicionada!');
 }
 
-function excluirAula(){
+function excluirAulaAtual(){
   var id=document.getElementById('aula-id').value;
   var nome=document.getElementById('aula-nome').value;
   if(!id)return;
   fecharModal('modal-aula');
   confirmar('Excluir aula','Excluir "'+nome+'"?',function(){
-    setAulas(getAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
-  },'Excluir aula');
+    sAulas(gAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
+  });
 }
 
-async function delAula(id){
-  await _sbAdmin.from('aulas').delete().eq('id',id);
-  setAulas(getAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
+function delAula(id){
+  sAulas(gAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
 }
 
-// ================================================
-// UPLOAD IMAGEM
-// ================================================
 function uploadImg(input){
   var file=input.files[0];
   if(!file)return;
-  if(file.size>5*1024*1024){alert('Imagem muito grande! Máximo 5MB.');return;}
-  var prog=document.getElementById('prog-bar');var fill=document.getElementById('prog-fill');
-  prog.style.display='block';fill.style.width='0%';
-  setTimeout(function(){fill.style.width='50%';},100);
   var reader=new FileReader();
   reader.onload=function(e){
-    fill.style.width='90%';
-    setTimeout(function(){
-      document.getElementById('img-prev').src=e.target.result;
-      document.getElementById('img-prev-box').style.display='block';
-      document.getElementById('upload-area').style.display='none';
-      fill.style.width='100%';
-      setTimeout(function(){prog.style.display='none';fill.style.width='0%';},500);
-    },200);
+    document.getElementById('img-prev').src=e.target.result;
+    document.getElementById('img-prev-box').style.display='block';
+    document.getElementById('upload-area').style.display='none';
   };
   reader.readAsDataURL(file);
 }
+
 function removerImg(){
   document.getElementById('img-prev').src='';
   document.getElementById('img-prev-box').style.display='none';
@@ -955,225 +685,152 @@ function removerImg(){
   document.getElementById('mod-img-file').value='';
 }
 
-// ================================================
-// ALUNOS
-// ================================================
 function renderAlunos(lista){
   var tbody=document.getElementById('tbody-alunos');
   var empty=document.getElementById('empty-alunos');
   if(!lista.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  tbody.innerHTML=lista.map(function(a){
+  var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff'];
+  tbody.innerHTML=lista.map(function(a,i){
     var inits=a.nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
     var spCls=a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new';
     var spLbl=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
-    return '<tr onclick="verPerfil(\''+a.id+'\')">'
-      +'<td class="td-b"><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:'+a.cor+'">'+inits+'</div>'+a.nome+'</div></td>'
-      +'<td>'+a.email+'</td>'
-      +'<td><div style="display:flex;align-items:center;gap:7px;"><div class="pmini"><div class="pmini-f" style="width:'+a.prog+'%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--text2);">'+a.prog+'%</span></div></td>'
-      +'<td><span class="sp '+spCls+'">'+spLbl+'</span></td>'
-      +'<td onclick="event.stopPropagation()"><div class="acts">'
-      +'<button class="rb rb-v" onclick="verPerfil(\''+a.id+'\')"><i class="ti ti-eye"></i></button>'
-      +'<button class="rb rb-b" onclick="bloquearAluno(\''+a.id+'\')"><i class="ti ti-user-off"></i></button>'
-      +'<button class="rb rb-d" onclick="confirmar(\'Excluir aluno\',\'Excluir &quot;'+a.nome.replace(/'/g,'')+'&quot; permanentemente?\',function(){excluirAluno(\''+a.id+'\')},\'Excluir aluno\')"><i class="ti ti-trash"></i></button>'
-      +'</div></td></tr>';
+    return '<tr onclick="verPerfil(\''+a.id+'\')"><td class="td-b"><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:'+(a.cor||cores[i%cores.length])+'">'+inits+'</div>'+a.nome+'</div></td><td>'+a.email+'</td><td><span style="font-size:11px;font-weight:700;color:var(--text2);">'+(a.prog||0)+'%</span></td><td><span class="sp '+spCls+'">'+spLbl+'</span></td><td onclick="event.stopPropagation()"><div class="acts"><button class="rb rb-v" onclick="verPerfil(\''+a.id+'\')"><i class="ti ti-eye"></i></button><button class="rb rb-d" onclick="confirmar(\'Excluir aluno\',\'Excluir '+a.nome+'?\',function(){excluirAluno(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></td></tr>';
   }).join('');
 }
 
-function filtrarAlunos(q){renderAlunos(getAlunos().filter(function(a){return a.nome.toLowerCase().includes(q.toLowerCase())||a.email.toLowerCase().includes(q.toLowerCase());}));}
-function filtrarStatusAluno(s){renderAlunos(s?getAlunos().filter(function(a){return a.status===s;}):getAlunos());}
+function filtrarAlunos(q){renderAlunos(gAlunos().filter(function(a){return a.nome.toLowerCase().includes(q.toLowerCase())||a.email.toLowerCase().includes(q.toLowerCase());}));}
+function filtrarStatusAluno(s){renderAlunos(s?gAlunos().filter(function(a){return a.status===s;}):gAlunos());}
 
 function salvarAluno(){
   var nome=document.getElementById('aluno-nome').value.trim();
   var email=document.getElementById('aluno-email').value.trim();
   if(!nome||!email){alert('Nome e e-mail são obrigatórios.');return;}
-  var alunos=getAlunos();
-  var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff','#3b7fff'];
-  alunos.push({id:uid(),nome:nome,email:email,prog:0,aulas:0,acesso:'Agora',status:'novo',cor:cores[Math.floor(Math.random()*cores.length)]});
-  setAlunos(alunos);
-  fecharModal('modal-aluno');
+  var a=gAlunos();
+  a.push({id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:'#00c8ff',aulas:0});
+  sAlunos(a);fecharModal('modal-aluno');
   document.getElementById('aluno-nome').value='';
   document.getElementById('aluno-email').value='';
   document.getElementById('aluno-senha').value='';
-  renderAlunos(alunos);atualizarStats();toast('Aluno adicionado!');
+  renderAlunos(a);atualizarStats();toast('Aluno adicionado!');
 }
 
 function verPerfil(id){
-  var a=getAlunos().find(function(x){return x.id===id;});
+  var a=gAlunos().find(function(x){return x.id===id;});
   if(!a)return;
   var inits=a.nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
   document.getElementById('perf-av').textContent=inits;
-  document.getElementById('perf-av').style.background=a.cor;
-  document.getElementById('perf-av').dataset.alunoId=id;
+  document.getElementById('perf-av').dataset.id=id;
   document.getElementById('perf-nome').textContent=a.nome;
   document.getElementById('perf-email').textContent=a.email;
   document.getElementById('perf-aulas').textContent=a.aulas||0;
-  document.getElementById('perf-prog').textContent=(a.prog||0)+'%';
-  document.getElementById('perf-prog-bar').style.width=(a.prog||0)+'%';
-  var spEl=document.getElementById('perf-status');
-  spEl.textContent=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
-  spEl.className='sp '+(a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new');
+  var sp=document.getElementById('perf-status');
+  sp.textContent=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
+  sp.className='sp '+(a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new');
   abrirModal('modal-perfil');
 }
 
 function alternarBloqueio(){
-  var id=document.getElementById('perf-av').dataset.alunoId;
-  var alunos=getAlunos();
+  var id=document.getElementById('perf-av').dataset.id;
+  var alunos=gAlunos();
   var a=alunos.find(function(x){return x.id===id;});
   if(!a)return;
   a.status=a.status==='bloqueado'?'ativo':'bloqueado';
-  setAlunos(alunos);verPerfil(id);renderAlunos(alunos);
-  toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
-}
-
-function bloquearAluno(id){
-  var alunos=getAlunos();
-  var a=alunos.find(function(x){return x.id===id;});
-  if(!a)return;
-  a.status=a.status==='bloqueado'?'ativo':'bloqueado';
-  setAlunos(alunos);renderAlunos(alunos);
+  sAlunos(alunos);verPerfil(id);renderAlunos(alunos);
   toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
 }
 
 function excluirAluno(id){
-  setAlunos(getAlunos().filter(function(a){return a.id!==id;}));
-  renderAlunos(getAlunos());atualizarStats();toast('Aluno excluído.');
+  sAlunos(gAlunos().filter(function(a){return a.id!==id;}));
+  renderAlunos(gAlunos());atualizarStats();toast('Aluno excluído.');
 }
 
 function excluirAlunoModal(){
-  var id=document.getElementById('perf-av').dataset.alunoId;
+  var id=document.getElementById('perf-av').dataset.id;
   var nome=document.getElementById('perf-nome').textContent;
   fecharModal('modal-perfil');
-  confirmar('Excluir aluno','Excluir "'+nome+'" permanentemente?',function(){excluirAluno(id);},'Excluir aluno');
+  confirmar('Excluir aluno','Excluir "'+nome+'"?',function(){excluirAluno(id);});
 }
 
-// ================================================
-// TICKETS
-// ================================================
 function renderTickets(lista){
   var el=document.getElementById('tickets-lista');
-  var empty=document.getElementById('empty-tickets');
+  var empty=document.getElementById('empty-tkt');
   if(!el)return;
-  if(!lista)lista=getTickets();
+  if(!lista)lista=gTickets();
   if(!lista.length){el.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   var stC={aberto:'background:rgba(255,59,92,0.12);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2)',pendente:'background:rgba(255,184,0,0.12);color:#ffb800;border:1px solid rgba(255,184,0,0.2)',respondido:'background:rgba(0,229,160,0.12);color:#00e5a0;border:1px solid rgba(0,229,160,0.2)',resolvido:'background:rgba(255,255,255,0.06);color:#4a5270'};
   var stL={aberto:'Aberto',pendente:'Pendente',respondido:'Respondido',resolvido:'Resolvido'};
   el.innerHTML=lista.map(function(t,i){
     var st=t.status||'aberto';
-    var num='#'+String(i+1).padStart(3,'0');
-    var tid=JSON.stringify(t.id);
-    var ttit=t.titulo.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-    return '<div class="tkt">'
-      +'<span class="tkt-num">'+num+'</span>'
-      +'<div class="tkt-info"><div class="tkt-title">'+t.titulo+'</div><div class="tkt-user">'+t.aluno+'</div></div>'
-      +'<span class="sp" style="'+stC[st]+'">'+stL[st]+'</span>'
-      +'<span class="tkt-time" style="margin-left:10px;">'+t.data+'</span>'
-      +'<button class="btn btn-p btn-sm" style="margin-left:10px;" onclick="abrirTicket('+tid+')">'+( st==='resolvido'?'Ver':'Responder')+'</button>'
-      +'<button class="btn btn-sm" style="margin-left:5px;background:rgba(255,59,92,0.08);color:var(--red);border:1px solid rgba(255,59,92,0.15);" onclick="confirmar(\'Excluir ticket\',\'Excluir &quot;'+ttit+'&quot;?\',function(){delTicket('+tid+')},\'Excluir\')"><i class="ti ti-trash" style="font-size:12px;"></i></button>'
-      +'</div>';
+    return '<div class="tkt"><span class="tkt-num">#'+String(i+1).padStart(3,'0')+'</span><div class="tkt-info"><div class="tkt-title">'+t.titulo+'</div><div class="tkt-user">'+t.aluno+'</div></div><span class="sp" style="'+stC[st]+'">'+stL[st]+'</span><span class="tkt-time" style="margin-left:10px;">'+t.data+'</span><button class="btn btn-p btn-sm" style="margin-left:10px;" onclick="abrirTicket(\''+t.id+'\')">'+(st==='resolvido'?'Ver':'Responder')+'</button><button class="btn btn-sm" style="margin-left:5px;background:rgba(255,59,92,0.08);color:var(--red);border:1px solid rgba(255,59,92,0.15);" onclick="confirmar(\'Excluir ticket\',\'Excluir este ticket?\',function(){delTicket(\''+t.id+'\')})"><i class="ti ti-trash" style="font-size:12px;"></i></button></div>';
   }).join('');
 }
 
 function filtrarTickets(q){
-  var fv=document.getElementById('fil-ticket').value;
-  renderTickets(getTickets().filter(function(t){
-    return (!q||t.titulo.toLowerCase().includes(q.toLowerCase())||t.aluno.toLowerCase().includes(q.toLowerCase()))&&(!fv||t.status===fv);
-  }));
+  var fv=document.getElementById('fil-tkt').value;
+  renderTickets(gTickets().filter(function(t){return(!q||t.titulo.toLowerCase().includes(q.toLowerCase())||t.aluno.toLowerCase().includes(q.toLowerCase()))&&(!fv||t.status===fv);}));
 }
 
 function novoTicket(){
   var titulo=prompt('Título do ticket:');if(!titulo)return;
   var aluno=prompt('Nome do aluno:');if(!aluno)return;
-  var tickets=getTickets();
-  tickets.unshift({id:uid(),titulo:titulo,aluno:aluno,status:'aberto',data:'Agora',msgs:[]});
-  setTickets(tickets);renderTickets();atualizarStats();toast('Ticket criado!');
+  var t=gTickets();
+  t.unshift({id:uid(),titulo:titulo,aluno:aluno,status:'aberto',data:'Agora',msgs:[]});
+  sTickets(t);renderTickets();atualizarStats();toast('Ticket criado!');
 }
 
 function abrirTicket(id){
-  var t=getTickets().find(function(x){return x.id===id;});
+  var t=gTickets().find(function(x){return x.id===id;});
   if(!t)return;
-  var msgs=(t.msgs||[]).map(function(m){
-    return '<div style="margin-bottom:10px;">'
-      +'<div style="font-size:10px;color:var(--text3);margin-bottom:3px;">'+m.autor+' &middot; '+m.data+'</div>'
-      +'<div style="background:var(--card2);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--text2);">'+m.texto+'</div></div>';
-  }).join('')||'<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma mensagem ainda.</div>';
-  var stOpts=['aberto','pendente','respondido','resolvido'].map(function(s){
-    return '<option value="'+s+'"'+(t.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';
-  }).join('');
-  var tid=JSON.stringify(id);
-  document.getElementById('modal-ticket-body').innerHTML=
-    '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">'
-    +'<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;">'+t.titulo+'</div>'
-    +'<div style="font-size:12px;color:var(--text2);">'+t.aluno+' &middot; '+t.data+'</div></div>'
-    +'<div style="max-height:180px;overflow-y:auto;margin-bottom:12px;">'+msgs+'</div>'
-    +'<textarea id="tk-resp" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:75px;line-height:1.6;" placeholder="Escreva sua resposta..."></textarea>'
-    +'<div style="display:flex;gap:8px;margin-top:11px;">'
-    +'<button class="btn btn-p" style="flex:1;" onclick="enviarResposta('+tid+')"><i class="ti ti-send" style="font-size:13px;"></i> Enviar</button>'
-    +'<select id="tk-status" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:inherit;font-size:12px;outline:none;">'+stOpts+'</select>'
-    +'<button class="btn btn-o" onclick="fecharModal(\'modal-ticket\')">Fechar</button>'
-    +'</div>';
+  var msgs=(t.msgs||[]).map(function(m){return '<div style="margin-bottom:10px;"><div style="font-size:10px;color:var(--text3);margin-bottom:3px;">'+m.autor+' &middot; '+m.data+'</div><div style="background:var(--card2);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--text2);">'+m.texto+'</div></div>';}).join('')||'<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma mensagem ainda.</div>';
+  var stOpts=['aberto','pendente','respondido','resolvido'].map(function(s){return '<option value="'+s+'"'+(t.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';}).join('');
+  document.getElementById('modal-ticket-body').innerHTML='<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);"><div style="font-size:14px;font-weight:700;margin-bottom:3px;">'+t.titulo+'</div><div style="font-size:12px;color:var(--text2);">'+t.aluno+' &middot; '+t.data+'</div></div><div style="max-height:180px;overflow-y:auto;margin-bottom:12px;">'+msgs+'</div><textarea id="tk-resp" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:75px;line-height:1.6;" placeholder="Escreva sua resposta..."></textarea><div style="display:flex;gap:8px;margin-top:11px;"><button class="btn btn-p" style="flex:1;" onclick="enviarResposta(\''+id+'\')" ><i class="ti ti-send" style="font-size:13px;"></i> Enviar</button><select id="tk-status" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:inherit;font-size:12px;outline:none;">'+stOpts+'</select><button class="btn btn-o" onclick="fecharModal(\'modal-ticket\')">Fechar</button></div>';
   abrirModal('modal-ticket');
 }
 
 function enviarResposta(id){
   var texto=document.getElementById('tk-resp').value.trim();
   var novoStatus=document.getElementById('tk-status').value;
-  var tickets=getTickets();
+  var tickets=gTickets();
   var t=tickets.find(function(x){return x.id===id;});
   if(!t)return;
   if(texto){if(!t.msgs)t.msgs=[];t.msgs.push({autor:'Mentor',texto:texto,data:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});}
   t.status=novoStatus;
-  setTickets(tickets);fecharModal('modal-ticket');renderTickets();toast('Resposta enviada!');
+  sTickets(tickets);fecharModal('modal-ticket');renderTickets();toast('Resposta enviada!');
 }
 
 function delTicket(id){
-  setTickets(getTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
+  sTickets(gTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
 }
 
-// ================================================
-// MATERIAIS
-// ================================================
-function renderMateriais(){
+function renderMats(){
   var el=document.getElementById('mats-lista');
-  var mats=getMateriais();
-  if(!mats.length){el.innerHTML='<div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado ainda.</p></div>';return;}
-  var ticoMap={PDF:'mi-pdf',Planilha:'mi-xls',ZIP:'mi-zip','Vídeo':'mi-mp4'};
-  var icoMap={PDF:'ti-file-type-pdf',Planilha:'ti-table',ZIP:'ti-file-zip','Vídeo':'ti-video'};
+  var mats=gMats();
+  if(!mats.length){el.innerHTML='<div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado.</p></div>';return;}
   el.innerHTML=mats.map(function(m){
-    var tipo=m.tipo||'PDF';
-    var ticoKey=Object.keys(ticoMap).find(function(k){return tipo.includes(k);})||'PDF';
-    return '<div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:7px;border:1px solid var(--border);">'
-      +'<div class="stat-ico '+ticoMap[ticoKey]+'" style="width:34px;height:34px;border-radius:8px;flex-shrink:0;"><i class="ti '+icoMap[ticoKey]+'"></i></div>'
-      +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:var(--text);">'+m.nome+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">'+tipo+' · '+m.mod+'</div></div>'
-      +'<div style="display:flex;gap:4px;">'
-      +'<button class="ab ab-e" onclick="toast(\'Editar em breve!\')"><i class="ti ti-edit"></i></button>'
-      +'<button class="ab ab-d" onclick="confirmar(\'Excluir material\',\'Excluir &quot;'+m.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delMaterial(\''+m.id+'\')},\'Excluir\')"><i class="ti ti-trash"></i></button>'
-      +'</div></div>';
+    return '<div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:7px;border:1px solid var(--border);"><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;">'+m.nome+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">'+m.tipo+' · '+m.mod+'</div></div><button class="ab ab-d" onclick="confirmar(\'Excluir material\',\'Excluir &quot;'+m.nome.replace(/"/g,'')+'&quot;?\',function(){delMat(\''+m.id+'\')})"><i class="ti ti-trash"></i></button></div>';
   }).join('');
 }
 
 function salvarMaterial(){
   var nome=document.getElementById('mat-nome').value.trim();
   if(!nome){alert('Nome obrigatório.');return;}
-  var mats=getMateriais();
+  var mats=gMats();
   mats.unshift({id:uid(),nome:nome,url:document.getElementById('mat-url').value.trim(),tipo:document.getElementById('mat-tipo').value,mod:document.getElementById('mat-mod').value});
-  setMateriais(mats);
-  fecharModal('modal-material');
-  document.getElementById('mat-nome').value='';document.getElementById('mat-url').value='';
-  renderMateriais();toast('Material publicado!');
+  sMats(mats);fecharModal('modal-material');
+  document.getElementById('mat-nome').value='';
+  document.getElementById('mat-url').value='';
+  renderMats();toast('Material publicado!');
 }
 
-function delMaterial(id){
-  setMateriais(getMateriais().filter(function(m){return m.id!==id;}));renderMateriais();toast('Material removido.');
+function delMat(id){
+  sMats(gMats().filter(function(m){return m.id!==id;}));renderMats();toast('Material removido.');
 }
 
-// ================================================
-// PREVIEW
-// ================================================
 function renderPreview(){
-  var mods=getMods().filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-  var aulas=getAulas();
+  var mods=gMods().filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
+  var aulas=gAulas();
   var el=document.getElementById('preview-cards');
   var empty=document.getElementById('empty-preview');
   if(!mods.length){el.innerHTML='';empty.style.display='block';return;}
@@ -1182,112 +839,59 @@ function renderPreview(){
     var c=CORES[m.cor||'cyan'];
     var qtd=aulas.filter(function(a){return a.moduloId===m.id&&a.status!=='draft';}).length;
     var locked=m.status==='locked';
-    var capa=m.imagem
-      ?'<img src="'+m.imagem+'" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display=\'none\'">'
-      :'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="ti ti-photo-off" style="font-size:26px;color:'+c.cor+';opacity:.5;"></i></div>';
-    return '<div style="flex:0 0 280px;width:280px;background:#0f1320;border:1px solid rgba(255,255,255,0.07);border-radius:13px;overflow:hidden;opacity:'+(locked?.55:1)+';flex-shrink:0;cursor:pointer;transition:transform .2s;" onmouseover="if(!'+locked+')this.style.transform=\"translateY(-4px)\"" onmouseout="this.style.transform=\"\"">'
-      +'<div style="width:100%;height:360px;position:relative;overflow:hidden;">'+capa
-      +'<div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);z-index:2;"></div>'
-      +'<div style="position:absolute;bottom:9px;left:10px;right:10px;z-index:3;">'
-      +'<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:2px;">Módulo '+m.ordem+'</div>'
-      +'<div style="font-size:11px;font-weight:700;color:#fff;line-height:1.3;">'+m.nome+'</div></div>'
-      +(locked?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:4;"><i class="ti ti-lock" style="font-size:20px;color:#4a5270;"></i></div>'
-      :'<div style="position:absolute;top:8px;left:8px;z-index:3;font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+qtd+' aula'+(qtd!==1?'s':'')+'</div>')
-      +'</div>'
-      +'<div style="padding:9px 10px 11px;">'
-      +'<div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#4a5270;">Progresso</span><span style="font-weight:700;color:'+c.cor+';">0%</span></div>'
-      +'<div style="height:2px;background:rgba(255,255,255,0.07);border-radius:1px;margin-bottom:7px;"></div>'
-      +(locked
-        ?'<div style="width:100%;padding:8px;border-radius:9px;font-size:12px;font-weight:700;text-align:center;background:rgba(255,255,255,0.05);color:#4a5270;">🔒 Bloqueado</div>'
-        :'<a href="../aluno/modulos.html" target="_blank" style="display:block;width:100%;padding:8px;border-radius:9px;font-size:12px;font-weight:700;text-align:center;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';text-decoration:none;">▶ Acessar módulo</a>')
-      +'</div></div>';
+    var capa=m.imagem&&m.imagem.length>5?'<img src="'+m.imagem+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:'+c.bg+'"><i class="ti ti-photo-off" style="font-size:32px;color:'+c.cor+';opacity:.5;"></i></div>';
+    return '<div style="background:#0f1320;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;opacity:'+(locked?'.55':'1')+'"><div style="width:100%;height:320px;position:relative;overflow:hidden;">'+capa+'<div style="position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(to top,rgba(0,0,0,0.92),transparent);z-index:2;"></div><div style="position:absolute;top:10px;left:10px;z-index:3;font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+qtd+' aula'+(qtd!==1?'s':'')+'</div><div style="position:absolute;bottom:12px;left:14px;right:14px;z-index:3;"><div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Módulo '+m.ordem+'</div><div style="font-size:14px;font-weight:800;color:#fff;line-height:1.3;">'+m.nome+'</div></div>'+(locked?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:4;"><i class="ti ti-lock" style="font-size:22px;color:#4a5270;"></i></div>':'')+'</div><div style="padding:12px 14px 14px;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="color:var(--text3);">Progresso</span><span style="font-weight:700;color:'+c.cor+';">0%</span></div><div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-bottom:10px;"></div><div style="width:100%;padding:8px;border-radius:9px;font-size:12px;font-weight:700;text-align:center;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+(locked?'🔒 Bloqueado':'▶ Acessar módulo')+'</div></div></div>';
   }).join('');
 }
 
-// ================================================
-// ================================================
-// SINCRONIZAR TUDO COM SUPABASE
-// ================================================
-async function sincronizarComSupabase(){
+async function publicarNoSite(){
   var btn=document.getElementById('btn-sync');
-  btn.innerHTML='<i class="ti ti-loader" style="font-size:14px;"></i> Publicando...';
+  btn.textContent='Publicando...';
   btn.disabled=true;
-
-  var mods=getMods();
-  var aulas=getAulas();
-  var erros=[];
-
-  // Comprimir imagem base64
-
+  var mods=gMods();
+  var aulas=gAulas();
   try{
-    // Limpar módulos e aulas antigas do Supabase
-    await _sbAdmin.from('aulas').delete().neq('id','_');
-    await _sbAdmin.from('modulos').delete().neq('id','_');
-
-    // Inserir módulos
+    await _sb.from('aulas').delete().neq('id','_noop_');
+    await _sb.from('modulos').delete().neq('id','_noop_');
     for(var i=0;i<mods.length;i++){
       var m=mods[i];
-      var imgFinal=await comprimir(m.imagem||'');
-      var r=await _sbAdmin.from('modulos').insert({
-        id:m.id,nome:m.nome,descricao:m.desc||'',
-        imagem:imgFinal,status:m.status||'visible',
-        cor:m.cor||'cyan',ordem:m.ordem||i+1
-      });
-      if(r.error){erros.push('Módulo "'+m.nome+'": '+r.error.message);}
+      var img=m.imagem||'';
+      if(img.startsWith('data:image')){
+        img=await new Promise(function(ok){
+          var im=new Image();
+          im.onload=function(){
+            var cv=document.createElement('canvas');
+            var mW=400,mH=600,w=im.width,h=im.height;
+            if(w>mW){h=Math.round(h*mW/w);w=mW;}
+            if(h>mH){w=Math.round(w*mH/h);h=mH;}
+            cv.width=w;cv.height=h;
+            cv.getContext('2d').drawImage(im,0,0,w,h);
+            ok(cv.toDataURL('image/jpeg',0.65));
+          };
+          im.onerror=function(){ok('');};
+          im.src=img;
+        });
+      }
+      var r=await _sb.from('modulos').insert({id:m.id,nome:m.nome,descricao:m.desc||'',imagem:img,status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||i+1});
+      if(r.error){console.error('Erro módulo:',r.error);}
     }
-
-    // Inserir aulas
     for(var j=0;j<aulas.length;j++){
       var a=aulas[j];
-      var ra=await _sbAdmin.from('aulas').insert({
-        id:a.id,modulo_id:a.moduloId,nome:a.nome,
-        url:a.url||'',embed:a.embed||'',
-        duracao:a.duracao||'',status:a.status||'published',
-        descricao:a.desc||'',ordem:j+1
-      });
-      if(ra.error){erros.push('Aula "'+a.nome+'": '+ra.error.message);}
+      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',ordem:j+1});
+      if(ra.error){console.error('Erro aula:',ra.error);}
     }
-
-    if(erros.length){
-      alert('Publicado com avisos:
-'+erros.join('
-'));
-    } else {
-      toast('✅ '+mods.length+' módulo(s) e '+aulas.length+' aula(s) publicados no site!');
-    }
+    toast('✅ '+mods.length+' módulo(s) publicados! Alunos já podem ver.');
   }catch(e){
-    alert('Erro na publicação: '+e.message);
+    toast('Erro: '+e.message,true);
   }
-
   btn.innerHTML='<i class="ti ti-cloud-upload" style="font-size:14px;"></i> Publicar no site';
   btn.disabled=false;
 }
 
-// ONLINE ANIMADO
-// ================================================
-var _onlineCount=12;
-setInterval(function(){
-  _onlineCount+=Math.floor(Math.random()*3)-1;
-  if(_onlineCount<3)_onlineCount=3;
-},5000);
-
-// ================================================
-// INIT — zerar localStorage e iniciar
-// ================================================
-(async function(){
-  // Limpar dados de exemplo antigos
-  if(!localStorage.getItem('il_admin_pronto_v4')){
-    ['il_mods','il_aulas','il_alunos','il_tickets','il_materiais',
-     'il_zerado','il_pronto','il_limpo_v2','il_limpo_v3'].forEach(function(k){localStorage.removeItem(k);});
-    localStorage.setItem('il_admin_pronto_v4','1');
-  }
-  // Garantir só dashboard visível
+(function(){
   document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
   document.getElementById('pg-dashboard').style.display='block';
   document.getElementById('pg-dashboard').classList.add('ativa');
-  // Sincronizar módulos e aulas do Supabase
-  await syncModsDoSupabase();
-  await syncAulasDoSupabase();
   atualizarStats();
 })();
 </script>
