@@ -334,14 +334,30 @@ var _aulas = [];
   var params = new URLSearchParams(window.location.search);
   var modId = params.get('modulo');
   if (modId) {
+    console.log('🔍 modId:', modId);
+    console.log('🎬 aulas disponíveis:', aulasPublicadas.length, aulasPublicadas.map(function(a){return a.moduloId+':'+a.nome;}));
+    
+    // Expandir módulo na sidebar
     var modEl = document.getElementById('mod-group-'+modId);
     if (modEl) {
       var aulasList = modEl.querySelector('.mod-aulas');
       var chev = modEl.querySelector('.mod-chevron');
       if (aulasList) aulasList.classList.add('open');
       if (chev) chev.classList.add('open');
-      var primeiraAula = aulasPublicadas.find(function(a){return a.moduloId===modId;});
-      if (primeiraAula) selecionarAula(primeiraAula.id);
+    }
+    
+    // Buscar primeira aula do módulo
+    var primeiraAula = aulasPublicadas.find(function(a){return a.moduloId===modId;});
+    console.log('🎯 primeiraAula:', primeiraAula);
+    if (primeiraAula) {
+      selecionarAula(primeiraAula.id);
+    } else {
+      // Módulo sem aulas ainda
+      var mod = _mods.find(function(m){return m.id===modId;});
+      var tituloEl = document.getElementById('empty-titulo');
+      var msgEl = document.getElementById('empty-msg');
+      if(tituloEl) tituloEl.textContent = (mod?mod.nome:'Módulo') + ' — Sem aulas ainda';
+      if(msgEl) msgEl.textContent = 'Este módulo ainda não tem aulas publicadas. Volte em breve!';
     }
   }
 })();
