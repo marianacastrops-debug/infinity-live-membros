@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"/><title>Teste Aulas</title>
+<style>body{background:#060810;color:#fff;font-family:sans-serif;padding:20px;}.ok{color:#00e5a0;}.err{color:#ff3b5c;}pre{background:#111;padding:12px;border-radius:8px;font-size:11px;max-height:200px;overflow:auto;}.btn{background:#00c8ff;color:#000;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;margin:5px;font-size:14px;}</style>
+</head>
+<body>
+<h2>🔍 Diagnóstico de Aulas</h2>
+<button class="btn" onclick="testar()">Verificar Supabase</button>
+<button class="btn" onclick="mostrarLocal()" style="background:#ffb800;">Ver localStorage</button>
+<div id="res" style="margin-top:20px;"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+var URL='https://fbjxampsauqfngdennpi.supabase.co';
+var KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+var H={'apikey':KEY,'Authorization':'Bearer '+KEY};
+
+async function testar(){
+  var el=document.getElementById('res');
+  el.innerHTML='<p>Verificando...</p>';
+  var html='';
+  
+  // Módulos
+  var rM=await fetch(URL+'/rest/v1/modulos?select=id,nome,status&order=ordem.asc',{headers:H});
+  var mods=await rM.json();
+  html+='<p class="ok">📦 Módulos no Supabase: <strong>'+mods.length+'</strong></p>';
+  
+  // Aulas
+  var rA=await fetch(URL+'/rest/v1/aulas?select=id,nome,modulo_id,status&order=ordem.asc',{headers:H});
+  var aulas=await rA.json();
+  html+='<p class="'+(aulas.length>0?'ok':'err')+'">🎬 Aulas no Supabase: <strong>'+aulas.length+'</strong></p>';
+  
+  if(aulas.length===0){
+    html+='<p class="err">⚠️ A tabela aulas está VAZIA! Você precisa publicar as aulas pelo admin.</p>';
+    html+='<p style="color:#8b96b8;">Abra o admin → Módulos & Aulas → clique em "Publicar no site"</p>';
+  } else {
+    html+='<p class="ok">Aulas encontradas:</p><pre>'+JSON.stringify(aulas.slice(0,5),null,2)+'</pre>';
+  }
+  
+  el.innerHTML=html;
+}
+
+function mostrarLocal(){
+  var el=document.getElementById('res');
+  var mods=[];var aulas=[];
+  try{mods=JSON.parse(localStorage.getItem('il_mods'))||[];}catch(e){}
+  try{aulas=JSON.parse(localStorage.getItem('il_aulas'))||[];}catch(e){}
+  el.innerHTML='<p class="ok">📱 localStorage — Módulos: <strong>'+mods.length+'</strong>, Aulas: <strong>'+aulas.length+'</strong></p>'
+    +'<p style="color:#8b96b8;">Esses são os dados no SEU computador. Se aulas.length > 0, você precisa clicar em "Publicar no site" no admin para enviar ao Supabase.</p>'
+    +'<pre>'+JSON.stringify(aulas.slice(0,3).map(function(a){return{id:a.id,nome:a.nome,moduloId:a.moduloId};}),null,2)+'</pre>';
+}
+</script>
+</body></html>
