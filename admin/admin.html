@@ -779,22 +779,57 @@ function salvarMod(){
 }
 
 async function _salvarModComImg(editId,nome,img,mods){
+  // Comprimir imagem base64 para max 400x600 JPEG 70%
+  async function comprimir(src){
+    return new Promise(function(ok){
+      if(!src||!src.startsWith('data:image')){ok(src);return;}
+      var i=new Image();
+      i.onload=function(){
+        var c2=document.createElement('canvas');
+        var mW=400,mH=600,w=i.width,h=i.height;
+        if(w>mW){h=Math.round(h*mW/w);w=mW;}
+        if(h>mH){w=Math.round(w*mH/h);h=mH;}
+        c2.width=w;c2.height=h;
+        c2.getContext('2d').drawImage(i,0,0,w,h);
+        ok(c2.toDataURL('image/jpeg',0.7));
+      };
+      i.onerror=function(){ok(src);};
+      i.src=src;
+    });
+  }
+
   try{
-    var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||mods.length+1};
-    // Salvar no Supabase
+    var imgFinal=await comprimir(img);
+    var dados={
+      id:editId||uid(),
+      nome:nome,
+      desc:document.getElementById('mod-desc').value.trim(),
+      imagem:imgFinal,
+      status:document.getElementById('mod-status').value,
+      cor:document.getElementById('mod-cor').value,
+      ordem:parseInt(document.getElementById('mod-ordem').value)||mods.length+1
+    };
     var sbRow={id:dados.id,nome:dados.nome,descricao:dados.desc,imagem:dados.imagem,status:dados.status,cor:dados.cor,ordem:dados.ordem};
-    if(editId){await _sbAdmin.from('modulos').update(sbRow).eq('id',editId);}
-    else{await _sbAdmin.from('modulos').insert(sbRow);}
-    // Atualizar cache
+    var res;
+    if(editId){res=await _sbAdmin.from('modulos').update(sbRow).eq('id',editId);}
+    else{res=await _sbAdmin.from('modulos').insert(sbRow);}
+    
+    if(res&&res.error){
+      console.error('Supabase erro:',res.error);
+      alert('Erro ao salvar no banco: '+res.error.message);
+      return;
+    }
+    
     if(editId){var idx=mods.findIndex(function(m){return m.id===editId;});if(idx!==-1)mods[idx]=dados;}
     else mods.push(dados);
     _modsCache=mods;
     setMods(mods);
-    fecharModal('modal-modulo');renderMods();toast(editId?'Modulo atualizado!':'Modulo criado!');
+    fecharModal('modal-modulo');
+    renderMods();
+    toast(editId?'Módulo atualizado!':'Módulo criado e salvo!');
   }catch(e){
-    console.error('Erro:',e);
-    if(String(e).includes('quota')||String(e).includes('storage')){alert('Imagem muito grande! Use uma menor.');}
-    else{alert('Erro ao salvar: '+e.message);}
+    console.error('Erro ao salvar:',e);
+    alert('Erro: '+e.message+'. Verifique o console.');
   }
 }
 
