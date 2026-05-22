@@ -413,16 +413,23 @@ function selecionarAula(aulaId) {
   var itemEl = document.getElementById('aula-item-'+aulaId);
   if (itemEl) itemEl.classList.add('active');
 
-  // Ajustar tamanho do player (16:9)
+  // Player com altura moderada para caber conteúdo abaixo
   var pw = document.getElementById('player-wrap');
-  var altura = Math.round(pw.offsetWidth * 9/16);
-  pw.style.height = altura+'px';
+  var maxH = Math.round(window.innerHeight * 0.50);
+  var h169 = Math.round(pw.offsetWidth * 9/16);
+  pw.style.height = Math.min(h169, maxH)+'px';
 
   // Carregar vídeo
   document.getElementById('player-iframe').src = aula.embed || aula.url || '';
   document.getElementById('player-titulo').textContent = aula.nome;
   document.getElementById('player-dur').textContent = aula.duracao || '—';
-  document.getElementById('player-desc').textContent = aula.desc || '';
+  // Descrição da aula
+  var descEl = document.getElementById('player-desc');
+  if (descEl) {
+    descEl.innerHTML = aula.desc 
+      ? '<div style="white-space:pre-wrap;">'+aula.desc+'</div>'
+      : '<span style="color:var(--text3);font-size:12px;">Nenhuma descrição disponível.</span>';
+  }
 
   var mod = _mods.find(function(m){return m.id===aula.moduloId;});
   document.getElementById('player-mod-nome').textContent = mod ? mod.nome : '';
@@ -533,7 +540,11 @@ async function fazerLogout() {
 // Ajuste dinâmico do player
 window.addEventListener('resize', function(){
   var pw = document.getElementById('player-wrap');
-  if (pw && pw.style.height) pw.style.height = Math.round(pw.offsetWidth*9/16)+'px';
+  if (pw && pw.style.height) {
+    var maxH = Math.round(window.innerHeight * 0.50);
+    var h169 = Math.round(pw.offsetWidth * 9/16);
+    pw.style.height = Math.min(h169, maxH)+'px';
+  }
 });
 </script>
 </body>
