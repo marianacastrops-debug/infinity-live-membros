@@ -703,17 +703,64 @@ function renderAlunos(lista){
 function filtrarAlunos(q){renderAlunos(gAlunos().filter(function(a){return a.nome.toLowerCase().includes(q.toLowerCase())||a.email.toLowerCase().includes(q.toLowerCase());}));}
 function filtrarStatusAluno(s){renderAlunos(s?gAlunos().filter(function(a){return a.status===s;}):gAlunos());}
 
-function salvarAluno(){
+async function salvarAluno(){
   var nome=document.getElementById('aluno-nome').value.trim();
   var email=document.getElementById('aluno-email').value.trim();
+  var senha=document.getElementById('aluno-senha').value.trim();
   if(!nome||!email){alert('Nome e e-mail são obrigatórios.');return;}
-  var a=gAlunos();
-  a.push({id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:'#00c8ff',aulas:0});
-  sAlunos(a);fecharModal('modal-aluno');
-  document.getElementById('aluno-nome').value='';
-  document.getElementById('aluno-email').value='';
-  document.getElementById('aluno-senha').value='';
-  renderAlunos(a);atualizarStats();toast('Aluno adicionado!');
+
+  var btn=document.querySelector('#modal-aluno .btn-p');
+  if(btn){btn.textContent='Enviando...';btn.disabled=true;}
+
+  try{
+    // Criar usuário no Supabase e enviar e-mail de convite
+    var senhaFinal = senha || gerarSenha();
+    var res = await _sb.auth.signUp({
+      email: email,
+      password: senhaFinal,
+      options: {
+        data: { nome: nome },
+        emailRedirectTo: window.location.origin + '/login.html'
+      }
+    });
+
+    if(res.error){
+      alert('Erro ao criar aluno: ' + res.error.message);
+    } else {
+      // Salvar no localStorage também
+      var a=gAlunos();
+      var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff'];
+      a.push({id:res.data.user?res.data.user.id:uid(),nome:nome,email:email,
+              prog:0,status:'novo',cor:cores[Math.floor(Math.random()*cores.length)],aulas:0});
+      sAlunos(a);
+      fecharModal('modal-aluno');
+      document.getElementById('aluno-nome').value='';
+      document.getElementById('aluno-email').value='';
+      document.getElementById('aluno-senha').value='';
+      renderAlunos(a);atualizarStats();
+
+      // Mostrar confirmação com senha
+      if(!senha){
+        toast('✅ Aluno criado! E-mail de confirmação enviado para ' + email);
+        setTimeout(function(){
+          alert('✅ Aluno: ' + nome + '\nE-mail: ' + email + '\nSenha inicial: ' + senhaFinal + '\n\nUm e-mail de confirmação foi enviado.\nGuarde esses dados!');
+        }, 500);
+      } else {
+        toast('✅ Aluno criado! E-mail enviado para ' + email);
+      }
+    }
+  }catch(e){
+    alert('Erro: ' + e.message);
+  }
+
+  if(btn){btn.textContent='Adicionar aluno';btn.disabled=false;}
+}
+
+function gerarSenha(){
+  var chars='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#';
+  var senha='';
+  for(var i=0;i<10;i++) senha+=chars[Math.floor(Math.random()*chars.length)];
+  return senha;
 }
 
 function verPerfil(id){
