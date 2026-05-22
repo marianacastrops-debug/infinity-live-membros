@@ -282,14 +282,23 @@ var _aulas = [];
   document.getElementById('av').textContent = initials;
   document.getElementById('user-nome').textContent = nome;
 
-  // Carregar módulos e aulas do Supabase
+  // Carregar módulos e aulas via fetch direto
   try{
-    var rM=await _sb.from('modulos').select('*').neq('status','hidden').order('ordem',{ascending:true});
-    var rA=await _sb.from('aulas').select('*').eq('status','published').order('ordem',{ascending:true});
-    _mods=(rM.data||[]).map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
-    _aulas=(rA.data||[]).map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
+    var sbUrl='https://fbjxampsauqfngdennpi.supabase.co';
+    var sbKey='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+    var hds={'apikey':sbKey,'Authorization':'Bearer '+sbKey};
+    var rM=await fetch(sbUrl+'/rest/v1/modulos?select=*&status=neq.hidden&order=ordem.asc',{headers:hds});
+    var rA=await fetch(sbUrl+'/rest/v1/aulas?select=*&status=eq.published&order=ordem.asc',{headers:hds});
+    var dM=await rM.json();
+    var dA=await rA.json();
+    if(Array.isArray(dM)&&dM.length>0){
+      _mods=dM.map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
+    }
+    if(Array.isArray(dA)){
+      _aulas=dA.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
+    }
   }catch(e){
-    console.warn('Supabase falhou, usando cache:',e);
+    console.warn('Erro ao buscar:',e);
     try{_mods=JSON.parse(localStorage.getItem('il_mods'))||[];}catch(ex){_mods=[];}
     try{_aulas=JSON.parse(localStorage.getItem('il_aulas'))||[];}catch(ex){_aulas=[];}
     _mods=_mods.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});

@@ -226,31 +226,39 @@ const _sb=supabase.createClient(
   document.getElementById('av').textContent=inits;
   document.getElementById('user-nome').textContent=nome;
 
-  // Buscar módulos — tenta Supabase primeiro, usa localStorage como fallback
+  // Buscar módulos e aulas do Supabase (sem depender de autenticação)
   var modsVisiveis=[], aulasPublicadas=[];
-  var usouSupabase=false;
   try{
-    var modsRes=await _sb.from('modulos').select('*').order('ordem',{ascending:true});
-    var aulasRes=await _sb.from('aulas').select('*').order('ordem',{ascending:true});
-    var todosM=modsRes.data||[];
-    var todasA=aulasRes.data||[];
-    if(todosM.length>0){
-      usouSupabase=true;
-      todosM=todosM.map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
-      todasA=todasA.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
-      modsVisiveis=todosM.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-      aulasPublicadas=todasA.filter(function(a){return a.status!=='draft';});
+    // Usar fetch direto para evitar problemas de sessão com RLS
+    var sbUrl='https://fbjxampsauqfngdennpi.supabase.co';
+    var sbKey='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+    var headers={'apikey':sbKey,'Authorization':'Bearer '+sbKey,'Content-Type':'application/json'};
+    
+    var rM=await fetch(sbUrl+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:headers});
+    var rA=await fetch(sbUrl+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:headers});
+    var todosM=await rM.json();
+    var todasA=await rA.json();
+    
+    if(Array.isArray(todosM)&&todosM.length>0){
+      modsVisiveis=todosM
+        .filter(function(m){return m.status!=='hidden';})
+        .sort(function(a,b){return (a.ordem||99)-(b.ordem||99);})
+        .map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
     }
-  }catch(e){console.warn('Supabase erro:',e);}
-  
-  // Se Supabase não retornou dados, usar localStorage (cache do admin)
-  if(!usouSupabase){
+    if(Array.isArray(todasA)){
+      aulasPublicadas=todasA
+        .filter(function(a){return a.status!=='draft';})
+        .map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
+    }
+  }catch(e){
+    console.warn('Erro ao buscar módulos:',e);
+    // Fallback localStorage
     try{
-      var lsMods=JSON.parse(localStorage.getItem('il_mods'))||[];
-      var lsAulas=JSON.parse(localStorage.getItem('il_aulas'))||[];
-      modsVisiveis=lsMods.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-      aulasPublicadas=lsAulas.filter(function(a){return a.status!=='draft';});
-    }catch(e2){console.warn('localStorage erro:',e2);}
+      var lsM=JSON.parse(localStorage.getItem('il_mods'))||[];
+      var lsA=JSON.parse(localStorage.getItem('il_aulas'))||[];
+      modsVisiveis=lsM.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
+      aulasPublicadas=lsA.filter(function(a){return a.status!=='draft';});
+    }catch(e2){}
   }
 
   // Progresso do Supabase
