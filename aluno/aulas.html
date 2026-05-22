@@ -282,11 +282,19 @@ var _aulas = [];
   document.getElementById('av').textContent = initials;
   document.getElementById('user-nome').textContent = nome;
 
-  // Carregar módulos e aulas do admin
-  try { _mods = JSON.parse(localStorage.getItem('il_mods'))||[]; } catch(e){ _mods=[]; }
-  try { _aulas = JSON.parse(localStorage.getItem('il_aulas'))||[]; } catch(e){ _aulas=[]; }
-  _mods = _mods.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-  var aulasPublicadas = _aulas.filter(function(a){return a.status!=='draft';});
+  // Carregar módulos e aulas do Supabase
+  try{
+    var rM=await _sb.from('modulos').select('*').neq('status','hidden').order('ordem',{ascending:true});
+    var rA=await _sb.from('aulas').select('*').eq('status','published').order('ordem',{ascending:true});
+    _mods=(rM.data||[]).map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
+    _aulas=(rA.data||[]).map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
+  }catch(e){
+    console.warn('Supabase falhou, usando cache:',e);
+    try{_mods=JSON.parse(localStorage.getItem('il_mods'))||[];}catch(ex){_mods=[];}
+    try{_aulas=JSON.parse(localStorage.getItem('il_aulas'))||[];}catch(ex){_aulas=[];}
+    _mods=_mods.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
+  }
+  var aulasPublicadas=_aulas.filter(function(a){return a.status!=='draft';});
 
   // Carregar progresso do Supabase
   var { data: prog } = await _sb.from('progresso').select('*').eq('user_id', user.id).eq('concluida', true);

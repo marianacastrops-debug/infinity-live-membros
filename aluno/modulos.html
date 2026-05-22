@@ -226,9 +226,11 @@ const _sb=supabase.createClient(
   document.getElementById('av').textContent=inits;
   document.getElementById('user-nome').textContent=nome;
 
-  // Módulos e aulas do admin
-  var mods=[];try{mods=JSON.parse(localStorage.getItem('il_mods'))||[];}catch(e){}
-  var aulas=[];try{aulas=JSON.parse(localStorage.getItem('il_aulas'))||[];}catch(e){}
+  // Buscar módulos e aulas do Supabase
+  var modsRes=await _sb.from('modulos').select('*').order('ordem');
+  var aulasRes=await _sb.from('aulas').select('*').order('ordem');
+  var mods=(modsRes.data||[]).map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
+  var aulas=(aulasRes.data||[]).map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
   var modsVisiveis=mods.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
   var aulasPublicadas=aulas.filter(function(a){return a.status!=='draft';});
 
