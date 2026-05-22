@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<title>Teste Módulos</title>
+<style>
+body{background:#060810;color:#fff;font-family:sans-serif;padding:20px;}
+pre{background:#111;padding:12px;border-radius:8px;font-size:11px;overflow:auto;max-height:300px;}
+.ok{color:#00e5a0;}
+.err{color:#ff3b5c;}
+.btn{background:#00c8ff;color:#000;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:700;margin:5px;}
+</style>
+</head>
+<body>
+<h2>🔍 Teste de Conexão com Supabase</h2>
+<button class="btn" onclick="testar()">Testar Agora</button>
+<div id="resultado" style="margin-top:20px;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+var SB_URL = 'https://fbjxampsauqfngdennpi.supabase.co';
+var SB_KEY = 'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+
+async function testar() {
+  var el = document.getElementById('resultado');
+  el.innerHTML = '<p>Testando...</p>';
+  var html = '';
+
+  // Teste 1: fetch direto
+  try {
+    var r = await fetch(SB_URL + '/rest/v1/modulos?select=id,nome,status&limit=3', {
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY
+      }
+    });
+    var data = await r.json();
+    html += '<p class="ok">✅ fetch direto funcionou! Status: ' + r.status + '</p>';
+    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+  } catch(e) {
+    html += '<p class="err">❌ fetch direto falhou: ' + e.message + '</p>';
+  }
+
+  // Teste 2: cliente Supabase
+  try {
+    var sb = supabase.createClient(SB_URL, SB_KEY);
+    var { data, error } = await sb.from('modulos').select('id,nome,status').limit(3);
+    if (error) {
+      html += '<p class="err">❌ cliente Supabase erro: ' + JSON.stringify(error) + '</p>';
+    } else {
+      html += '<p class="ok">✅ cliente Supabase funcionou! ' + (data||[]).length + ' módulo(s)</p>';
+      html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    }
+  } catch(e) {
+    html += '<p class="err">❌ cliente Supabase falhou: ' + e.message + '</p>';
+  }
+
+  el.innerHTML = html;
+}
+</script>
+</body>
+</html>
