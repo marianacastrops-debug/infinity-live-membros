@@ -889,10 +889,32 @@ async function publicarNoSite(){
   btn.disabled=false;
 }
 
-(function(){
+(async function(){
   document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
   document.getElementById('pg-dashboard').style.display='block';
   document.getElementById('pg-dashboard').classList.add('ativa');
+
+  // Sincronizar módulos e aulas do Supabase para o localStorage
+  try{
+    var rM = await _sb.from('modulos').select('*').order('ordem', {ascending:true});
+    var rA = await _sb.from('aulas').select('*').order('ordem', {ascending:true});
+    if(rM.data && rM.data.length > 0){
+      var mods = rM.data.map(function(m){
+        return {id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',
+                status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};
+      });
+      sMods(mods);
+    }
+    if(rA.data && rA.data.length > 0){
+      var aulas = rA.data.map(function(a){
+        return {id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',
+                embed:a.embed||'',duracao:a.duracao||'',
+                status:a.status||'published',desc:a.descricao||''};
+      });
+      sAulas(aulas);
+    }
+  }catch(e){console.warn('Sync falhou:', e);}
+
   atualizarStats();
 })();
 </script>
