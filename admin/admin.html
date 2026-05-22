@@ -353,7 +353,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div class="mf"><label class="ml">Duração</label><input class="mi" id="aula-dur" placeholder="Ex: 28min"/></div>
       <div class="mf"><label class="ml">Status</label><select class="msel" id="aula-status"><option value="published">Publicada</option><option value="draft">Rascunho</option></select></div>
     </div>
-    <div class="mf"><label class="ml">Descrição</label><textarea class="mta" id="aula-desc" placeholder="Tópicos desta aula..."></textarea></div>
+    <div class="mf"><label class="ml">Descrição / Conteúdo da aula</label><textarea class="mta" id="aula-desc" style="min-height:100px;" placeholder="Descreva os tópicos, cole links, ou adicione qualquer conteúdo extra...&#10;&#10;Exemplo:&#10;🔗 Material: https://...&#10;📊 Planilha: https://...&#10;📌 Ponto importante da aula"></textarea></div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarAula()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar aula</button>
       <button class="btn btn-d btn-sm" id="btn-del-aula" style="display:none;" onclick="excluirAulaAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
