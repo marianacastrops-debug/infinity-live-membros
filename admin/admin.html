@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --bg:#060810;--bg2:#0a0d18;--card:#0f1320;--card2:#141828;--hover:#181e30;
-  --cyan:#00c8ff;--blue:#3b7fff;--purple:#7c5cff;--yellow:#ffb800;--pink:#ff4d8d;--green:#00e5a0;--red:#ff3b5c;
+  --cyan:#00c8ff;--yellow:#ffb800;--pink:#ff4d8d;--green:#00e5a0;--red:#ff3b5c;--purple:#7c5cff;
   --text:#f0f4ff;--text2:#8b96b8;--text3:#4a5270;
   --border:rgba(255,255,255,0.07);
   --g1:linear-gradient(135deg,#00c8ff,#3b7fff);
@@ -22,90 +22,218 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .layout{display:flex;height:100vh;}
 
 /* SIDEBAR */
-.sidebar{width:230px;min-width:230px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
-.logo-area{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:66px;}
+.sidebar{width:230px;min-width:230px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.logo-area{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:64px;}
 .logo-area img{width:110px;height:auto;object-fit:contain;}
 .logo-fb{display:none;align-items:center;gap:8px;}
 .logo-icon{width:32px;height:32px;border-radius:8px;background:var(--g1);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px;}
 .logo-txt{font-size:13px;font-weight:700;color:var(--text);}
-.admin-badge{margin:10px 12px 4px;background:rgba(255,77,141,0.1);border:1px solid rgba(255,77,141,0.2);border-radius:8px;padding:7px 12px;display:flex;align-items:center;gap:8px;}
+.admin-badge{margin:8px 10px 2px;background:rgba(255,77,141,0.1);border:1px solid rgba(255,77,141,0.2);border-radius:8px;padding:6px 10px;display:flex;align-items:center;gap:7px;}
 .admin-badge i{color:var(--pink);font-size:14px;}
-.admin-badge span{font-size:11px;font-weight:700;color:var(--pink);}
-.admin-badge small{font-size:10px;color:var(--text3);display:block;}
-.nav-wrap{flex:1;padding:6px 10px;overflow-y:auto;}
-.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--text3);text-transform:uppercase;padding:12px 8px 5px;}
+.admin-badge-txt{font-size:11px;font-weight:700;color:var(--pink);}
+.admin-badge-sub{font-size:10px;color:var(--text3);}
+.nav-wrap{flex:1;padding:4px 8px;overflow-y:auto;}
+.nav-lbl{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--text3);text-transform:uppercase;padding:10px 8px 4px;}
 .nav-btn{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;border:none;background:transparent;width:100%;text-align:left;font-family:inherit;}
 .nav-btn:hover{background:var(--hover);color:var(--text);}
-.nav-btn.active{background:rgba(0,200,255,0.12);color:#fff;font-weight:600;border:1px solid rgba(0,200,255,0.18);}
-.nav-btn.active i{color:var(--cyan);}
+.nav-btn.ativo{background:rgba(0,200,255,0.12);color:#fff;font-weight:600;border:1px solid rgba(0,200,255,0.18);}
+.nav-btn.ativo i{color:var(--cyan);}
 .nav-btn i{font-size:16px;flex-shrink:0;}
 .nav-cnt{margin-left:auto;background:var(--g3);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;}
-.sidebar-bottom{padding:10px;border-top:1px solid var(--border);}
-.mentor-row{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--card);border-radius:9px;cursor:pointer;border:1px solid var(--border);}
-.m-av{width:32px;height:32px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0;}
+.sidebar-bottom{padding:8px;border-top:1px solid var(--border);}
+.mentor-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card);border-radius:9px;border:1px solid var(--border);}
+.m-av{width:30px;height:30px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff;flex-shrink:0;}
 .m-name{font-size:12px;font-weight:600;color:var(--text);}
 .m-role{font-size:10px;color:var(--pink);font-weight:600;}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.topbar{padding:12px 22px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar{padding:11px 20px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .tb-title{font-size:15px;font-weight:700;color:var(--text);}
 .tb-sub{font-size:11px;color:var(--text2);margin-top:1px;}
-.tb-right{display:flex;align-items:center;gap:9px;}
-.live-pill{display:flex;align-items:center;gap:5px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:5px 12px;border-radius:7px;font-size:11px;font-weight:700;color:var(--green);}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.live-pill{display:flex;align-items:center;gap:5px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);padding:5px 11px;border-radius:7px;font-size:11px;font-weight:700;color:var(--green);}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.btn{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap;}
-.btn:hover{opacity:.85;}
-.btn-primary{background:var(--g1);color:#fff;}
-.btn-danger{background:var(--g3);color:#fff;}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2);}
-.btn-outline:hover{border-color:rgba(0,200,255,0.3);color:var(--text);}
-.btn-sm{font-size:11px;padding:5px 11px;}
-.btn-green{background:var(--g4);color:#000;}
 
 /* CONTENT */
-.content{flex:1;overflow-y:auto;padding:18px 22px;}
+.content{flex:1;overflow-y:auto;padding:16px 20px;}
 .content::-webkit-scrollbar{width:4px;}
 .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:4px;}
 
 /* PÁGINAS */
-.page{display:none;}
-.page.ativa{display:block;}
+.pg{display:none;}
+.pg.ativa{display:block;}
 
-/* CARDS */
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px;}
-.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.card-title{font-size:14px;font-weight:700;color:var(--text);}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;padding:8px 15px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap;}
+.btn:hover{opacity:.85;}
+.btn-p{background:var(--g1);color:#fff;}
+.btn-d{background:var(--g3);color:#fff;}
+.btn-o{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.btn-o:hover{border-color:rgba(0,200,255,0.3);color:var(--text);}
+.btn-sm{font-size:11px;padding:5px 10px;}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:700;color:var(--text);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 
 /* STATS */
-.stat{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;position:relative;overflow:hidden;transition:transform .18s;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:13px;position:relative;overflow:hidden;transition:transform .18s;}
 .stat:hover{transform:translateY(-2px);}
 .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .s1::before{background:var(--g1);}
 .s2::before{background:var(--g4);}
 .s3::before{background:var(--g3);}
 .s4::before{background:linear-gradient(90deg,var(--yellow),#ff8c42);}
-.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.stat-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+.stat-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
 .si1{background:rgba(0,200,255,0.12);color:var(--cyan);}
 .si2{background:rgba(0,229,160,0.12);color:var(--green);}
 .si3{background:rgba(255,77,141,0.12);color:var(--pink);}
 .si4{background:rgba(255,184,0,0.12);color:var(--yellow);}
-.stat-trend{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
-.t1{color:var(--cyan);background:rgba(0,200,255,0.1);}
-.t2{color:var(--green);background:rgba(0,229,160,0.1);}
-.t3{color:var(--pink);background:rgba(255,77,141,0.1);}
-.t4{color:var(--yellow);background:rgba(255,184,0,0.1);}
-.stat-val{font-size:24px;font-weight:800;color:var(--text);line-height:1;}
+.stat-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.sb1{color:var(--cyan);background:rgba(0,200,255,0.1);}
+.sb2{color:var(--green);background:rgba(0,229,160,0.1);}
+.sb3{color:var(--pink);background:rgba(255,77,141,0.1);}
+.sb4{color:var(--yellow);background:rgba(255,184,0,0.1);}
+.stat-val{font-size:22px;font-weight:800;color:var(--text);line-height:1;}
 .stat-lbl{font-size:11px;color:var(--text2);margin-top:3px;}
 
+/* TABELA */
+.search-bar{display:flex;gap:8px;margin-bottom:12px;}
+.srch{flex:1;position:relative;}
+.srch i{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);}
+.srch input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px 9px 33px;color:var(--text);font-family:inherit;font-size:13px;outline:none;}
+.srch input:focus{border-color:rgba(0,200,255,0.3);}
+.srch input::placeholder{color:var(--text3);}
+.fsel{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-family:inherit;font-size:12px;outline:none;cursor:pointer;}
+table{width:100%;border-collapse:collapse;}
+thead th{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .12s;}
+tbody tr:hover{background:var(--hover);}
+tbody tr:last-child{border-bottom:none;}
+td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
+.td-b{color:var(--text);font-weight:600;}
+.av{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+.sp{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;}
+.sp-ok{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+.sp-blk{background:rgba(255,59,92,0.12);color:var(--red);border:1px solid rgba(255,59,92,0.2);}
+.sp-new{background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);}
+.pmini{width:65px;height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.pmini-f{height:3px;border-radius:2px;background:var(--g1);}
+.acts{display:flex;gap:4px;}
+.rb{width:25px;height:25px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all .12s;border:none;}
+.rb-v{background:rgba(0,200,255,0.08);color:var(--cyan);}
+.rb-v:hover{background:rgba(0,200,255,0.2);}
+.rb-b{background:rgba(255,59,92,0.08);color:var(--red);}
+.rb-b:hover{background:rgba(255,59,92,0.2);}
+.rb-d{background:rgba(255,59,92,0.08);color:var(--red);}
+.rb-d:hover{background:rgba(255,59,92,0.2);}
+
+/* MÓDULOS */
+.mod-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.mod-hd{display:flex;align-items:center;gap:11px;padding:13px 15px;}
+.mod-thumb{width:50px;height:65px;border-radius:7px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
+.mod-thumb-ph{width:50px;height:65px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);}
+.mod-info{flex:1;min-width:0;}
+.mod-nome{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.mod-meta{font-size:11px;color:var(--text2);}
+.mod-acts{display:flex;gap:6px;flex-shrink:0;}
+.st{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:4px;display:inline-block;}
+.st-v{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
+.st-l{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
+.st-h{background:rgba(255,255,255,0.06);color:var(--text3);}
+.aulas-sec{border-top:1px solid var(--border);padding:8px 15px 12px;}
+.aula-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--card2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border);}
+.aula-n{font-size:11px;font-weight:700;color:var(--text3);width:18px;text-align:center;flex-shrink:0;}
+.aula-info{flex:1;min-width:0;}
+.aula-nome{font-size:12px;font-weight:600;color:var(--text);}
+.aula-url{font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.aula-dur{font-size:10px;color:var(--text3);flex-shrink:0;}
+.aula-acts{display:flex;gap:3px;flex-shrink:0;}
+.ab{width:23px;height:23px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:none;transition:all .12s;}
+.ab-e{background:rgba(0,200,255,0.08);color:var(--cyan);}
+.ab-e:hover{background:rgba(0,200,255,0.2);}
+.ab-d{background:rgba(255,59,92,0.08);color:var(--red);}
+.ab-d:hover{background:rgba(255,59,92,0.2);}
+
+/* MATERIAIS */
+.mat-upload{border:2px dashed rgba(0,200,255,0.2);border-radius:11px;padding:20px;text-align:center;cursor:pointer;transition:all .18s;margin-bottom:12px;background:var(--card2);}
+.mat-upload:hover{border-color:rgba(0,200,255,0.4);background:rgba(0,200,255,0.04);}
+.mat-upload i{font-size:28px;color:var(--cyan);display:block;margin-bottom:5px;}
+.mat-upload p{font-size:13px;font-weight:600;color:var(--text2);}
+.mat-upload small{font-size:11px;color:var(--text3);}
+
+/* TICKETS */
+.tkt{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:6px;border:1px solid var(--border);}
+.tkt-num{font-size:11px;font-weight:700;color:var(--text3);width:34px;flex-shrink:0;}
+.tkt-info{flex:1;min-width:0;}
+.tkt-title{font-size:12px;font-weight:600;color:var(--text);}
+.tkt-user{font-size:11px;color:var(--text2);margin-top:1px;}
+.tkt-time{font-size:10px;color:var(--text3);white-space:nowrap;}
+
+/* CONFIG */
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.tgl-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.tgl-row:last-child{border-bottom:none;}
+.tgl-lbl{font-size:13px;font-weight:600;color:var(--text);}
+.tgl-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.tgl{width:38px;height:20px;border-radius:10px;background:rgba(255,255,255,0.1);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none;}
+.tgl.on{background:var(--cyan);}
+.tgl::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;}
+.tgl.on::after{transform:translateX(18px);}
+
+/* MODAIS */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;}
+.overlay.aberto{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;width:480px;max-height:88vh;overflow-y:auto;}
+.modal::-webkit-scrollbar{width:3px;}
+.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.modal-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:16px;}
+.mf{margin-bottom:12px;}
+.ml{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px;display:block;}
+.mi{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;transition:border-color .15s;}
+.mi:focus{border-color:rgba(0,200,255,0.35);}
+.mi::placeholder{color:var(--text3);}
+.mta{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:vertical;min-height:75px;line-height:1.6;transition:border-color .15s;}
+.mta:focus{border-color:rgba(0,200,255,0.35);}
+.mta::placeholder{color:var(--text3);}
+.msel{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;cursor:pointer;}
+.mfooter{display:flex;gap:8px;margin-top:16px;}
+.hint{font-size:11px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:4px;}
+.hint i{font-size:13px;color:var(--cyan);}
+.grid2m{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+
+/* UPLOAD IMG */
+.upload-area{width:100%;height:140px;border:2px dashed rgba(0,200,255,0.25);border-radius:9px;background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .18s;margin-top:6px;}
+.upload-area:hover{border-color:rgba(0,200,255,0.5);background:rgba(0,200,255,0.04);}
+.upload-area i{font-size:26px;color:var(--cyan);}
+.upload-area strong{font-size:12px;color:var(--text2);}
+.upload-area span{font-size:11px;color:var(--text3);}
+.img-prev-box{position:relative;margin-top:6px;display:none;}
+.img-prev-box img{width:100%;height:140px;object-fit:cover;border-radius:9px;border:1px solid var(--border);cursor:pointer;}
+.btn-rem-img{position:absolute;top:7px;right:7px;background:rgba(255,59,92,0.9);color:#fff;border:none;border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.prog-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-top:6px;display:none;overflow:hidden;}
+.prog-fill{height:3px;background:var(--g1);border-radius:2px;width:0;transition:width .3s;}
+
+/* CONFIRM */
+.overlay-confirm{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;}
+.overlay-confirm.aberto{display:flex;}
+.modal-confirm{background:var(--card);border:1px solid rgba(255,59,92,0.25);border-radius:14px;padding:24px;width:340px;text-align:center;}
+.modal-confirm-ico{width:50px;height:50px;border-radius:50%;background:rgba(255,59,92,0.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px;}
+.modal-confirm-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.modal-confirm-msg{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:18px;}
+.modal-confirm-btns{display:flex;gap:8px;}
+
 /* ATIVIDADE */
-.act-item{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.act-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .act-item:last-child{border-bottom:none;}
-.act-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.act-ico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .ai-g{background:rgba(0,229,160,0.12);color:var(--green);}
 .ai-p{background:rgba(255,77,141,0.12);color:var(--pink);}
 .ai-b{background:rgba(0,200,255,0.12);color:var(--cyan);}
@@ -115,155 +243,14 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .act-txt span{color:var(--text2);}
 .act-time{font-size:10px;color:var(--text3);margin-top:1px;}
 
-/* TABELA ALUNOS */
-.search-bar{display:flex;gap:8px;margin-bottom:14px;}
-.srch{flex:1;position:relative;}
-.srch i{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text3);}
-.srch input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px 9px 34px;color:var(--text);font-family:inherit;font-size:13px;outline:none;}
-.srch input:focus{border-color:rgba(0,200,255,0.3);}
-.srch input::placeholder{color:var(--text3);}
-.fsel{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:12px;outline:none;cursor:pointer;}
-table{width:100%;border-collapse:collapse;}
-thead th{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
-tbody tr{border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .12s;}
-tbody tr:hover{background:var(--hover);}
-tbody tr:last-child{border-bottom:none;}
-td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
-.td-bold{color:var(--text);font-weight:600;}
-.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
-.sp{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;}
-.sp-ok{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
-.sp-blk{background:rgba(255,59,92,0.12);color:var(--red);border:1px solid rgba(255,59,92,0.2);}
-.sp-new{background:rgba(0,200,255,0.12);color:var(--cyan);border:1px solid rgba(0,200,255,0.2);}
-.pmini{width:70px;height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
-.pmini-fill{height:4px;border-radius:2px;background:var(--g1);}
-.row-acts{display:flex;gap:4px;}
-.rb{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .12s;border:none;background:transparent;}
-.rb-v{background:rgba(0,200,255,0.08);color:var(--cyan);}
-.rb-v:hover{background:rgba(0,200,255,0.2);}
-.rb-b{background:rgba(255,59,92,0.08);color:var(--red);}
-.rb-b:hover{background:rgba(255,59,92,0.2);}
-.rb-m{background:rgba(0,229,160,0.08);color:var(--green);}
-.rb-m:hover{background:rgba(0,229,160,0.2);}
-
-/* MÓDULOS */
-.mod-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
-.mod-hd{display:flex;align-items:center;gap:12px;padding:14px 16px;}
-.mod-thumb{width:52px;height:68px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
-.mod-thumb-ph{width:52px;height:68px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid var(--border);}
-.mod-info{flex:1;min-width:0;}
-.mod-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
-.mod-meta{font-size:11px;color:var(--text2);}
-.mod-acts{display:flex;gap:7px;flex-shrink:0;}
-.st{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;margin-top:5px;display:inline-block;}
-.st-v{background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.2);}
-.st-l{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
-.st-h{background:rgba(255,255,255,0.06);color:var(--text3);}
-.aulas-sec{border-top:1px solid var(--border);padding:10px 16px 14px;}
-.aula-item{display:flex;align-items:center;gap:9px;padding:7px 10px;background:var(--card2);border-radius:8px;margin-bottom:5px;border:1px solid var(--border);}
-.aula-n{font-size:11px;font-weight:700;color:var(--text3);width:20px;text-align:center;flex-shrink:0;}
-.aula-info{flex:1;min-width:0;}
-.aula-nome{font-size:12px;font-weight:600;color:var(--text);}
-.aula-url{font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.aula-dur{font-size:10px;color:var(--text3);flex-shrink:0;}
-.aula-acts{display:flex;gap:4px;flex-shrink:0;}
-.ab{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border:none;transition:all .12s;}
-.ab-e{background:rgba(0,200,255,0.08);color:var(--cyan);}
-.ab-e:hover{background:rgba(0,200,255,0.2);}
-.ab-d{background:rgba(255,59,92,0.08);color:var(--red);}
-.ab-d:hover{background:rgba(255,59,92,0.2);}
-
-/* UPLOAD IMAGEM */
-.upload-area{width:100%;height:150px;border:2px dashed rgba(0,200,255,0.25);border-radius:10px;background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .18s;margin-top:8px;}
-.upload-area:hover{border-color:rgba(0,200,255,0.5);background:rgba(0,200,255,0.04);}
-.upload-area i{font-size:30px;color:var(--cyan);}
-.upload-area strong{font-size:13px;color:var(--text2);}
-.upload-area span{font-size:11px;color:var(--text3);}
-.img-preview-box{position:relative;margin-top:8px;display:none;}
-.img-preview-box img{width:100%;height:150px;object-fit:cover;border-radius:10px;border:1px solid var(--border);cursor:pointer;}
-.btn-rem-img{position:absolute;top:8px;right:8px;background:rgba(255,59,92,0.9);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;}
-.prog-bar{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;margin-top:8px;display:none;overflow:hidden;}
-.prog-fill{height:4px;background:var(--g1);border-radius:2px;width:0;transition:width .3s;}
-
-/* MATERIAIS */
-.mat-upload-area{border:2px dashed rgba(0,200,255,0.2);border-radius:12px;padding:22px;text-align:center;cursor:pointer;transition:all .18s;margin-bottom:14px;background:var(--card2);}
-.mat-upload-area:hover{border-color:rgba(0,200,255,0.4);background:rgba(0,200,255,0.04);}
-.mat-upload-area i{font-size:32px;color:var(--cyan);display:block;margin-bottom:6px;}
-.mat-upload-area p{font-size:13px;font-weight:600;color:var(--text2);}
-.mat-upload-area small{font-size:11px;color:var(--text3);}
-.mat-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:7px;border:1px solid var(--border);}
-.mat-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.mi-pdf{background:rgba(255,77,141,0.12);color:var(--pink);}
-.mi-xls{background:rgba(0,229,160,0.12);color:var(--green);}
-.mi-zip{background:rgba(255,184,0,0.12);color:var(--yellow);}
-.mi-mp4{background:rgba(0,200,255,0.12);color:var(--cyan);}
-.mat-name{font-size:12px;font-weight:600;color:var(--text);}
-.mat-meta{font-size:10px;color:var(--text3);margin-top:2px;}
-.mat-mod{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,0.06);color:var(--text3);margin-left:auto;}
-.mat-dl{font-size:11px;font-weight:700;color:var(--cyan);margin:0 10px;}
-
-/* TICKETS */
-.tkt{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:7px;border:1px solid var(--border);cursor:pointer;transition:border-color .12s;}
-.tkt:hover{border-color:rgba(255,255,255,0.13);}
-.tkt-num{font-size:11px;font-weight:700;color:var(--text3);width:36px;}
-.tkt-info{flex:1;min-width:0;}
-.tkt-title{font-size:12px;font-weight:600;color:var(--text);}
-.tkt-user{font-size:11px;color:var(--text2);margin-top:1px;}
-.tkt-time{font-size:10px;color:var(--text3);}
-
-/* CONFIG */
-.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-.toggle-row:last-child{border-bottom:none;}
-.tgl-lbl{font-size:13px;font-weight:600;color:var(--text);}
-.tgl-sub{font-size:11px;color:var(--text2);margin-top:2px;}
-.toggle{width:40px;height:22px;border-radius:11px;background:rgba(255,255,255,0.1);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none;}
-.toggle.on{background:var(--cyan);}
-.toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;}
-.toggle.on::after{transform:translateX(18px);}
-
-/* MODAIS */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;}
-.overlay.aberto{display:flex;}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;width:480px;max-height:88vh;overflow-y:auto;}
-.modal::-webkit-scrollbar{width:3px;}
-.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-.modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;}
-.modal-sub{font-size:12px;color:var(--text2);margin-bottom:18px;}
-.mf{margin-bottom:13px;}
-.ml{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
-.mi{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:inherit;font-size:13px;outline:none;transition:border-color .15s;}
-.mi:focus{border-color:rgba(0,200,255,0.35);}
-.mi::placeholder{color:var(--text3);}
-.mta{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:vertical;min-height:80px;line-height:1.6;transition:border-color .15s;}
-.mta:focus{border-color:rgba(0,200,255,0.35);}
-.mta::placeholder{color:var(--text3);}
-.msel{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:inherit;font-size:13px;outline:none;cursor:pointer;}
-.mfooter{display:flex;gap:9px;margin-top:18px;}
-.hint{font-size:11px;color:var(--text3);margin-top:5px;display:flex;align-items:center;gap:5px;}
-.hint i{font-size:13px;color:var(--cyan);}
-.grid2m{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-
-/* PERFIL ALUNO MODAL */
-.perf-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
-.perf-stat{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:12px;text-align:center;}
-.perf-val{font-size:20px;font-weight:800;color:var(--text);}
-.perf-lbl{font-size:10px;color:var(--text3);}
+/* EMPTY */
+.empty{text-align:center;padding:36px 16px;color:var(--text3);}
+.empty i{font-size:32px;display:block;margin-bottom:8px;}
+.empty p{font-size:12px;}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:12px 18px;display:none;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--text);z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
-.toast i{font-size:18px;color:var(--green);}
-
-/* EMPTY STATE */
-.empty{text-align:center;padding:40px;color:var(--text3);}
-.empty i{font-size:36px;display:block;margin-bottom:10px;}
-.empty p{font-size:13px;}
-
-/* INFO BANNER */
-.info-box{background:rgba(0,200,255,0.05);border:1px solid rgba(0,200,255,0.15);border-radius:11px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-.info-box i{font-size:18px;color:var(--cyan);flex-shrink:0;}
-.info-box p{font-size:12px;color:var(--text2);line-height:1.5;}
-.info-box strong{color:var(--text);}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--card);border:1px solid rgba(0,229,160,0.3);border-radius:10px;padding:11px 16px;display:none;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--text);z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,0.4);}
+.toast i{font-size:17px;color:var(--green);}
 </style>
 </head>
 <body>
@@ -272,22 +259,15 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="logo-area">
-    <img src="../imagens/logo-infinity-live.png" alt="logo"
-      onerror="this.style.display='none';document.getElementById('lfb').style.display='flex'"/>
-    <div class="logo-fb" id="lfb">
-      <div class="logo-icon">∞</div>
-      <div class="logo-txt">Infinity Live</div>
-    </div>
+    <img src="../imagens/logo-infinity-live.png" alt="logo" onerror="this.style.display='none';document.getElementById('lfb').style.display='flex'"/>
+    <div class="logo-fb" id="lfb"><div class="logo-icon">∞</div><div class="logo-txt">Infinity Live</div></div>
   </div>
-  <div class="admin-badge">
-    <i class="ti ti-shield-check"></i>
-    <div><span>Painel Admin</span><small>Acesso total</small></div>
-  </div>
+  <div class="admin-badge"><i class="ti ti-shield-check"></i><div><div class="admin-badge-txt">Painel Admin</div><div class="admin-badge-sub">Acesso total</div></div></div>
   <div class="nav-wrap">
     <div class="nav-lbl">Geral</div>
-    <button class="nav-btn active" onclick="irPara('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
+    <button class="nav-btn ativo" onclick="irPara('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
     <button class="nav-btn" onclick="irPara('alunos',this)"><i class="ti ti-users"></i> Alunos <span class="nav-cnt" id="cnt-alunos">0</span></button>
-    <button class="nav-btn" onclick="irPara('tickets',this)"><i class="ti ti-message-circle"></i> Tickets <span class="nav-cnt">3</span></button>
+    <button class="nav-btn" onclick="irPara('tickets',this)"><i class="ti ti-message-circle"></i> Tickets <span class="nav-cnt" id="cnt-tickets">0</span></button>
     <div class="nav-lbl">Conteúdo</div>
     <button class="nav-btn" onclick="irPara('modulos',this)"><i class="ti ti-stack"></i> Módulos & Aulas</button>
     <button class="nav-btn" onclick="irPara('preview',this)"><i class="ti ti-eye"></i> Ver como aluno</button>
@@ -296,234 +276,172 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <button class="nav-btn" onclick="irPara('config',this)"><i class="ti ti-settings"></i> Configurações</button>
   </div>
   <div class="sidebar-bottom">
-    <div class="mentor-row">
-      <div class="m-av">M</div>
-      <div style="flex:1;min-width:0;"><div class="m-name">Mentor</div><div class="m-role">◆ Admin</div></div>
-      <i class="ti ti-chevron-right" style="color:var(--text3);font-size:14px;"></i>
-    </div>
+    <div class="mentor-row"><div class="m-av">M</div><div style="flex:1;min-width:0;"><div class="m-name">Mentor</div><div class="m-role">◆ Admin</div></div></div>
   </div>
 </aside>
 
 <!-- MAIN -->
 <main class="main">
   <div class="topbar">
-    <div>
-      <div class="tb-title" id="pg-titulo">Dashboard</div>
-      <div class="tb-sub" id="pg-sub">Visão geral da plataforma</div>
-    </div>
+    <div><div class="tb-title" id="pg-titulo">Dashboard</div><div class="tb-sub" id="pg-sub">Visão geral da plataforma</div></div>
     <div class="tb-right">
       <div class="live-pill"><div class="live-dot"></div> Online</div>
-      <button class="btn btn-outline btn-sm" onclick="zerarTudo()" style="border-color:rgba(255,59,92,0.3);color:#ff3b5c;" title="Zerar todos os dados de exemplo">
-          <i class="ti ti-trash" style="font-size:13px;"></i> Zerar dados
-        </button>
-        <button class="btn btn-primary" onclick="abrirModal('modal-aluno')" ><i class="ti ti-user-plus" style="font-size:14px;"></i> Novo aluno</button>
+      <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Novo aluno</button>
     </div>
   </div>
-
   <div class="content">
 
     <!-- DASHBOARD -->
-    <div class="page ativa" id="page-dashboard">
-      <div class="grid4" style="margin-bottom:16px;">
-        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-users"></i></div><span class="stat-trend t1">+12</span></div><div class="stat-val" id="st-alunos">0</div><div class="stat-lbl">Alunos ativos</div></div>
-        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-eye"></i></div><span class="stat-trend t2" id="st-online-badge">17</span></div><div class="stat-val" id="st-online">17</div><div class="stat-lbl">Online agora</div></div>
-        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-message-circle"></i></div><span class="stat-trend t3">3 abertos</span></div><div class="stat-val">3</div><div class="stat-lbl">Tickets</div></div>
-        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-stack"></i></div><span class="stat-trend t4" id="st-mods-badge">0</span></div><div class="stat-val" id="st-mods">0</div><div class="stat-lbl">Módulos</div></div>
+    <div class="pg ativa" id="pg-dashboard">
+      <div class="grid4" style="margin-bottom:14px;">
+        <div class="stat s1"><div class="stat-top"><div class="stat-ico si1"><i class="ti ti-users"></i></div><span class="stat-badge sb1" id="st-alunos-b">0</span></div><div class="stat-val" id="st-alunos">0</div><div class="stat-lbl">Alunos</div></div>
+        <div class="stat s2"><div class="stat-top"><div class="stat-ico si2"><i class="ti ti-stack"></i></div><span class="stat-badge sb2" id="st-mods-b">0</span></div><div class="stat-val" id="st-mods">0</div><div class="stat-lbl">Módulos</div></div>
+        <div class="stat s3"><div class="stat-top"><div class="stat-ico si3"><i class="ti ti-message-circle"></i></div><span class="stat-badge sb3" id="st-tickets-b">0 abertos</span></div><div class="stat-val" id="st-tickets">0</div><div class="stat-lbl">Tickets</div></div>
+        <div class="stat s4"><div class="stat-top"><div class="stat-ico si4"><i class="ti ti-video"></i></div><span class="stat-badge sb4" id="st-aulas-b">0</span></div><div class="stat-val" id="st-aulas">0</div><div class="stat-lbl">Aulas publicadas</div></div>
       </div>
       <div class="grid2">
-        <div class="card">
-          <div class="card-hd"><span class="card-title">Atividade recente</span></div>
-
-          
-<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma atividade recente.</div>
-        </div>
-        <div class="card">
-          <div class="card-hd"><span class="card-title">Aulas mais assistidas</span></div>
-          <div id="top-aulas"><div class="empty" style="padding:20px;"><i class="ti ti-video" style="font-size:24px;"></i><p>Adicione aulas para ver o ranking</p></div></div>
-        </div>
+        <div class="card"><div class="card-hd"><span class="card-title">Atividade recente</span></div><div id="atividade-lista"><div class="empty" style="padding:16px;"><i class="ti ti-activity" style="font-size:22px;"></i><p>Nenhuma atividade ainda.</p></div></div></div>
+        <div class="card"><div class="card-hd"><span class="card-title">Aulas mais assistidas</span></div><div id="top-aulas-lista"><div class="empty" style="padding:16px;"><i class="ti ti-video" style="font-size:22px;"></i><p>Adicione aulas para ver o ranking.</p></div></div></div>
       </div>
     </div>
 
     <!-- ALUNOS -->
-    <div class="page" id="page-alunos">
+    <div class="pg" id="pg-alunos">
       <div class="search-bar">
         <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Buscar por nome ou e-mail..." oninput="filtrarAlunos(this.value)"/></div>
-        <select class="fsel" onchange="filtrarStatus(this.value)">
-          <option value="">Todos</option><option value="ativo">Ativos</option><option value="bloqueado">Bloqueados</option><option value="novo">Novos</option>
-        </select>
-        <button class="btn btn-primary" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Adicionar</button>
+        <select class="fsel" onchange="filtrarStatusAluno(this.value)"><option value="">Todos</option><option value="ativo">Ativos</option><option value="bloqueado">Bloqueados</option><option value="novo">Novos</option></select>
+        <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Adicionar</button>
       </div>
       <div class="card" style="padding:0;">
-        <table><thead><tr>
-          <th>Aluno</th><th>E-mail</th><th>Progresso</th><th>Aulas</th><th>Acesso</th><th>Status</th><th>Ações</th>
-        </tr></thead><tbody id="tbody-alunos"></tbody></table>
+        <table><thead><tr><th>Aluno</th><th>E-mail</th><th>Progresso</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tbody-alunos"></tbody></table>
       </div>
-      <div class="empty" id="empty-alunos" style="display:none;"><i class="ti ti-users"></i><p>Nenhum aluno cadastrado ainda.<br/>Clique em <strong>Adicionar</strong> para começar.</p></div>
+      <div class="empty" id="empty-alunos" style="display:none;"><i class="ti ti-users"></i><p>Nenhum aluno cadastrado.<br/>Clique em <strong>Adicionar</strong> para começar.</p></div>
     </div>
 
     <!-- TICKETS -->
-    <div class="page" id="page-tickets">
+    <div class="pg" id="pg-tickets">
       <div class="search-bar">
         <div class="srch"><i class="ti ti-search"></i><input type="text" id="srch-ticket" placeholder="Buscar ticket..." oninput="filtrarTickets(this.value)"/></div>
-        <select class="fsel" id="fil-ticket" onchange="filtrarTickets(document.getElementById('srch-ticket').value)">
-          <option value="">Todos</option><option value="aberto">Abertos</option><option value="pendente">Pendentes</option><option value="respondido">Respondidos</option><option value="resolvido">Resolvidos</option>
-        </select>
-        <button class="btn btn-primary" onclick="abrirNovoTicket()"><i class="ti ti-plus" style="font-size:14px;"></i> Novo ticket</button>
+        <select class="fsel" id="fil-ticket" onchange="filtrarTickets(document.getElementById('srch-ticket').value)"><option value="">Todos</option><option value="aberto">Abertos</option><option value="pendente">Pendentes</option><option value="respondido">Respondidos</option><option value="resolvido">Resolvidos</option></select>
+        <button class="btn btn-p" onclick="novoTicket()"><i class="ti ti-plus" style="font-size:14px;"></i> Novo ticket</button>
       </div>
       <div id="tickets-lista"></div>
-      <div class="empty" id="empty-tickets" style="display:none;"><i class="ti ti-message-circle"></i><p style="font-size:13px;">Nenhum ticket ainda.</p></div>
+      <div class="empty" id="empty-tickets"><i class="ti ti-message-circle"></i><p>Nenhum ticket ainda.</p></div>
     </div>
 
-    <!-- MÓDULOS E AULAS -->
-    <div class="page" id="page-modulos">
-      <div class="info-box"><i class="ti ti-info-circle"></i><p><strong>Como funciona:</strong> Crie módulos, faça upload da imagem de capa e adicione as aulas com o link do YouTube. Tudo salvo automaticamente.</p></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div><div style="font-size:14px;font-weight:700;color:var(--text);">Módulos & Aulas</div><div style="font-size:11px;color:var(--text2);margin-top:2px;" id="mods-count">Nenhum módulo</div></div>
-        <button class="btn btn-primary" onclick="abrirNovoMod()"><i class="ti ti-folder-plus" style="font-size:14px;"></i> Novo módulo</button>
+    <!-- MÓDULOS -->
+    <div class="pg" id="pg-modulos">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div><div style="font-size:13px;font-weight:700;color:var(--text);">Módulos & Aulas</div><div style="font-size:11px;color:var(--text2);margin-top:2px;" id="mods-count">0 módulo(s)</div></div>
+        <button class="btn btn-p" onclick="abrirNovoMod()"><i class="ti ti-folder-plus" style="font-size:14px;"></i> Novo módulo</button>
       </div>
       <div id="mods-lista"></div>
-      <div class="empty" id="empty-mods"><i class="ti ti-stack-2"></i><p>Nenhum módulo criado ainda.<br/>Clique em <strong>Novo módulo</strong> para começar.</p></div>
+      <div class="empty" id="empty-mods"><i class="ti ti-stack-2"></i><p>Nenhum módulo ainda.<br/>Clique em <strong>Novo módulo</strong> para começar.</p></div>
     </div>
 
-    <!-- VER COMO ALUNO -->
-    <div class="page" id="page-preview">
-      <div style="background:rgba(255,77,141,0.05);border:1px solid rgba(255,77,141,0.15);border-radius:11px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-        <i class="ti ti-eye" style="font-size:18px;color:var(--pink);flex-shrink:0;"></i>
-        <p style="font-size:12px;color:var(--text2);">Visão do <strong style="color:var(--text);">aluno</strong> — como os módulos aparecem na área de membros.</p>
-      </div>
-      <div style="height:100px;background:linear-gradient(135deg,#040710,#071428);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;overflow:hidden;">
-        <img src="../imagens/logo-infinity-live.png" style="height:60px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(0,200,255,0.4));" onerror="this.style.display='none'"/>
-      </div>
-      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;">Módulos do curso</div>
-      <div id="preview-cards" style="display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;"></div>
+    <!-- PREVIEW -->
+    <div class="pg" id="pg-preview">
+      <div style="background:rgba(255,77,141,0.05);border:1px solid rgba(255,77,141,0.15);border-radius:11px;padding:11px 15px;margin-bottom:14px;display:flex;align-items:center;gap:9px;"><i class="ti ti-eye" style="font-size:16px;color:var(--pink);flex-shrink:0;"></i><p style="font-size:12px;color:var(--text2);">Visão do aluno — como os módulos aparecem na área de membros.</p></div>
+      <div style="height:90px;background:linear-gradient(135deg,#040710,#071428);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;overflow:hidden;"><img src="../imagens/logo-infinity-live.png" style="height:55px;object-fit:contain;filter:drop-shadow(0 0 16px rgba(0,200,255,0.4));" onerror="this.style.display='none'"/></div>
+      <div id="preview-cards" style="display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;flex-wrap:wrap;"></div>
       <div class="empty" id="empty-preview"><i class="ti ti-stack-2"></i><p>Crie módulos para ver o preview aqui.</p></div>
     </div>
 
     <!-- MATERIAIS -->
-    <div class="page" id="page-materiais">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-size:14px;font-weight:700;color:var(--text);">Materiais para download</div>
-        <button class="btn btn-primary" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
+    <div class="pg" id="pg-materiais">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);">Materiais para download</div>
+        <button class="btn btn-p" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
       </div>
-      <div id="mats-lista"><div class="empty" style="padding:30px;"><i class="ti ti-file-upload" style="font-size:32px;display:block;margin-bottom:8px;"></i><p style="font-size:13px;">Nenhum material cadastrado ainda.</p></div></div>
+      <div id="mats-lista"><div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado ainda.</p></div></div>
     </div>
 
     <!-- CONFIG -->
-    <div class="page" id="page-config">
+    <div class="pg" id="pg-config">
       <div class="config-grid">
         <div>
           <div class="card">
             <div class="card-hd"><span class="card-title">Plataforma</span></div>
             <div class="mf"><label class="ml">Nome da plataforma</label><input class="mi" value="Infinity Live"/></div>
-            <div class="mf"><label class="ml">URL personalizada</label><input class="mi" value="membros.infinitylive.com.br"/></div>
+            <div class="mf"><label class="ml">URL</label><input class="mi" value="membros.infinitylive.com.br"/></div>
             <div class="mf"><label class="ml">E-mail de suporte</label><input class="mi" value="suporte@infinitylive.com.br"/></div>
             <div class="mf"><label class="ml">WhatsApp VIP</label><input class="mi" value="+55 11 99999-9999"/></div>
-            <div class="mf"><label class="ml">Link do Telegram</label><input class="mi" value="t.me/infinitylive"/></div>
-            <button class="btn btn-primary" onclick="mostrarToast('Configurações salvas!')"><i class="ti ti-device-floppy" style="font-size:14px;"></i> Salvar</button>
+            <div class="mf"><label class="ml">Telegram</label><input class="mi" value="t.me/infinitylive"/></div>
+            <button class="btn btn-p" onclick="toast('Configurações salvas!')"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar</button>
           </div>
         </div>
         <div>
-          <div class="card" style="margin-bottom:14px;">
+          <div class="card" style="margin-bottom:12px;">
             <div class="card-hd"><span class="card-title">Funcionalidades</span></div>
-            <div class="toggle-row"><div><div class="tgl-lbl">Progresso de aulas</div><div class="tgl-sub">Rastrear aulas assistidas</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
-            <div class="toggle-row"><div><div class="tgl-lbl">Módulos bloqueados</div><div class="tgl-sub">Liberar progressivamente</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
-            <div class="toggle-row"><div><div class="tgl-lbl">Sistema de tickets</div><div class="tgl-sub">Suporte via tickets</div></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
-            <div class="toggle-row"><div><div class="tgl-lbl">Badge "Live ativa"</div><div class="tgl-sub">Mostrar quando ao vivo</div></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+            <div class="tgl-row"><div><div class="tgl-lbl">Progresso de aulas</div><div class="tgl-sub">Rastrear aulas assistidas</div></div><button class="tgl on" onclick="this.classList.toggle('on')"></button></div>
+            <div class="tgl-row"><div><div class="tgl-lbl">Módulos bloqueados</div><div class="tgl-sub">Liberar progressivamente</div></div><button class="tgl on" onclick="this.classList.toggle('on')"></button></div>
+            <div class="tgl-row"><div><div class="tgl-lbl">Sistema de tickets</div><div class="tgl-sub">Suporte via tickets</div></div><button class="tgl on" onclick="this.classList.toggle('on')"></button></div>
+            <div class="tgl-row"><div><div class="tgl-lbl">Badge Live ativa</div><div class="tgl-sub">Mostrar quando ao vivo</div></div><button class="tgl" onclick="this.classList.toggle('on')"></button></div>
           </div>
           <div class="card">
             <div class="card-hd"><span class="card-title">Integrações</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:9px;border:1px solid var(--border);margin-bottom:8px;"><i class="ti ti-brand-youtube" style="font-size:18px;color:#ff0000;"></i><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--text);">YouTube</div><div style="font-size:10px;color:var(--text2);">Vídeos não listados</div></div><span class="sp sp-ok">Ativo</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:9px;border:1px solid var(--border);"><i class="ti ti-shopping-cart" style="font-size:18px;color:var(--yellow);"></i><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--text);">Hotmart / Kiwify</div><div style="font-size:10px;color:var(--text2);">Liberação automática</div></div><button class="btn btn-outline btn-sm" onclick="mostrarToast('Em breve!')">Configurar</button></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--card2);border-radius:9px;border:1px solid var(--border);margin-bottom:7px;"><i class="ti ti-brand-youtube" style="font-size:17px;color:#ff0000;"></i><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--text);">YouTube</div><div style="font-size:10px;color:var(--text2);">Embed de vídeos</div></div><span class="sp sp-ok">Ativo</span></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--card2);border-radius:9px;border:1px solid var(--border);"><i class="ti ti-shopping-cart" style="font-size:17px;color:var(--yellow);"></i><div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--text);">Hotmart / Kiwify</div><div style="font-size:10px;color:var(--text2);">Liberação automática</div></div><button class="btn btn-o btn-sm" onclick="toast('Em breve!')">Configurar</button></div>
           </div>
         </div>
       </div>
     </div>
 
-  </div><!-- /content -->
+  </div>
 </main>
 </div>
 
-<!-- MODAL: NOVO/EDITAR MÓDULO -->
+<!-- MODAIS -->
 <div class="overlay" id="modal-modulo">
   <div class="modal">
-    <div class="modal-title" id="mod-titulo">Criar novo módulo</div>
+    <div class="modal-title" id="mod-modal-titulo">Criar módulo</div>
     <div class="modal-sub">Preencha os dados e faça upload da imagem de capa.</div>
     <input type="hidden" id="mod-id"/>
-    <div class="mf"><label class="ml">Nome do módulo *</label><input class="mi" id="mod-nome" placeholder="Ex: Módulo 1 — Fundamentos"/></div>
+    <div class="mf"><label class="ml">Nome *</label><input class="mi" id="mod-nome" placeholder="Ex: Módulo 1 — Fundamentos"/></div>
     <div class="mf"><label class="ml">Descrição</label><textarea class="mta" id="mod-desc" placeholder="O que o aluno vai aprender..."></textarea></div>
-
     <div class="mf">
       <label class="ml">Imagem de capa</label>
       <input type="file" id="mod-img-file" accept="image/*" style="display:none;" onchange="uploadImg(this)"/>
-      <div class="upload-area" id="upload-area" onclick="document.getElementById('mod-img-file').click()">
-        <i class="ti ti-cloud-upload"></i>
-        <strong>Clique aqui para escolher a imagem</strong>
-        <span>JPG, PNG ou WEBP — máximo 5MB</span>
-      </div>
-      <div class="img-preview-box" id="img-prev-box">
-        <img id="img-prev" src="" alt="preview" onclick="document.getElementById('mod-img-file').click()"/>
-        <button class="btn-rem-img" onclick="removerImg()"><i class="ti ti-trash" style="font-size:12px;"></i> Remover</button>
-      </div>
+      <div class="upload-area" id="upload-area" onclick="document.getElementById('mod-img-file').click()"><i class="ti ti-cloud-upload"></i><strong>Clique para fazer upload</strong><span>JPG, PNG, WEBP — máx 5MB</span></div>
+      <div class="img-prev-box" id="img-prev-box"><img id="img-prev" src="" alt="preview" onclick="document.getElementById('mod-img-file').click()"/><button class="btn-rem-img" onclick="removerImg()"><i class="ti ti-trash" style="font-size:11px;"></i> Remover</button></div>
       <div class="prog-bar" id="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
     </div>
-
     <div class="grid2m">
-      <div class="mf"><label class="ml">Status</label>
-        <select class="msel" id="mod-status">
-          <option value="visible">Visível</option>
-          <option value="locked">Bloqueado</option>
-          <option value="hidden">Oculto (rascunho)</option>
-        </select>
-      </div>
-      <div class="mf"><label class="ml">Cor do tema</label>
-        <select class="msel" id="mod-cor">
-          <option value="cyan">Ciano (azul)</option>
-          <option value="green">Verde</option>
-          <option value="pink">Rosa</option>
-          <option value="purple">Roxo</option>
-          <option value="yellow">Amarelo</option>
-        </select>
-      </div>
+      <div class="mf"><label class="ml">Status</label><select class="msel" id="mod-status"><option value="visible">Visível</option><option value="locked">Bloqueado</option><option value="hidden">Oculto</option></select></div>
+      <div class="mf"><label class="ml">Cor</label><select class="msel" id="mod-cor"><option value="cyan">Ciano</option><option value="green">Verde</option><option value="pink">Rosa</option><option value="purple">Roxo</option><option value="yellow">Amarelo</option></select></div>
     </div>
-    <div class="mf"><label class="ml">Ordem de exibição</label><input class="mi" id="mod-ordem" type="number" min="1" placeholder="1"/></div>
+    <div class="mf"><label class="ml">Ordem</label><input class="mi" id="mod-ordem" type="number" min="1" placeholder="1"/></div>
     <div class="mfooter">
-      <button class="btn btn-primary" style="flex:1;" onclick="salvarMod()"><i class="ti ti-check" style="font-size:14px;"></i> Salvar módulo</button>
-      <button class="btn btn-danger btn-sm" id="btn-del-mod" style="display:none;" onclick="excluirMod()"><i class="ti ti-trash" style="font-size:14px;"></i></button>
-      <button class="btn btn-outline" onclick="fecharModal('modal-modulo')">Cancelar</button>
+      <button class="btn btn-p" style="flex:1;" onclick="salvarMod()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar módulo</button>
+      <button class="btn btn-d btn-sm" id="btn-del-mod" style="display:none;" onclick="excluirMod()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
+      <button class="btn btn-o" onclick="fecharModal('modal-modulo')">Cancelar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: NOVA/EDITAR AULA -->
 <div class="overlay" id="modal-aula">
   <div class="modal">
-    <div class="modal-title" id="aula-titulo">Adicionar aula</div>
-    <div class="modal-sub">Cole o link do YouTube (não listado recomendado).</div>
+    <div class="modal-title" id="aula-modal-titulo">Adicionar aula</div>
+    <div class="modal-sub">Cole o link do YouTube — o embed é gerado automaticamente.</div>
     <input type="hidden" id="aula-id"/>
     <input type="hidden" id="aula-mod-id"/>
-    <div class="mf"><label class="ml">Título da aula *</label><input class="mi" id="aula-nome" placeholder="Ex: Meta Ads na Prática"/></div>
-    <div class="mf">
-      <label class="ml">URL do vídeo (YouTube) *</label>
-      <input class="mi" id="aula-url" placeholder="https://www.youtube.com/watch?v=..." oninput="gerarEmbed(this.value)"/>
-      <div class="hint"><i class="ti ti-brand-youtube" style="color:#ff0000;"></i>Cole a URL completa do YouTube. O embed é gerado automaticamente.</div>
-    </div>
-    <div class="mf"><label class="ml">Embed gerado</label><input class="mi" id="aula-embed" readonly style="opacity:.55;font-size:11px;" placeholder="Aparece automaticamente..."/></div>
+    <div class="mf"><label class="ml">Título *</label><input class="mi" id="aula-nome" placeholder="Ex: Meta Ads na Prática"/></div>
+    <div class="mf"><label class="ml">URL do vídeo *</label><input class="mi" id="aula-url" placeholder="https://www.youtube.com/watch?v=..." oninput="gerarEmbed(this.value)"/><div class="hint"><i class="ti ti-brand-youtube" style="color:#ff0000;"></i>Cole a URL completa do YouTube.</div></div>
+    <div class="mf"><label class="ml">Embed (gerado automaticamente)</label><input class="mi" id="aula-embed" readonly style="opacity:.5;font-size:11px;" placeholder="Aparece após colar a URL..."/></div>
     <div class="grid2m">
       <div class="mf"><label class="ml">Duração</label><input class="mi" id="aula-dur" placeholder="Ex: 28min"/></div>
-      <div class="mf"><label class="ml">Status</label>
-        <select class="msel" id="aula-status"><option value="published">Publicada</option><option value="draft">Rascunho</option></select>
-      </div>
+      <div class="mf"><label class="ml">Status</label><select class="msel" id="aula-status"><option value="published">Publicada</option><option value="draft">Rascunho</option></select></div>
     </div>
-    <div class="mf"><label class="ml">Descrição (opcional)</label><textarea class="mta" id="aula-desc" placeholder="Tópicos desta aula..."></textarea></div>
+    <div class="mf"><label class="ml">Descrição</label><textarea class="mta" id="aula-desc" placeholder="Tópicos desta aula..."></textarea></div>
     <div class="mfooter">
-      <button class="btn btn-primary" style="flex:1;" onclick="salvarAula()"><i class="ti ti-check" style="font-size:14px;"></i> Salvar aula</button>
-      <button class="btn btn-danger btn-sm" id="btn-del-aula" style="display:none;" onclick="excluirAula()"><i class="ti ti-trash" style="font-size:14px;"></i></button>
-      <button class="btn btn-outline" onclick="fecharModal('modal-aula')">Cancelar</button>
+      <button class="btn btn-p" style="flex:1;" onclick="salvarAula()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar aula</button>
+      <button class="btn btn-d btn-sm" id="btn-del-aula" style="display:none;" onclick="excluirAula()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
+      <button class="btn btn-o" onclick="fecharModal('modal-aula')">Cancelar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: ADICIONAR ALUNO -->
 <div class="overlay" id="modal-aluno">
   <div class="modal">
     <div class="modal-title">Adicionar aluno</div>
@@ -531,642 +449,541 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="mf"><label class="ml">Nome completo *</label><input class="mi" id="aluno-nome" placeholder="Ex: João Silva"/></div>
     <div class="mf"><label class="ml">E-mail *</label><input class="mi" id="aluno-email" type="email" placeholder="joao@email.com"/></div>
     <div class="mf"><label class="ml">Senha inicial</label><input class="mi" id="aluno-senha" placeholder="Deixe em branco para gerar automaticamente"/></div>
-    <div class="mf"><label class="ml">Plano</label>
-      <select class="msel"><option>Membro Pro — Acesso completo</option><option>Membro Basic — Módulos 1 e 2</option></select>
-    </div>
+    <div class="mf"><label class="ml">Plano</label><select class="msel"><option>Membro Pro — Acesso completo</option><option>Membro Basic — Módulos 1 e 2</option></select></div>
     <div class="mfooter">
-      <button class="btn btn-primary" style="flex:1;" onclick="salvarAluno()"><i class="ti ti-user-plus" style="font-size:14px;"></i> Adicionar aluno</button>
-      <button class="btn btn-outline" onclick="fecharModal('modal-aluno')">Cancelar</button>
+      <button class="btn btn-p" style="flex:1;" onclick="salvarAluno()"><i class="ti ti-user-plus" style="font-size:13px;"></i> Adicionar aluno</button>
+      <button class="btn btn-o" onclick="fecharModal('modal-aluno')">Cancelar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: PERFIL ALUNO -->
 <div class="overlay" id="modal-perfil">
   <div class="modal">
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);">
-      <div id="perf-av" style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;background:var(--g1);">JS</div>
-      <div style="flex:1;"><div id="perf-nome" style="font-size:15px;font-weight:700;color:var(--text);">João Silva</div><div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:2px;">joao@email.com</div><span id="perf-status" class="sp sp-ok" style="display:inline-block;margin-top:5px;">Ativo</span></div>
-      <div style="display:flex;gap:7px;">
-        <button class="btn btn-danger btn-sm" id="btn-bloquear" onclick="alternarBloqueio()"><i class="ti ti-user-off" style="font-size:13px;"></i> Bloquear</button>
-        <button class="btn btn-outline btn-sm" onclick="fecharModal('modal-perfil')">Fechar</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+      <div id="perf-av" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;background:var(--g1);">?</div>
+      <div style="flex:1;"><div id="perf-nome" style="font-size:14px;font-weight:700;color:var(--text);"></div><div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:1px;"></div><span id="perf-status" class="sp sp-ok" style="display:inline-block;margin-top:4px;">Ativo</span></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-d btn-sm" id="btn-bloquear" onclick="alternarBloqueio()"><i class="ti ti-user-off" style="font-size:12px;"></i> Bloquear</button>
+        <button class="btn btn-d btn-sm" onclick="excluirAlunoModal()" style="background:rgba(255,59,92,0.1);color:var(--red);border:1px solid rgba(255,59,92,0.2);"><i class="ti ti-trash" style="font-size:12px;"></i></button>
+        <button class="btn btn-o btn-sm" onclick="fecharModal('modal-perfil')">Fechar</button>
       </div>
     </div>
-    <div class="perf-stats">
-      <div class="perf-stat"><div class="perf-val" id="perf-aulas">0</div><div class="perf-lbl">Aulas vistas</div></div>
-      <div class="perf-stat"><div class="perf-val">14h</div><div class="perf-lbl">Estudadas</div></div>
-      <div class="perf-stat"><div class="perf-val">7</div><div class="perf-lbl">Downloads</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px;">
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-aulas" style="font-size:18px;font-weight:800;color:var(--text);">0</div><div style="font-size:10px;color:var(--text3);">Aulas vistas</div></div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--text);">0h</div><div style="font-size:10px;color:var(--text3);">Estudadas</div></div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;color:var(--text);">0</div><div style="font-size:10px;color:var(--text3);">Downloads</div></div>
     </div>
-    <div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;"><span style="color:var(--text2);">Progresso</span><span id="perf-prog" style="font-weight:700;color:var(--cyan);">0%</span></div><div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div id="perf-prog-bar" style="height:6px;border-radius:3px;background:var(--g1);width:0%;"></div></div></div>
-    <div style="font-size:12px;color:var(--text2);">Membro desde: <strong style="color:var(--text);">01/01/2026</strong></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text2);">Progresso</span><span id="perf-prog" style="font-weight:700;color:var(--cyan);">0%</span></div>
+    <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div id="perf-prog-bar" style="height:5px;border-radius:3px;background:var(--g1);width:0%;"></div></div>
+    <div style="font-size:12px;color:var(--text2);margin-top:10px;">Membro desde: <strong style="color:var(--text);">01/01/2026</strong></div>
   </div>
 </div>
 
-<!-- MODAL: MATERIAL -->
-<div class="overlay" id="modal-material">
-  <div class="modal">
-    <div class="modal-title">Adicionar material</div>
-    <div class="modal-sub">O arquivo ficará disponível para download pelos alunos.</div>
-    <div class="mf"><label class="ml">Nome do material *</label><input class="mi" placeholder="Ex: Guia de Tráfego Pago"/></div>
-    <div class="mf"><label class="ml">Link do arquivo (Google Drive, Dropbox, etc)</label><input class="mi" placeholder="https://drive.google.com/..."/><div class="hint"><i class="ti ti-info-circle"></i>No Google Drive: botão direito → Compartilhar → Copiar link</div></div>
-    <div class="grid2m">
-      <div class="mf"><label class="ml">Tipo</label><select class="msel"><option>PDF</option><option>Planilha (XLSX)</option><option>ZIP</option><option>Vídeo (MP4)</option></select></div>
-      <div class="mf"><label class="ml">Módulo</label><select class="msel"><option>Geral</option><option>Módulo 1</option><option>Módulo 2</option><option>Módulo 3</option><option>Bônus</option></select></div>
-    </div>
-    <div class="mfooter">
-      <button class="btn btn-primary" style="flex:1;" onclick="mostrarToast('Material salvo!');fecharModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Publicar</button>
-      <button class="btn btn-outline" onclick="fecharModal('modal-material')">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL TICKET -->
 <div class="overlay" id="modal-ticket">
-  <div class="modal" style="width:540px;">
+  <div class="modal" style="width:520px;">
     <div id="modal-ticket-body"></div>
   </div>
 </div>
 
-<!-- TOAST -->
+<div class="overlay" id="modal-material">
+  <div class="modal">
+    <div class="modal-title">Adicionar material</div>
+    <div class="modal-sub">O arquivo ficará disponível para download pelos alunos.</div>
+    <div class="mf"><label class="ml">Nome *</label><input class="mi" id="mat-nome" placeholder="Ex: Guia de Tráfego Pago"/></div>
+    <div class="mf"><label class="ml">Link do arquivo</label><input class="mi" id="mat-url" placeholder="https://drive.google.com/..."/><div class="hint"><i class="ti ti-info-circle"></i>Google Drive, Dropbox ou qualquer link direto.</div></div>
+    <div class="grid2m">
+      <div class="mf"><label class="ml">Tipo</label><select class="msel" id="mat-tipo"><option>PDF</option><option>Planilha (XLSX)</option><option>ZIP</option><option>Vídeo (MP4)</option></select></div>
+      <div class="mf"><label class="ml">Módulo</label><select class="msel" id="mat-mod"><option>Geral</option><option>Módulo 1</option><option>Módulo 2</option><option>Módulo 3</option><option>Bônus</option></select></div>
+    </div>
+    <div class="mfooter">
+      <button class="btn btn-p" style="flex:1;" onclick="salvarMaterial()"><i class="ti ti-upload" style="font-size:13px;"></i> Publicar material</button>
+      <button class="btn btn-o" onclick="fecharModal('modal-material')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay-confirm" id="overlay-confirm">
+  <div class="modal-confirm">
+    <div class="modal-confirm-ico"><i class="ti ti-alert-triangle"></i></div>
+    <div class="modal-confirm-title" id="confirm-titulo">Confirmar exclusão</div>
+    <div class="modal-confirm-msg" id="confirm-msg">Tem certeza? Esta ação não pode ser desfeita.</div>
+    <div class="modal-confirm-btns">
+      <button class="btn btn-d" style="flex:1;" onclick="executarConfirm()"><i class="ti ti-trash" style="font-size:13px;"></i> Excluir</button>
+      <button class="btn btn-o" onclick="fecharConfirm()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><i class="ti ti-circle-check"></i><span id="toast-msg">Salvo!</span></div>
 
 <script>
 // ================================================
 // STORAGE
 // ================================================
-var MK='il_mods', AK='il_aulas', ALK='il_alunos';
-function getMods(){ try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return [];} }
-function setMods(d){ localStorage.setItem(MK,JSON.stringify(d)); }
-function getAulas(){ try{return JSON.parse(localStorage.getItem(AK))||[];}catch(e){return [];} }
-function setAulas(d){ localStorage.setItem(AK,JSON.stringify(d)); }
-function getAlunos(){ try{return JSON.parse(localStorage.getItem(ALK))||[];}catch(e){return [];} }
-function setAlunos(d){ localStorage.setItem(ALK,JSON.stringify(d)); }
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2); }
+var MK='il_mods',AK='il_aulas',ALK='il_alunos',TK='il_tickets',MaTK='il_materiais';
+function getMods(){try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return[];}}
+function setMods(d){localStorage.setItem(MK,JSON.stringify(d));}
+function getAulas(){try{return JSON.parse(localStorage.getItem(AK))||[];}catch(e){return[];}}
+function setAulas(d){localStorage.setItem(AK,JSON.stringify(d));}
+function getAlunos(){try{return JSON.parse(localStorage.getItem(ALK))||[];}catch(e){return[];}}
+function setAlunos(d){localStorage.setItem(ALK,JSON.stringify(d));}
+function getTickets(){try{return JSON.parse(localStorage.getItem(TK))||[];}catch(e){return[];}}
+function setTickets(d){localStorage.setItem(TK,JSON.stringify(d));}
+function getMateriais(){try{return JSON.parse(localStorage.getItem(MaTK))||[];}catch(e){return[];}}
+function setMateriais(d){localStorage.setItem(MaTK,JSON.stringify(d));}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
 
-var coresMap = {
+var CORES={
   cyan:{bg:'rgba(0,200,255,0.15)',cor:'#00c8ff',brd:'rgba(0,200,255,0.25)'},
   green:{bg:'rgba(0,229,160,0.15)',cor:'#00e5a0',brd:'rgba(0,229,160,0.25)'},
   pink:{bg:'rgba(255,77,141,0.15)',cor:'#ff4d8d',brd:'rgba(255,77,141,0.25)'},
   purple:{bg:'rgba(124,92,255,0.15)',cor:'#7c5cff',brd:'rgba(124,92,255,0.25)'},
-  yellow:{bg:'rgba(255,184,0,0.15)',cor:'#ffb800',brd:'rgba(255,184,0,0.25)'},
+  yellow:{bg:'rgba(255,184,0,0.15)',cor:'#ffb800',brd:'rgba(255,184,0,0.25)'}
 };
 
 // ================================================
 // NAVEGAÇÃO
 // ================================================
-function irPara(pg, el) {
-  // esconder todas as páginas
-  var todas = document.querySelectorAll('.page');
-  for (var i = 0; i < todas.length; i++) {
-    todas[i].classList.remove('ativa');
-    todas[i].style.display = 'none';
-  }
-  // mostrar a página alvo
-  var alvo = document.getElementById('page-' + pg);
-  if (alvo) {
-    alvo.style.display = 'block';
-    alvo.classList.add('ativa');
-  }
-  // atualizar nav
-  var navBtns = document.querySelectorAll('.nav-btn');
-  for (var j = 0; j < navBtns.length; j++) {
-    navBtns[j].classList.remove('active');
-  }
-  if (el) el.classList.add('active');
-  // títulos
-  var titulos = {
-    dashboard: ['Dashboard','Visão geral da plataforma'],
-    alunos: ['Alunos','Gerencie os membros'],
-    tickets: ['Tickets','Central de atendimento'],
-    modulos: ['Módulos & Aulas','Crie e organize o conteúdo'],
-    preview: ['Ver como aluno','Prévia da área de membros'],
-    materiais: ['Materiais','Arquivos para download'],
-    config: ['Configurações','Personalize a plataforma'],
+function irPara(pg,el){
+  document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('ativo');});
+  var alvo=document.getElementById('pg-'+pg);
+  if(alvo){alvo.style.display='block';alvo.classList.add('ativa');}
+  if(el)el.classList.add('ativo');
+  var titulos={
+    dashboard:['Dashboard','Visão geral da plataforma'],
+    alunos:['Alunos','Gerencie os membros'],
+    tickets:['Tickets','Central de atendimento'],
+    modulos:['Módulos & Aulas','Crie e organize o conteúdo'],
+    preview:['Ver como aluno','Prévia da área de membros'],
+    materiais:['Materiais','Arquivos para download'],
+    config:['Configurações','Personalize a plataforma']
   };
-  var info = titulos[pg] || [pg, ''];
-  document.getElementById('pg-titulo').textContent = info[0];
-  document.getElementById('pg-sub').textContent = info[1];
-  // ações especiais
-  if (pg === 'modulos') renderMods();
-  if (pg === 'preview') renderPreview();
-  if (pg === 'alunos') renderAlunos(getAlunos());
-  if (pg === 'dashboard') atualizarStats();
-}
-
-// ================================================
-// MÓDULOS
-// ================================================
-function renderMods() {
-  var mods = getMods().sort(function(a,b){ return (a.ordem||99)-(b.ordem||99); });
-  var aulas = getAulas();
-  var lista = document.getElementById('mods-lista');
-  var empty = document.getElementById('empty-mods');
-  var count = document.getElementById('mods-count');
-  var totalAulas = aulas.filter(function(a){ return a.status !== 'draft'; }).length;
-  count.textContent = mods.length + ' módulo(s) · ' + totalAulas + ' aula(s) publicada(s)';
-  if (!mods.length) { lista.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  var stLabel = {visible:'Visível', locked:'Bloqueado', hidden:'Oculto'};
-  var stClass = {visible:'st-v', locked:'st-l', hidden:'st-h'};
-  var html = '';
-  mods.forEach(function(m) {
-    var am = aulas.filter(function(a){ return a.moduloId === m.id; });
-    var c = coresMap[m.cor || 'cyan'];
-    var thumbHtml = m.imagem
-      ? '<img class="mod-thumb" src="'+m.imagem+'" alt="capa" onerror="this.style.display=\'none\'"/>'
-      : '<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';border-color:'+c.brd+'"><i class="ti ti-photo-off"></i></div>';
-    var aulasHtml = '';
-    am.forEach(function(a, i) {
-      aulasHtml += '<div class="aula-item">'
-        + '<span class="aula-n">'+(i+1)+'</span>'
-        + '<div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div>'
-        + '<span class="aula-dur">'+(a.duracao||'—')+'</span>'
-        + '<div class="aula-acts">'
-        + '<button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button>'
-        + '<button class="ab ab-d" onclick="delAula(\''+a.id+'\',\''+a.nome.replace(/'/g,"&#39;")+'\')" ><i class="ti ti-trash"></i></button>'
-        + '</div></div>';
-    });
-    html += '<div class="mod-card">'
-      + '<div class="mod-hd">'+thumbHtml
-      + '<div class="mod-info"><div class="mod-name">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stClass[m.status||'visible']+'">'+stLabel[m.status||'visible']+'</span></div>'
-      + '<div class="mod-acts">'
-      + '<button class="btn btn-outline btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:13px;"></i> Editar</button>'
-      + '<button class="btn btn-primary btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:13px;"></i> Aula</button>'
-      + '</div></div>'
-      + '<div class="aulas-sec">'
-      + '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:8px;">Aulas</div>'
-      + (aulasHtml || '<div style="font-size:12px;color:var(--text3);padding:4px 0;">Nenhuma aula ainda. Clique em + Aula.</div>')
-      + '<button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;margin-top:8px;" onclick="novaAula(\''+m.id+'\')">'
-      + '<i class="ti ti-plus" style="font-size:13px;color:var(--cyan);"></i> Adicionar aula</button>'
-      + '</div></div>';
-  });
-  lista.innerHTML = html;
-  // atualizar top aulas no dashboard
-  atualizarTopAulas();
-}
-
-function abrirNovoMod() {
-  document.getElementById('mod-titulo').textContent = 'Criar novo módulo';
-  document.getElementById('mod-id').value = '';
-  document.getElementById('mod-nome').value = '';
-  document.getElementById('mod-desc').value = '';
-  document.getElementById('mod-status').value = 'visible';
-  document.getElementById('mod-cor').value = 'cyan';
-  document.getElementById('mod-ordem').value = getMods().length + 1;
-  document.getElementById('btn-del-mod').style.display = 'none';
-  removerImg();
-  abrirModal('modal-modulo');
-}
-
-function editarMod(id) {
-  var m = getMods().find(function(x){ return x.id === id; });
-  if (!m) return;
-  document.getElementById('mod-titulo').textContent = 'Editar módulo';
-  document.getElementById('mod-id').value = m.id;
-  document.getElementById('mod-nome').value = m.nome;
-  document.getElementById('mod-desc').value = m.desc || '';
-  document.getElementById('mod-status').value = m.status || 'visible';
-  document.getElementById('mod-cor').value = m.cor || 'cyan';
-  document.getElementById('mod-ordem').value = m.ordem || '';
-  document.getElementById('btn-del-mod').style.display = 'flex';
-  if (m.imagem) {
-    document.getElementById('img-prev').src = m.imagem;
-    document.getElementById('img-prev-box').style.display = 'block';
-    document.getElementById('upload-area').style.display = 'none';
-  } else {
-    removerImg();
-  }
-  abrirModal('modal-modulo');
-}
-
-function salvarMod() {
-  var nome = document.getElementById('mod-nome').value.trim();
-  if (!nome) { alert('Digite o nome do módulo.'); return; }
-  var editId = document.getElementById('mod-id').value;
-  var mods = getMods();
-  var img = document.getElementById('img-prev').src;
-  if (img === window.location.href) img = '';
-  var dados = {
-    id: editId || uid(),
-    nome: nome,
-    desc: document.getElementById('mod-desc').value.trim(),
-    imagem: img || '',
-    status: document.getElementById('mod-status').value,
-    cor: document.getElementById('mod-cor').value,
-    ordem: parseInt(document.getElementById('mod-ordem').value) || mods.length + 1
-  };
-  if (editId) {
-    var idx = mods.findIndex(function(m){ return m.id === editId; });
-    if (idx !== -1) mods[idx] = dados;
-  } else {
-    mods.push(dados);
-  }
-  setMods(mods);
-  fecharModal('modal-modulo');
-  renderMods();
-  mostrarToast(editId ? 'Módulo atualizado!' : 'Módulo criado!');
-}
-
-function excluirMod() {
-  var id = document.getElementById('mod-id').value;
-  if (!id || !confirm('Excluir este módulo? As aulas vinculadas também serão removidas.')) return;
-  setMods(getMods().filter(function(m){ return m.id !== id; }));
-  setAulas(getAulas().filter(function(a){ return a.moduloId !== id; }));
-  fecharModal('modal-modulo');
-  renderMods();
-  mostrarToast('Módulo excluído.');
-}
-
-// ================================================
-// AULAS
-// ================================================
-function novaAula(modId) {
-  document.getElementById('aula-titulo').textContent = 'Adicionar aula';
-  document.getElementById('aula-id').value = '';
-  document.getElementById('aula-mod-id').value = modId;
-  document.getElementById('aula-nome').value = '';
-  document.getElementById('aula-url').value = '';
-  document.getElementById('aula-embed').value = '';
-  document.getElementById('aula-dur').value = '';
-  document.getElementById('aula-status').value = 'published';
-  document.getElementById('aula-desc').value = '';
-  document.getElementById('btn-del-aula').style.display = 'none';
-  abrirModal('modal-aula');
-}
-
-function editarAula(id) {
-  var a = getAulas().find(function(x){ return x.id === id; });
-  if (!a) return;
-  document.getElementById('aula-titulo').textContent = 'Editar aula';
-  document.getElementById('aula-id').value = a.id;
-  document.getElementById('aula-mod-id').value = a.moduloId;
-  document.getElementById('aula-nome').value = a.nome;
-  document.getElementById('aula-url').value = a.url || '';
-  document.getElementById('aula-embed').value = a.embed || '';
-  document.getElementById('aula-dur').value = a.duracao || '';
-  document.getElementById('aula-status').value = a.status || 'published';
-  document.getElementById('aula-desc').value = a.desc || '';
-  document.getElementById('btn-del-aula').style.display = 'flex';
-  abrirModal('modal-aula');
-}
-
-function gerarEmbed(url) {
-  var m = url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  var el = document.getElementById('aula-embed');
-  if (el) el.value = m ? 'https://www.youtube.com/embed/' + m[1] : '';
-}
-
-function salvarAula() {
-  var nome = document.getElementById('aula-nome').value.trim();
-  var url = document.getElementById('aula-url').value.trim();
-  if (!nome) { alert('Digite o título da aula.'); return; }
-  if (!url) { alert('Cole a URL do vídeo.'); return; }
-  var editId = document.getElementById('aula-id').value;
-  var modId = document.getElementById('aula-mod-id').value;
-  var aulas = getAulas();
-  var m = url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  var embed = m ? 'https://www.youtube.com/embed/' + m[1] : url;
-  var dados = {
-    id: editId || uid(),
-    moduloId: modId,
-    nome: nome,
-    url: url,
-    embed: embed,
-    duracao: document.getElementById('aula-dur').value.trim(),
-    status: document.getElementById('aula-status').value,
-    desc: document.getElementById('aula-desc').value.trim()
-  };
-  if (editId) {
-    var idx = aulas.findIndex(function(a){ return a.id === editId; });
-    if (idx !== -1) aulas[idx] = dados;
-  } else {
-    aulas.push(dados);
-  }
-  setAulas(aulas);
-  fecharModal('modal-aula');
-  renderMods();
-  mostrarToast(editId ? 'Aula atualizada!' : 'Aula adicionada!');
-}
-
-function excluirAula() {
-  var id = document.getElementById('aula-id').value;
-  var nome = document.getElementById('aula-nome').value;
-  if (!id || !confirm('Excluir a aula "' + nome + '"?')) return;
-  setAulas(getAulas().filter(function(a){ return a.id !== id; }));
-  fecharModal('modal-aula');
-  renderMods();
-  mostrarToast('Aula removida.');
-}
-
-function delAula(id, nome) {
-  if (!confirm('Excluir a aula "' + nome + '"?')) return;
-  setAulas(getAulas().filter(function(a){ return a.id !== id; }));
-  renderMods();
-  mostrarToast('Aula removida.');
-}
-
-// ================================================
-// UPLOAD IMAGEM
-// ================================================
-function uploadImg(input) {
-  var file = input.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { alert('Imagem muito grande! Use até 5MB.'); return; }
-  var prog = document.getElementById('prog-bar');
-  var fill = document.getElementById('prog-fill');
-  prog.style.display = 'block';
-  fill.style.width = '0%';
-  setTimeout(function(){ fill.style.width = '50%'; }, 100);
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    fill.style.width = '90%';
-    setTimeout(function() {
-      document.getElementById('img-prev').src = e.target.result;
-      document.getElementById('img-prev-box').style.display = 'block';
-      document.getElementById('upload-area').style.display = 'none';
-      fill.style.width = '100%';
-      setTimeout(function(){ prog.style.display = 'none'; fill.style.width = '0%'; }, 500);
-    }, 200);
-  };
-  reader.readAsDataURL(file);
-}
-
-function removerImg() {
-  document.getElementById('img-prev').src = '';
-  document.getElementById('img-prev-box').style.display = 'none';
-  document.getElementById('upload-area').style.display = 'flex';
-  document.getElementById('mod-img-file').value = '';
-}
-
-// ================================================
-// ALUNOS
-// ================================================
-function renderAlunos(lista) {
-  var tbody = document.getElementById('tbody-alunos');
-  var empty = document.getElementById('empty-alunos');
-  if (!lista.length) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-  tbody.innerHTML = lista.map(function(a) {
-    var initials = a.nome.split(' ').map(function(n){ return n[0]; }).join('').slice(0,2).toUpperCase();
-    var spClass = a.status === 'ativo' ? 'sp-ok' : a.status === 'bloqueado' ? 'sp-blk' : 'sp-new';
-    var spLabel = a.status === 'ativo' ? 'Ativo' : a.status === 'bloqueado' ? 'Bloqueado' : 'Novo';
-    return '<tr onclick="verPerfil(\''+a.id+'\')">'
-      + '<td class="td-bold"><div style="display:flex;align-items:center;gap:9px;"><div class="av" style="background:'+a.cor+'">'+initials+'</div>'+a.nome+'</div></td>'
-      + '<td>'+a.email+'</td>'
-      + '<td><div style="display:flex;align-items:center;gap:7px;"><div class="pmini"><div class="pmini-fill" style="width:'+a.prog+'%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--text2);">'+a.prog+'%</span></div></td>'
-      + '<td>'+a.aulas+'/26</td>'
-      + '<td>'+a.acesso+'</td>'
-      + '<td><span class="sp '+spClass+'">'+spLabel+'</span></td>'
-      + '<td onclick="event.stopPropagation()"><div class="row-acts">'
-      + '<button class="rb rb-v" onclick="verPerfil(\''+a.id+'\')"><i class="ti ti-eye"></i></button>'
-      + '<button class="rb rb-b" onclick="bloquearAluno(\''+a.id+'\')"><i class="ti ti-user-off"></i></button>'
-      + '<button class="rb rb-m"><i class="ti ti-message-circle"></i></button>'
-      + '</div></td></tr>';
-  }).join('');
-}
-
-function filtrarAlunos(q) {
-  var todos = getAlunos();
-  var filtrado = todos.filter(function(a){
-    return a.nome.toLowerCase().includes(q.toLowerCase()) || a.email.toLowerCase().includes(q.toLowerCase());
-  });
-  renderAlunos(filtrado);
-}
-
-function filtrarStatus(s) {
-  var todos = getAlunos();
-  renderAlunos(s ? todos.filter(function(a){ return a.status === s; }) : todos);
-}
-
-function salvarAluno() {
-  var nome = document.getElementById('aluno-nome').value.trim();
-  var email = document.getElementById('aluno-email').value.trim();
-  if (!nome || !email) { alert('Nome e e-mail são obrigatórios.'); return; }
-  var alunos = getAlunos();
-  var cores = ['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff','#3b7fff'];
-  alunos.push({
-    id: uid(), nome: nome, email: email,
-    prog: 0, aulas: 0, acesso: 'Agora',
-    status: 'novo', cor: cores[Math.floor(Math.random()*cores.length)]
-  });
-  setAlunos(alunos);
-  fecharModal('modal-aluno');
-  document.getElementById('aluno-nome').value = '';
-  document.getElementById('aluno-email').value = '';
-  document.getElementById('aluno-senha').value = '';
-  renderAlunos(alunos);
-  atualizarStats();
-  mostrarToast('Aluno adicionado!');
-}
-
-function verPerfil(id) {
-  var a = getAlunos().find(function(x){ return x.id === id; });
-  if (!a) return;
-  var initials = a.nome.split(' ').map(function(n){ return n[0]; }).join('').slice(0,2).toUpperCase();
-  document.getElementById('perf-av').textContent = initials;
-  document.getElementById('perf-av').style.background = a.cor;
-  document.getElementById('perf-nome').textContent = a.nome;
-  document.getElementById('perf-email').textContent = a.email;
-  document.getElementById('perf-aulas').textContent = a.aulas;
-  document.getElementById('perf-prog').textContent = a.prog + '%';
-  document.getElementById('perf-prog-bar').style.width = a.prog + '%';
-  var spEl = document.getElementById('perf-status');
-  spEl.textContent = a.status === 'ativo' ? 'Ativo' : a.status === 'bloqueado' ? 'Bloqueado' : 'Novo';
-  spEl.className = 'sp ' + (a.status === 'ativo' ? 'sp-ok' : a.status === 'bloqueado' ? 'sp-blk' : 'sp-new');
-  document.getElementById('perf-av').dataset.alunoId = id;
-  abrirModal('modal-perfil');
-}
-
-function alternarBloqueio() {
-  var id = document.getElementById('perf-av').dataset.alunoId;
-  var alunos = getAlunos();
-  var a = alunos.find(function(x){ return x.id === id; });
-  if (!a) return;
-  a.status = a.status === 'bloqueado' ? 'ativo' : 'bloqueado';
-  setAlunos(alunos);
-  verPerfil(id);
-  renderAlunos(alunos);
-  mostrarToast(a.status === 'bloqueado' ? 'Acesso bloqueado.' : 'Acesso reativado.');
-}
-
-function bloquearAluno(id) {
-  var alunos = getAlunos();
-  var a = alunos.find(function(x){ return x.id === id; });
-  if (!a) return;
-  a.status = a.status === 'bloqueado' ? 'ativo' : 'bloqueado';
-  setAlunos(alunos);
-  renderAlunos(alunos);
-  mostrarToast(a.status === 'bloqueado' ? 'Acesso bloqueado.' : 'Acesso reativado.');
-}
-
-// ================================================
-// PREVIEW (visão do aluno)
-// ================================================
-function renderPreview() {
-  var mods = getMods().filter(function(m){ return m.status !== 'hidden'; }).sort(function(a,b){ return (a.ordem||99)-(b.ordem||99); });
-  var aulas = getAulas();
-  var el = document.getElementById('preview-cards');
-  var empty = document.getElementById('empty-preview');
-  if (!mods.length) { el.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  el.innerHTML = mods.map(function(m) {
-    var c = coresMap[m.cor || 'cyan'];
-    var qtd = aulas.filter(function(a){ return a.moduloId === m.id && a.status !== 'draft'; }).length;
-    var locked = m.status === 'locked';
-    var capa = m.imagem
-      ? '<img src="'+m.imagem+'" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display=\'none\'"/>'
-      : '<div style="width:100%;height:100%;background:linear-gradient(160deg,#050d20,#0a1a38);display:flex;align-items:center;justify-content:center;"><i class="ti ti-photo-off" style="font-size:28px;color:'+c.cor+';opacity:.5;"></i></div>';
-    return '<div style="flex:0 0 165px;width:165px;background:#0f1320;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;opacity:'+(locked?'.5':'1')+';flex-shrink:0;">'
-      + '<div style="width:100%;height:200px;position:relative;overflow:hidden;">'
-      + capa
-      + '<div style="position:absolute;bottom:0;left:0;right:0;height:65px;background:linear-gradient(to top,rgba(0,0,0,0.88),transparent);z-index:2;"></div>'
-      + '<div style="position:absolute;bottom:10px;left:11px;right:11px;z-index:3;">'
-      + '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:2px;">Módulo '+m.ordem+'</div>'
-      + '<div style="font-size:12px;font-weight:700;color:#fff;line-height:1.3;">'+m.nome+'</div>'
-      + '</div>'
-      + (locked ? '<div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:4;"><i class="ti ti-lock" style="font-size:22px;color:#4a5270;"></i></div>' : '<div style="position:absolute;top:9px;left:9px;z-index:3;font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+qtd+' aula'+(qtd!==1?'s':'')+'</div>')
-      + '</div>'
-      + '<div style="padding:10px 11px 12px;">'
-      + '<div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="color:#4a5270;">Progresso</span><span style="font-weight:700;color:'+c.cor+';">0%</span></div>'
-      + '<div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-bottom:8px;"></div>'
-      + '<div style="width:100%;padding:6px;border-radius:8px;font-size:11px;font-weight:700;text-align:center;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+( locked?'🔒 Bloqueado':'▶ Acessar')+'</div>'
-      + '</div></div>';
-  }).join('');
-}
-
-// ================================================
-// STATS E TOP AULAS
-// ================================================
-function atualizarStats() {
-  var alunos = getAlunos();
-  document.getElementById('st-alunos').textContent = alunos.length;
-  document.getElementById('cnt-alunos').textContent = alunos.length;
-}
-
-function atualizarTopAulas() {
-  var aulas = getAulas().filter(function(a){ return a.status !== 'draft'; });
-  var el = document.getElementById('top-aulas');
-  if (!aulas.length) {
-    el.innerHTML = '<div class="empty" style="padding:16px;"><i class="ti ti-video" style="font-size:24px;display:block;margin-bottom:6px;"></i><p style="font-size:12px;">Adicione aulas para ver o ranking</p></div>';
-    return;
-  }
-  el.innerHTML = aulas.slice(0,5).map(function(a, i) {
-    var mod = getMods().find(function(m){ return m.id === a.moduloId; });
-    return '<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
-      + '<span style="font-size:11px;font-weight:800;color:'+(i===0?'var(--yellow)':'var(--text3)')+';width:18px;">'+(i+1)+'</span>'
-      + '<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+a.nome+'</div><div style="font-size:10px;color:var(--text2);">'+(mod?mod.nome:'—')+'</div></div>'
-      + '<span style="font-size:11px;font-weight:700;color:var(--cyan);">'+(Math.floor(Math.random()*300+50))+'</span>'
-      + '</div>';
-  }).join('');
+  var t=titulos[pg]||[pg,''];
+  document.getElementById('pg-titulo').textContent=t[0];
+  document.getElementById('pg-sub').textContent=t[1];
+  if(pg==='modulos')renderMods();
+  if(pg==='tickets')renderTickets();
+  if(pg==='alunos')renderAlunos(getAlunos());
+  if(pg==='preview')renderPreview();
+  if(pg==='materiais')renderMateriais();
+  if(pg==='dashboard')atualizarStats();
 }
 
 // ================================================
 // MODAIS
 // ================================================
-function abrirModal(id) {
-  document.getElementById(id).classList.add('aberto');
+function abrirModal(id){document.getElementById(id).classList.add('aberto');}
+function fecharModal(id){document.getElementById(id).classList.remove('aberto');}
+document.addEventListener('click',function(e){if(e.target.classList.contains('overlay'))e.target.classList.remove('aberto');});
+
+var _confirmCb=null;
+function confirmar(titulo,msg,cb,btnTxt){
+  document.getElementById('confirm-titulo').textContent=titulo||'Confirmar exclusão';
+  document.getElementById('confirm-msg').textContent=msg||'Tem certeza? Esta ação não pode ser desfeita.';
+  document.getElementById('overlay-confirm').querySelector('.btn-d').innerHTML='<i class="ti ti-trash" style="font-size:13px;"></i> '+(btnTxt||'Excluir');
+  _confirmCb=cb;
+  document.getElementById('overlay-confirm').classList.add('aberto');
 }
-function fecharModal(id) {
-  document.getElementById(id).classList.remove('aberto');
-}
-// fechar ao clicar fora
-document.addEventListener('click', function(e) {
-  if (e.target.classList.contains('overlay')) {
-    e.target.classList.remove('aberto');
-  }
-});
+function fecharConfirm(){document.getElementById('overlay-confirm').classList.remove('aberto');_confirmCb=null;}
+function executarConfirm(){if(_confirmCb)_confirmCb();fecharConfirm();}
+document.getElementById('overlay-confirm').addEventListener('click',function(e){if(e.target===this)fecharConfirm();});
 
 // ================================================
 // TOAST
 // ================================================
-var toastTimer;
-function mostrarToast(msg, erro) {
-  var el = document.getElementById('toast');
-  var icon = el.querySelector('i');
-  document.getElementById('toast-msg').textContent = msg;
-  icon.className = erro ? 'ti ti-alert-circle' : 'ti ti-circle-check';
-  icon.style.color = erro ? 'var(--pink)' : 'var(--green)';
-  el.style.display = 'flex';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ el.style.display = 'none'; }, 2800);
+var _toastT;
+function toast(msg,erro){
+  var el=document.getElementById('toast');
+  var ic=el.querySelector('i');
+  document.getElementById('toast-msg').textContent=msg;
+  ic.style.color=erro?'var(--pink)':'var(--green)';
+  el.style.display='flex';
+  clearTimeout(_toastT);
+  _toastT=setTimeout(function(){el.style.display='none';},2800);
 }
 
 // ================================================
+// STATS
+// ================================================
+function atualizarStats(){
+  var a=getAlunos(),m=getMods(),au=getAulas().filter(function(x){return x.status!=='draft';}),t=getTickets();
+  var abertos=t.filter(function(x){return x.status==='aberto'||x.status==='pendente';}).length;
+  var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
+  set('st-alunos',a.length); set('st-alunos-b',a.length);
+  set('st-mods',m.filter(function(x){return x.status!=='hidden';}).length);
+  set('st-mods-b',au.length+' aulas');
+  set('st-tickets',t.length); set('st-tickets-b',abertos+' aberto'+(abertos!==1?'s':''));
+  set('st-aulas',au.length); set('st-aulas-b',au.length+' publicadas');
+  set('cnt-alunos',a.length); set('cnt-tickets',t.length);
+  // Top aulas
+  var topEl=document.getElementById('top-aulas-lista');
+  if(topEl){
+    if(!au.length){topEl.innerHTML='<div class="empty" style="padding:14px;"><i class="ti ti-video" style="font-size:22px;"></i><p>Adicione aulas para ver o ranking.</p></div>';return;}
+    topEl.innerHTML=au.slice(0,5).map(function(a,i){
+      var mod=getMods().find(function(x){return x.id===a.moduloId;});
+      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        +'<span style="font-size:10px;font-weight:800;color:'+(i===0?'var(--yellow)':'var(--text3)')+';width:16px;">'+(i+1)+'</span>'
+        +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+a.nome+'</div>'
+        +'<div style="font-size:10px;color:var(--text2);">'+(mod?mod.nome:'—')+'</div></div>'
+        +'<span style="font-size:11px;font-weight:700;color:var(--cyan);">'+(Math.floor(Math.random()*300+50))+'</span></div>';
+    }).join('');
+  }
+}
 
+// ================================================
+// MÓDULOS
+// ================================================
+function renderMods(){
+  var mods=getMods().sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
+  var aulas=getAulas();
+  var lista=document.getElementById('mods-lista');
+  var empty=document.getElementById('empty-mods');
+  var cnt=document.getElementById('mods-count');
+  var pub=aulas.filter(function(a){return a.status!=='draft';});
+  if(cnt)cnt.textContent=mods.length+' módulo(s) · '+pub.length+' aula(s) publicada(s)';
+  if(!mods.length){lista.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  var stLbl={visible:'Visível',locked:'Bloqueado',hidden:'Oculto'};
+  var stCls={visible:'st-v',locked:'st-l',hidden:'st-h'};
+  lista.innerHTML=mods.map(function(m){
+    var am=aulas.filter(function(a){return a.moduloId===m.id;});
+    var c=CORES[m.cor||'cyan'];
+    var thumb=m.imagem
+      ?'<img class="mod-thumb" src="'+m.imagem+'" alt="capa" onerror="this.style.display=\'none\'">'
+      :'<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';border-color:'+c.brd+'"><i class="ti ti-photo-off"></i></div>';
+    var aulasHtml=am.length?am.map(function(a,i){
+      return '<div class="aula-item">'
+        +'<span class="aula-n">'+(i+1)+'</span>'
+        +'<div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div>'
+        +'<div class="aula-url">'+(a.embed||a.url||'—')+'</div></div>'
+        +'<span class="aula-dur">'+(a.duracao||'—')+'</span>'
+        +'<div class="aula-acts">'
+        +'<button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button>'
+        +'<button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')},\'Excluir\')"><i class="ti ti-trash"></i></button>'
+        +'</div></div>';
+    }).join(''):'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
+    return '<div class="mod-card">'
+      +'<div class="mod-hd">'+thumb
+      +'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stCls[m.status||'visible']+'">'+stLbl[m.status||'visible']+'</span></div>'
+      +'<div class="mod-acts">'
+      +'<button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button>'
+      +'<button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button>'
+      +'</div></div>'
+      +'<div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">Aulas</div>'
+      +aulasHtml
+      +'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')">'
+      +'<i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button>'
+      +'</div></div>';
+  }).join('');
+  atualizarStats();
+}
+
+function abrirNovoMod(){
+  document.getElementById('mod-modal-titulo').textContent='Criar módulo';
+  document.getElementById('mod-id').value='';
+  document.getElementById('mod-nome').value='';
+  document.getElementById('mod-desc').value='';
+  document.getElementById('mod-status').value='visible';
+  document.getElementById('mod-cor').value='cyan';
+  document.getElementById('mod-ordem').value=getMods().length+1;
+  document.getElementById('btn-del-mod').style.display='none';
+  removerImg();
+  abrirModal('modal-modulo');
+}
+
+function editarMod(id){
+  var m=getMods().find(function(x){return x.id===id;});
+  if(!m)return;
+  document.getElementById('mod-modal-titulo').textContent='Editar módulo';
+  document.getElementById('mod-id').value=m.id;
+  document.getElementById('mod-nome').value=m.nome;
+  document.getElementById('mod-desc').value=m.desc||'';
+  document.getElementById('mod-status').value=m.status||'visible';
+  document.getElementById('mod-cor').value=m.cor||'cyan';
+  document.getElementById('mod-ordem').value=m.ordem||'';
+  document.getElementById('btn-del-mod').style.display='flex';
+  if(m.imagem){document.getElementById('img-prev').src=m.imagem;document.getElementById('img-prev-box').style.display='block';document.getElementById('upload-area').style.display='none';}
+  else removerImg();
+  abrirModal('modal-modulo');
+}
+
+function salvarMod(){
+  var nome=document.getElementById('mod-nome').value.trim();
+  if(!nome){alert('O nome é obrigatório.');return;}
+  var editId=document.getElementById('mod-id').value;
+  var mods=getMods();
+  var img=document.getElementById('img-prev').src;
+  if(img===window.location.href||img==='')img='';
+  var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||mods.length+1};
+  if(editId){var i=mods.findIndex(function(m){return m.id===editId;});if(i!==-1)mods[i]=dados;}else mods.push(dados);
+  setMods(mods);fecharModal('modal-modulo');renderMods();toast(editId?'Módulo atualizado!':'Módulo criado!');
+}
+
+function excluirMod(){
+  var id=document.getElementById('mod-id').value;
+  if(!id)return;
+  var nome=document.getElementById('mod-nome').value;
+  fecharModal('modal-modulo');
+  confirmar('Excluir módulo','Excluir "'+nome+'"? As aulas vinculadas também serão removidas.',function(){
+    setMods(getMods().filter(function(m){return m.id!==id;}));
+    setAulas(getAulas().filter(function(a){return a.moduloId!==id;}));
+    renderMods();toast('Módulo excluído.');
+  },'Excluir módulo');
+}
+
+// ================================================
+// AULAS
+// ================================================
+function novaAula(modId){
+  document.getElementById('aula-modal-titulo').textContent='Adicionar aula';
+  document.getElementById('aula-id').value='';
+  document.getElementById('aula-mod-id').value=modId;
+  ['aula-nome','aula-url','aula-embed','aula-dur','aula-desc'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('aula-status').value='published';
+  document.getElementById('btn-del-aula').style.display='none';
+  abrirModal('modal-aula');
+}
+
+function editarAula(id){
+  var a=getAulas().find(function(x){return x.id===id;});
+  if(!a)return;
+  document.getElementById('aula-modal-titulo').textContent='Editar aula';
+  document.getElementById('aula-id').value=a.id;
+  document.getElementById('aula-mod-id').value=a.moduloId;
+  document.getElementById('aula-nome').value=a.nome;
+  document.getElementById('aula-url').value=a.url||'';
+  document.getElementById('aula-embed').value=a.embed||'';
+  document.getElementById('aula-dur').value=a.duracao||'';
+  document.getElementById('aula-status').value=a.status||'published';
+  document.getElementById('aula-desc').value=a.desc||'';
+  document.getElementById('btn-del-aula').style.display='flex';
+  abrirModal('modal-aula');
+}
+
+function gerarEmbed(url){
+  var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  var el=document.getElementById('aula-embed');
+  if(el)el.value=m?'https://www.youtube.com/embed/'+m[1]:'';
+}
+
+function salvarAula(){
+  var nome=document.getElementById('aula-nome').value.trim();
+  var url=document.getElementById('aula-url').value.trim();
+  if(!nome){alert('O título é obrigatório.');return;}
+  if(!url){alert('A URL do vídeo é obrigatória.');return;}
+  var editId=document.getElementById('aula-id').value;
+  var modId=document.getElementById('aula-mod-id').value;
+  var aulas=getAulas();
+  var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  var embed=m?'https://www.youtube.com/embed/'+m[1]:url;
+  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:embed,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim()};
+  if(editId){var i=aulas.findIndex(function(a){return a.id===editId;});if(i!==-1)aulas[i]=dados;}else aulas.push(dados);
+  setAulas(aulas);fecharModal('modal-aula');renderMods();toast(editId?'Aula atualizada!':'Aula adicionada!');
+}
+
+function excluirAula(){
+  var id=document.getElementById('aula-id').value;
+  var nome=document.getElementById('aula-nome').value;
+  if(!id)return;
+  fecharModal('modal-aula');
+  confirmar('Excluir aula','Excluir "'+nome+'"?',function(){
+    setAulas(getAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
+  },'Excluir aula');
+}
+
+function delAula(id){
+  setAulas(getAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
+}
+
+// ================================================
+// UPLOAD IMAGEM
+// ================================================
+function uploadImg(input){
+  var file=input.files[0];
+  if(!file)return;
+  if(file.size>5*1024*1024){alert('Imagem muito grande! Máximo 5MB.');return;}
+  var prog=document.getElementById('prog-bar');var fill=document.getElementById('prog-fill');
+  prog.style.display='block';fill.style.width='0%';
+  setTimeout(function(){fill.style.width='50%';},100);
+  var reader=new FileReader();
+  reader.onload=function(e){
+    fill.style.width='90%';
+    setTimeout(function(){
+      document.getElementById('img-prev').src=e.target.result;
+      document.getElementById('img-prev-box').style.display='block';
+      document.getElementById('upload-area').style.display='none';
+      fill.style.width='100%';
+      setTimeout(function(){prog.style.display='none';fill.style.width='0%';},500);
+    },200);
+  };
+  reader.readAsDataURL(file);
+}
+function removerImg(){
+  document.getElementById('img-prev').src='';
+  document.getElementById('img-prev-box').style.display='none';
+  document.getElementById('upload-area').style.display='flex';
+  document.getElementById('mod-img-file').value='';
+}
+
+// ================================================
+// ALUNOS
+// ================================================
+function renderAlunos(lista){
+  var tbody=document.getElementById('tbody-alunos');
+  var empty=document.getElementById('empty-alunos');
+  if(!lista.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=lista.map(function(a){
+    var inits=a.nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
+    var spCls=a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new';
+    var spLbl=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
+    return '<tr onclick="verPerfil(\''+a.id+'\')">'
+      +'<td class="td-b"><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:'+a.cor+'">'+inits+'</div>'+a.nome+'</div></td>'
+      +'<td>'+a.email+'</td>'
+      +'<td><div style="display:flex;align-items:center;gap:7px;"><div class="pmini"><div class="pmini-f" style="width:'+a.prog+'%;"></div></div><span style="font-size:10px;font-weight:700;color:var(--text2);">'+a.prog+'%</span></div></td>'
+      +'<td><span class="sp '+spCls+'">'+spLbl+'</span></td>'
+      +'<td onclick="event.stopPropagation()"><div class="acts">'
+      +'<button class="rb rb-v" onclick="verPerfil(\''+a.id+'\')"><i class="ti ti-eye"></i></button>'
+      +'<button class="rb rb-b" onclick="bloquearAluno(\''+a.id+'\')"><i class="ti ti-user-off"></i></button>'
+      +'<button class="rb rb-d" onclick="confirmar(\'Excluir aluno\',\'Excluir &quot;'+a.nome.replace(/'/g,'')+'&quot; permanentemente?\',function(){excluirAluno(\''+a.id+'\')},\'Excluir aluno\')"><i class="ti ti-trash"></i></button>'
+      +'</div></td></tr>';
+  }).join('');
+}
+
+function filtrarAlunos(q){renderAlunos(getAlunos().filter(function(a){return a.nome.toLowerCase().includes(q.toLowerCase())||a.email.toLowerCase().includes(q.toLowerCase());}));}
+function filtrarStatusAluno(s){renderAlunos(s?getAlunos().filter(function(a){return a.status===s;}):getAlunos());}
+
+function salvarAluno(){
+  var nome=document.getElementById('aluno-nome').value.trim();
+  var email=document.getElementById('aluno-email').value.trim();
+  if(!nome||!email){alert('Nome e e-mail são obrigatórios.');return;}
+  var alunos=getAlunos();
+  var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff','#3b7fff'];
+  alunos.push({id:uid(),nome:nome,email:email,prog:0,aulas:0,acesso:'Agora',status:'novo',cor:cores[Math.floor(Math.random()*cores.length)]});
+  setAlunos(alunos);
+  fecharModal('modal-aluno');
+  document.getElementById('aluno-nome').value='';
+  document.getElementById('aluno-email').value='';
+  document.getElementById('aluno-senha').value='';
+  renderAlunos(alunos);atualizarStats();toast('Aluno adicionado!');
+}
+
+function verPerfil(id){
+  var a=getAlunos().find(function(x){return x.id===id;});
+  if(!a)return;
+  var inits=a.nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
+  document.getElementById('perf-av').textContent=inits;
+  document.getElementById('perf-av').style.background=a.cor;
+  document.getElementById('perf-av').dataset.alunoId=id;
+  document.getElementById('perf-nome').textContent=a.nome;
+  document.getElementById('perf-email').textContent=a.email;
+  document.getElementById('perf-aulas').textContent=a.aulas||0;
+  document.getElementById('perf-prog').textContent=(a.prog||0)+'%';
+  document.getElementById('perf-prog-bar').style.width=(a.prog||0)+'%';
+  var spEl=document.getElementById('perf-status');
+  spEl.textContent=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
+  spEl.className='sp '+(a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new');
+  abrirModal('modal-perfil');
+}
+
+function alternarBloqueio(){
+  var id=document.getElementById('perf-av').dataset.alunoId;
+  var alunos=getAlunos();
+  var a=alunos.find(function(x){return x.id===id;});
+  if(!a)return;
+  a.status=a.status==='bloqueado'?'ativo':'bloqueado';
+  setAlunos(alunos);verPerfil(id);renderAlunos(alunos);
+  toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
+}
+
+function bloquearAluno(id){
+  var alunos=getAlunos();
+  var a=alunos.find(function(x){return x.id===id;});
+  if(!a)return;
+  a.status=a.status==='bloqueado'?'ativo':'bloqueado';
+  setAlunos(alunos);renderAlunos(alunos);
+  toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
+}
+
+function excluirAluno(id){
+  setAlunos(getAlunos().filter(function(a){return a.id!==id;}));
+  renderAlunos(getAlunos());atualizarStats();toast('Aluno excluído.');
+}
+
+function excluirAlunoModal(){
+  var id=document.getElementById('perf-av').dataset.alunoId;
+  var nome=document.getElementById('perf-nome').textContent;
+  fecharModal('modal-perfil');
+  confirmar('Excluir aluno','Excluir "'+nome+'" permanentemente?',function(){excluirAluno(id);},'Excluir aluno');
+}
+
+// ================================================
 // TICKETS
-var TK='il_tickets';
-function getTickets(){try{return JSON.parse(localStorage.getItem(TK))||[];}catch(e){return[];}}
-function setTickets(d){localStorage.setItem(TK,JSON.stringify(d));}
-
+// ================================================
 function renderTickets(lista){
   var el=document.getElementById('tickets-lista');
   var empty=document.getElementById('empty-tickets');
   if(!el)return;
   if(!lista)lista=getTickets();
-  if(!lista.length){el.innerHTML='';if(empty)empty.style.display='block';return;}
-  if(empty)empty.style.display='none';
+  if(!lista.length){el.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
   var stC={aberto:'background:rgba(255,59,92,0.12);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2)',pendente:'background:rgba(255,184,0,0.12);color:#ffb800;border:1px solid rgba(255,184,0,0.2)',respondido:'background:rgba(0,229,160,0.12);color:#00e5a0;border:1px solid rgba(0,229,160,0.2)',resolvido:'background:rgba(255,255,255,0.06);color:#4a5270'};
   var stL={aberto:'Aberto',pendente:'Pendente',respondido:'Respondido',resolvido:'Resolvido'};
   el.innerHTML=lista.map(function(t,i){
     var st=t.status||'aberto';
     var num='#'+String(i+1).padStart(3,'0');
-    var tit=t.titulo.replace(/'/g,"&#39;");
-    return '<div class="tkt">'+
-      '<span class="tkt-num">'+num+'</span>'+
-      '<div class="tkt-info"><div class="tkt-title">'+t.titulo+'</div><div class="tkt-user">'+t.aluno+'</div></div>'+
-      '<span class="sp" style="'+stC[st]+'">'+stL[st]+'</span>'+
-      '<span class="tkt-time" style="margin-left:10px;">'+t.data+'</span>'+
-      '<button class="btn btn-primary btn-sm" style="margin-left:10px;" onclick="abrirTicket('+JSON.stringify(t.id)+')">'+
-        (st==='resolvido'?'Ver':'Responder')+
-      '</button>'+
-      '<button class="btn btn-sm" style="margin-left:6px;background:rgba(255,59,92,0.08);color:#ff3b5c;border:1px solid rgba(255,59,92,0.15);" onclick="excluirTicket('+JSON.stringify(t.id)+','+JSON.stringify(tit)+')"><i class="ti ti-trash" style="font-size:13px;"></i></button>'+
-    '</div>';
+    var tid=JSON.stringify(t.id);
+    var ttit=t.titulo.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    return '<div class="tkt">'
+      +'<span class="tkt-num">'+num+'</span>'
+      +'<div class="tkt-info"><div class="tkt-title">'+t.titulo+'</div><div class="tkt-user">'+t.aluno+'</div></div>'
+      +'<span class="sp" style="'+stC[st]+'">'+stL[st]+'</span>'
+      +'<span class="tkt-time" style="margin-left:10px;">'+t.data+'</span>'
+      +'<button class="btn btn-p btn-sm" style="margin-left:10px;" onclick="abrirTicket('+tid+')">'+( st==='resolvido'?'Ver':'Responder')+'</button>'
+      +'<button class="btn btn-sm" style="margin-left:5px;background:rgba(255,59,92,0.08);color:var(--red);border:1px solid rgba(255,59,92,0.15);" onclick="confirmar(\'Excluir ticket\',\'Excluir &quot;'+ttit+'&quot;?\',function(){delTicket('+tid+')},\'Excluir\')"><i class="ti ti-trash" style="font-size:12px;"></i></button>'
+      +'</div>';
   }).join('');
 }
 
 function filtrarTickets(q){
-  var fil=document.getElementById('fil-ticket');
-  var fv=fil?fil.value:'';
-  var lista=getTickets().filter(function(t){
+  var fv=document.getElementById('fil-ticket').value;
+  renderTickets(getTickets().filter(function(t){
     return (!q||t.titulo.toLowerCase().includes(q.toLowerCase())||t.aluno.toLowerCase().includes(q.toLowerCase()))&&(!fv||t.status===fv);
-  });
-  renderTickets(lista);
+  }));
 }
 
-function abrirNovoTicket(){
+function novoTicket(){
   var titulo=prompt('Título do ticket:');if(!titulo)return;
   var aluno=prompt('Nome do aluno:');if(!aluno)return;
   var tickets=getTickets();
   tickets.unshift({id:uid(),titulo:titulo,aluno:aluno,status:'aberto',data:'Agora',msgs:[]});
-  setTickets(tickets);renderTickets();mostrarToast('Ticket criado!');
+  setTickets(tickets);renderTickets();atualizarStats();toast('Ticket criado!');
 }
 
 function abrirTicket(id){
   var t=getTickets().find(function(x){return x.id===id;});
   if(!t)return;
   var msgs=(t.msgs||[]).map(function(m){
-    return '<div style="margin-bottom:10px;"><div style="font-size:10px;color:var(--text3);margin-bottom:3px;">'+m.autor+' &middot; '+m.data+'</div>'+
-    '<div style="background:var(--card2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);">'+m.texto+'</div></div>';
+    return '<div style="margin-bottom:10px;">'
+      +'<div style="font-size:10px;color:var(--text3);margin-bottom:3px;">'+m.autor+' &middot; '+m.data+'</div>'
+      +'<div style="background:var(--card2);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--text2);">'+m.texto+'</div></div>';
   }).join('')||'<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma mensagem ainda.</div>';
   var stOpts=['aberto','pendente','respondido','resolvido'].map(function(s){
     return '<option value="'+s+'"'+(t.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';
   }).join('');
+  var tid=JSON.stringify(id);
   document.getElementById('modal-ticket-body').innerHTML=
-    '<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">'+
-      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">'+t.titulo+'</div>'+
-      '<div style="font-size:12px;color:var(--text2);">'+t.aluno+' &middot; '+t.data+'</div>'+
-    '</div>'+
-    '<div style="max-height:180px;overflow-y:auto;margin-bottom:14px;">'+msgs+'</div>'+
-    '<textarea id="tk-resp" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:80px;line-height:1.6;" placeholder="Escreva sua resposta..."></textarea>'+
-    '<div style="display:flex;gap:9px;margin-top:12px;">'+
-      '<button class="btn btn-primary" style="flex:1;" onclick="enviarResposta('+JSON.stringify(id)+')"><i class="ti ti-send" style="font-size:14px;"></i> Enviar</button>'+
-      '<select id="tk-status" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 12px;color:var(--text);font-family:inherit;font-size:12px;outline:none;">'+stOpts+'</select>'+
-      '<button class="btn btn-outline" onclick="fecharModal('modal-ticket')">Fechar</button>'+
-    '</div>';
+    '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">'
+    +'<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;">'+t.titulo+'</div>'
+    +'<div style="font-size:12px;color:var(--text2);">'+t.aluno+' &middot; '+t.data+'</div></div>'
+    +'<div style="max-height:180px;overflow-y:auto;margin-bottom:12px;">'+msgs+'</div>'
+    +'<textarea id="tk-resp" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:75px;line-height:1.6;" placeholder="Escreva sua resposta..."></textarea>'
+    +'<div style="display:flex;gap:8px;margin-top:11px;">'
+    +'<button class="btn btn-p" style="flex:1;" onclick="enviarResposta('+tid+')"><i class="ti ti-send" style="font-size:13px;"></i> Enviar</button>'
+    +'<select id="tk-status" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:inherit;font-size:12px;outline:none;">'+stOpts+'</select>'
+    +'<button class="btn btn-o" onclick="fecharModal(\'modal-ticket\')">Fechar</button>'
+    +'</div>';
   abrirModal('modal-ticket');
 }
 
@@ -1178,48 +995,108 @@ function enviarResposta(id){
   if(!t)return;
   if(texto){if(!t.msgs)t.msgs=[];t.msgs.push({autor:'Mentor',texto:texto,data:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});}
   t.status=novoStatus;
-  setTickets(tickets);fecharModal('modal-ticket');renderTickets();mostrarToast('Resposta enviada!');
+  setTickets(tickets);fecharModal('modal-ticket');renderTickets();toast('Resposta enviada!');
 }
 
-function excluirTicket(id,titulo){
-  if(!confirm('Excluir o ticket "'+titulo+'"?'))return;
-  setTickets(getTickets().filter(function(t){return t.id!==id;}));
-  renderTickets();mostrarToast('Ticket excluído.');
+function delTicket(id){
+  setTickets(getTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
 }
 
+// ================================================
+// MATERIAIS
+// ================================================
+function renderMateriais(){
+  var el=document.getElementById('mats-lista');
+  var mats=getMateriais();
+  if(!mats.length){el.innerHTML='<div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado ainda.</p></div>';return;}
+  var ticoMap={PDF:'mi-pdf',Planilha:'mi-xls',ZIP:'mi-zip','Vídeo':'mi-mp4'};
+  var icoMap={PDF:'ti-file-type-pdf',Planilha:'ti-table',ZIP:'ti-file-zip','Vídeo':'ti-video'};
+  el.innerHTML=mats.map(function(m){
+    var tipo=m.tipo||'PDF';
+    var ticoKey=Object.keys(ticoMap).find(function(k){return tipo.includes(k);})||'PDF';
+    return '<div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:7px;border:1px solid var(--border);">'
+      +'<div class="stat-ico '+ticoMap[ticoKey]+'" style="width:34px;height:34px;border-radius:8px;flex-shrink:0;"><i class="ti '+icoMap[ticoKey]+'"></i></div>'
+      +'<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:var(--text);">'+m.nome+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">'+tipo+' · '+m.mod+'</div></div>'
+      +'<div style="display:flex;gap:4px;">'
+      +'<button class="ab ab-e" onclick="toast(\'Editar em breve!\')"><i class="ti ti-edit"></i></button>'
+      +'<button class="ab ab-d" onclick="confirmar(\'Excluir material\',\'Excluir &quot;'+m.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delMaterial(\''+m.id+'\')},\'Excluir\')"><i class="ti ti-trash"></i></button>'
+      +'</div></div>';
+  }).join('');
+}
+
+function salvarMaterial(){
+  var nome=document.getElementById('mat-nome').value.trim();
+  if(!nome){alert('Nome obrigatório.');return;}
+  var mats=getMateriais();
+  mats.unshift({id:uid(),nome:nome,url:document.getElementById('mat-url').value.trim(),tipo:document.getElementById('mat-tipo').value,mod:document.getElementById('mat-mod').value});
+  setMateriais(mats);
+  fecharModal('modal-material');
+  document.getElementById('mat-nome').value='';document.getElementById('mat-url').value='';
+  renderMateriais();toast('Material publicado!');
+}
+
+function delMaterial(id){
+  setMateriais(getMateriais().filter(function(m){return m.id!==id;}));renderMateriais();toast('Material removido.');
+}
+
+// ================================================
+// PREVIEW
+// ================================================
+function renderPreview(){
+  var mods=getMods().filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
+  var aulas=getAulas();
+  var el=document.getElementById('preview-cards');
+  var empty=document.getElementById('empty-preview');
+  if(!mods.length){el.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  el.innerHTML=mods.map(function(m){
+    var c=CORES[m.cor||'cyan'];
+    var qtd=aulas.filter(function(a){return a.moduloId===m.id&&a.status!=='draft';}).length;
+    var locked=m.status==='locked';
+    var capa=m.imagem
+      ?'<img src="'+m.imagem+'" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display=\'none\'">'
+      :'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><i class="ti ti-photo-off" style="font-size:26px;color:'+c.cor+';opacity:.5;"></i></div>';
+    return '<div style="flex:0 0 155px;width:155px;background:#0f1320;border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;opacity:'+(locked?.55:1)+';flex-shrink:0;">'
+      +'<div style="width:100%;height:190px;position:relative;overflow:hidden;">'+capa
+      +'<div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);z-index:2;"></div>'
+      +'<div style="position:absolute;bottom:9px;left:10px;right:10px;z-index:3;">'
+      +'<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:2px;">Módulo '+m.ordem+'</div>'
+      +'<div style="font-size:11px;font-weight:700;color:#fff;line-height:1.3;">'+m.nome+'</div></div>'
+      +(locked?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:4;"><i class="ti ti-lock" style="font-size:20px;color:#4a5270;"></i></div>'
+      :'<div style="position:absolute;top:8px;left:8px;z-index:3;font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+qtd+' aula'+(qtd!==1?'s':'')+'</div>')
+      +'</div>'
+      +'<div style="padding:9px 10px 11px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;"><span style="color:#4a5270;">Progresso</span><span style="font-weight:700;color:'+c.cor+';">0%</span></div>'
+      +'<div style="height:2px;background:rgba(255,255,255,0.07);border-radius:1px;margin-bottom:7px;"></div>'
+      +'<div style="width:100%;padding:5px;border-radius:7px;font-size:11px;font-weight:700;text-align:center;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+(locked?'🔒 Bloqueado':'▶ Acessar')+'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ================================================
 // ONLINE ANIMADO
 // ================================================
-var onlineCount = 17;
-setInterval(function() {
-  onlineCount += Math.floor(Math.random() * 3) - 1;
-  if (onlineCount < 5) onlineCount = 5;
-  var el1 = document.getElementById('st-online');
-  var el2 = document.getElementById('st-online-badge');
-  if (el1) el1.textContent = onlineCount;
-  if (el2) el2.textContent = onlineCount;
-}, 4000);
+var _onlineCount=12;
+setInterval(function(){
+  _onlineCount+=Math.floor(Math.random()*3)-1;
+  if(_onlineCount<3)_onlineCount=3;
+},5000);
 
 // ================================================
-// INICIALIZAR
+// INIT — zerar localStorage e iniciar
 // ================================================
-(function init() {
-  // Zerar dados de exemplo na primeira vez
-  if (!localStorage.getItem('il_limpo_v3')) {
-    ['il_mods','il_aulas','il_alunos','il_tickets','il_zerado','il_pronto','il_limpo_v2'].forEach(function(k){
-      localStorage.removeItem(k);
-    });
-    localStorage.setItem('il_limpo_v3','1');
+(function(){
+  // Sempre que abrir, zerar dados de exemplo
+  if(!localStorage.getItem('il_admin_pronto_v4')){
+    ['il_mods','il_aulas','il_alunos','il_tickets','il_materiais',
+     'il_zerado','il_pronto','il_limpo_v2','il_limpo_v3'].forEach(function(k){localStorage.removeItem(k);});
+    localStorage.setItem('il_admin_pronto_v4','1');
   }
-  // garantir que só o dashboard aparece
-  var todas = document.querySelectorAll('.page');
-  for (var i = 0; i < todas.length; i++) {
-    todas[i].style.display = 'none';
-    todas[i].classList.remove('ativa');
-  }
-  document.getElementById('page-dashboard').style.display = 'block';
-  document.getElementById('page-dashboard').classList.add('ativa');
+  // Garantir só dashboard visível
+  document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
+  document.getElementById('pg-dashboard').style.display='block';
+  document.getElementById('pg-dashboard').classList.add('ativa');
   atualizarStats();
-  atualizarTopAulas();
 })();
 </script>
 </body>
