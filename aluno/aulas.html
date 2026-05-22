@@ -478,10 +478,11 @@ function selecionarAula(aulaId) {
   var jaConcluiu = !!_progresso.find(function(p){return p.aula_id===aulaId;});
   var btnConc = document.getElementById('btn-concluir');
   if (jaConcluiu) {
-    btnConc.innerHTML = '<i class="ti ti-circle-check" style="font-size:14px;"></i> Concluída ✓';
+    btnConc.innerHTML = '<i class="ti ti-circle-check" style="font-size:14px;"></i> Concluída ✓ (clique para desmarcar)';
     btnConc.style.background = 'rgba(0,229,160,0.15)';
     btnConc.style.color = '#00e5a0';
     btnConc.style.border = '1px solid rgba(0,229,160,0.25)';
+    btnConc.className = 'btn';
   } else {
     btnConc.innerHTML = '<i class="ti ti-circle-check" style="font-size:14px;"></i> Marcar como concluída';
     btnConc.style.background = '';
@@ -502,32 +503,53 @@ function selecionarAula(aulaId) {
 async function marcarConcluida() {
   if (!_aulaAtual) return;
   var jaConcluiu = !!_progresso.find(function(p){return p.aula_id===_aulaAtual.id;});
-  if (jaConcluiu) return;
-
   const { data: { user } } = await _sb.auth.getUser();
-  await _sb.from('progresso').upsert({
-    user_id: user.id,
-    aula_id: _aulaAtual.id,
-    modulo_id: _aulaAtual.moduloId,
-    concluida: true,
-    updated_at: new Date().toISOString()
-  }, { onConflict: 'user_id,aula_id' });
 
-  _progresso.push({ aula_id: _aulaAtual.id, modulo_id: _aulaAtual.moduloId });
+  if (jaConcluiu) {
+    // DESMARCAR
+    await _sb.from('progresso').delete().eq('user_id', user.id).eq('aula_id', _aulaAtual.id);
+    _progresso = _progresso.filter(function(p){return p.aula_id!==_aulaAtual.id;});
 
-  // Atualizar check na sidebar
-  var itemEl = document.getElementById('aula-item-'+_aulaAtual.id);
-  if (itemEl) {
-    var check = itemEl.querySelector('.aula-check');
-    if (check) { check.classList.add('done'); check.innerHTML = '<i class="ti ti-check" style="font-size:9px;"></i>'; }
-  }
+    // Atualizar botão
+    var btn = document.getElementById('btn-concluir');
+    btn.innerHTML = '<i class="ti ti-circle-check" style="font-size:14px;"></i> Marcar como concluída';
+    btn.className = 'btn btn-green';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.border = '';
 
-  // Atualizar botão
-  var btn = document.getElementById('btn-concluir');
-  btn.innerHTML = '<i class="ti ti-circle-check" style="font-size:14px;"></i> Concluída ✓';
-  btn.style.background = 'rgba(0,229,160,0.15)';
-  btn.style.color = '#00e5a0';
-  btn.style.border = '1px solid rgba(0,229,160,0.25)';
+    // Atualizar check na sidebar
+    var itemEl = document.getElementById('aula-item-'+_aulaAtual.id);
+    if (itemEl) {
+      var check = itemEl.querySelector('.aula-check');
+      if (check) { check.classList.remove('done'); check.innerHTML = '<i class="ti ti-player-play" style="font-size:9px;"></i>'; }
+    }
+  } else {
+    // MARCAR
+    await _sb.from('progresso').upsert({
+      user_id: user.id,
+      aula_id: _aulaAtual.id,
+      modulo_id: _aulaAtual.moduloId,
+      concluida: true,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id,aula_id' });
+
+    _progresso.push({ aula_id: _aulaAtual.id, modulo_id: _aulaAtual.moduloId });
+
+    // Atualizar check na sidebar
+    var itemEl = document.getElementById('aula-item-'+_aulaAtual.id);
+    if (itemEl) {
+      var check = itemEl.querySelector('.aula-check');
+      if (check) { check.classList.add('done'); check.innerHTML = '<i class="ti ti-check" style="font-size:9px;"></i>'; }
+    }
+
+    // Atualizar botão
+    var btn = document.getElementById('btn-concluir');
+    btn.innerHTML = '<i class="ti ti-circle-check" style="font-size:14px;"></i> Concluída ✓';
+    btn.style.background = 'rgba(0,229,160,0.15)';
+    btn.style.color = '#00e5a0';
+    btn.style.border = '1px solid rgba(0,229,160,0.25)';
+  } // fim else
 
   // Atualizar progresso
   var aulasPublicadas = _aulas.filter(function(a){return a.status!=='draft';});
