@@ -277,28 +277,67 @@ var _aulas = [];
   document.getElementById('av').textContent = initials;
   document.getElementById('user-nome').textContent = nome;
 
-  // Carregar módulos e aulas via fetch direto
+  // CACHE: carregar do localStorage imediatamente (instantâneo)
+  var SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
+  var SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+  var HDR={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+  var CACHE_KEY_MODS='il_cache_mods';
+  var CACHE_KEY_AULAS='il_cache_aulas';
+  var CACHE_TS='il_cache_ts';
+
+  // Usar cache se tiver menos de 5 minutos
+  var agora=Date.now();
+  var cacheTs=parseInt(localStorage.getItem(CACHE_TS)||'0');
+  var cacheValido=(agora-cacheTs)<5*60*1000;
+
   try{
-    var sbUrl='https://fbjxampsauqfngdennpi.supabase.co';
-    var sbKey='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
-    var hds={'apikey':sbKey,'Authorization':'Bearer '+sbKey};
-    var rM=await fetch(sbUrl+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:hds});
-    var rA=await fetch(sbUrl+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:hds});
-    var dM=await rM.json();
-    var dA=await rA.json();
-    if(Array.isArray(dM)&&dM.length>0){
-      _mods=dM.filter(function(m){return m.status!=='hidden';}).map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
+    var cachedMods=JSON.parse(localStorage.getItem(CACHE_KEY_MODS)||'[]');
+    var cachedAulas=JSON.parse(localStorage.getItem(CACHE_KEY_AULAS)||'[]');
+    if(cachedMods.length>0){
+      _mods=cachedMods;
+      _aulas=cachedAulas;
     }
-    if(Array.isArray(dA)){
-      _aulas=dA.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};});
-    }
-  }catch(e){
-    console.warn('Erro ao buscar:',e);
-    try{_mods=JSON.parse(localStorage.getItem('il_mods'))||[];}catch(ex){_mods=[];}
-    try{_aulas=JSON.parse(localStorage.getItem('il_aulas'))||[];}catch(ex){_aulas=[];}
-    _mods=_mods.filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-  }
+  }catch(e){}
+
+  // Renderizar com cache enquanto busca dados frescos
   var aulasPublicadas=_aulas.filter(function(a){return a.status!=='draft';});
+  
+  // Buscar do Supabase em background (ou se cache expirou)
+  async function buscarFrescos(){
+    try{
+      var [rM,rA]=await Promise.all([
+        fetch(SB_URL+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:HDR}),
+        fetch(SB_URL+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:HDR})
+      ]);
+      var dM=await rM.json();
+      var dA=await rA.json();
+      if(Array.isArray(dM)&&dM.length>0){
+        var novosMods=dM.filter(function(m){return m.status!=='hidden';}).map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
+        var novasAulas=Array.isArray(dA)?dA.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};}):[]; 
+        // Salvar no cache
+        localStorage.setItem(CACHE_KEY_MODS,JSON.stringify(novosMods));
+        localStorage.setItem(CACHE_KEY_AULAS,JSON.stringify(novasAulas));
+        localStorage.setItem(CACHE_TS,String(Date.now()));
+        // Se tinha cache desatualizado, recarregar a sidebar silenciosamente
+        if(_mods.length>0){
+          _mods=novosMods;_aulas=novasAulas;
+          aulasPublicadas=novasAulas.filter(function(a){return a.status!=='draft';});
+          renderSidebar(aulasPublicadas);
+        } else {
+          _mods=novosMods;_aulas=novasAulas;
+          aulasPublicadas=novasAulas.filter(function(a){return a.status!=='draft';});
+        }
+      }
+    }catch(e){console.warn('Erro ao buscar frescos:',e);}
+  }
+
+  if(!cacheValido||_mods.length===0){
+    await buscarFrescos();
+    aulasPublicadas=_aulas.filter(function(a){return a.status!=='draft';});
+  } else {
+    // Cache válido: buscar em background sem bloquear
+    buscarFrescos();
+  }
 
   // Carregar progresso do Supabase
   var { data: prog } = await _sb.from('progresso').select('*').eq('user_id', user.id).eq('concluida', true);
