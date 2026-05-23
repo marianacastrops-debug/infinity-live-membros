@@ -434,6 +434,74 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 <script>
 var _SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
 var _SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+
+// ============================================
+// RESEND — E-MAIL AUTOMÁTICO PARA ALUNOS
+// Troque pela sua chave API do Resend
+// ============================================
+var RESEND_KEY = 're_Krt2JT15_5BeoMyJfHfwdkgxVMXMZeH7m';
+var EMAIL_REMETENTE = 'Infinity Live <noreply@mentoriainfinitylive.shop>';
+
+async function enviarEmailBoasVindas(nome, email, senha) {
+  try {
+    var html = \`<!DOCTYPE html>
+<html><head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:#060810;font-family:'Segoe UI',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#060810;padding:40px 20px;">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="background:#0f1320;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
+<tr><td style="background:linear-gradient(135deg,#00c8ff,#3b7fff);padding:32px;text-align:center;">
+<div style="font-size:28px;font-weight:800;color:#fff;">∞ Infinity Live</div>
+<div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:4px;letter-spacing:3px;">ÁREA DE MEMBROS</div>
+</td></tr>
+<tr><td style="padding:36px 40px;">
+<p style="font-size:22px;font-weight:700;color:#f0f4ff;margin:0 0 8px;">Olá, \${nome}! 🎉</p>
+<p style="font-size:15px;color:#8b96b8;margin:0 0 24px;line-height:1.6;">
+Sua conta na <strong style="color:#00c8ff;">Infinity Live</strong> foi criada! Acesse agora com os dados abaixo:
+</p>
+<table cellpadding="0" cellspacing="0" width="100%" style="background:#161b2e;border-radius:10px;padding:16px;margin-bottom:24px;">
+<tr><td style="padding:6px 16px;"><span style="font-size:12px;color:#4a5270;">E-MAIL</span><br/><span style="font-size:14px;font-weight:600;color:#f0f4ff;">\${email}</span></td></tr>
+<tr><td style="padding:6px 16px;border-top:1px solid rgba(255,255,255,0.05);"><span style="font-size:12px;color:#4a5270;">SENHA</span><br/><span style="font-size:14px;font-weight:600;color:#00c8ff;">\${senha}</span></td></tr>
+</table>
+<table cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+<tr><td style="background:linear-gradient(135deg,#00c8ff,#3b7fff);border-radius:10px;">
+<a href="https://mentoriainfinitylive.shop/login.html" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;">
+▶ Acessar minha conta
+</a></td></tr></table>
+<p style="font-size:12px;color:#4a5270;margin:0;">Guarde esses dados em local seguro. Você pode trocar a senha após entrar.</p>
+</td></tr>
+<tr><td style="background:#080b14;padding:20px 40px;text-align:center;border-top:1px solid rgba(255,255,255,0.07);">
+<p style="font-size:11px;color:#4a5270;margin:0;">© 2026 Infinity Live · Todos os direitos reservados</p>
+</td></tr>
+</table></td></tr></table>
+</body></html>\`;
+
+    var res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + RESEND_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: EMAIL_REMETENTE,
+        to: [email],
+        subject: 'Bem-vindo à Infinity Live! Seus dados de acesso 🚀',
+        html: html
+      })
+    });
+    var data = await res.json();
+    if (data.id) {
+      console.log('E-mail enviado:', data.id);
+      return true;
+    } else {
+      console.error('Erro Resend:', data);
+      return false;
+    }
+  } catch(e) {
+    console.error('Erro ao enviar e-mail:', e);
+    return false;
+  }
+}
 var _sb=supabase.createClient(_SB_URL,_SB_KEY);
 var MK='il_mods',AK='il_aulas',ALK='il_alunos',TK='il_tickets',MTK='il_materiais';
 function gMods(){try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return[];}}
@@ -739,14 +807,13 @@ async function salvarAluno(){
       document.getElementById('aluno-senha').value='';
       renderAlunos(a);atualizarStats();
 
-      // Mostrar confirmação com senha
-      if(!senha){
-        toast('✅ Aluno criado! E-mail de confirmação enviado para ' + email);
-        setTimeout(function(){
-          alert('✅ Aluno: ' + nome + '\nE-mail: ' + email + '\nSenha inicial: ' + senhaFinal + '\n\nUm e-mail de confirmação foi enviado.\nGuarde esses dados!');
-        }, 500);
-      } else {
+      // Enviar e-mail de boas-vindas via Resend
+      var emailOk = await enviarEmailBoasVindas(nome, email, senhaFinal);
+      if(emailOk){
         toast('✅ Aluno criado! E-mail enviado para ' + email);
+      } else {
+        toast('✅ Aluno criado!');
+        alert('Aluno criado com sucesso!\n\nE-mail: ' + email + '\nSenha: ' + senhaFinal + '\n\n⚠️ Não foi possível enviar o e-mail automático.\nEnvie os dados manualmente.');
       }
     }
   }catch(e){
