@@ -1,19 +1,15 @@
 // =====================================================
 // AUTENTICAÇÃO SUPABASE — INFINITY LIVE
+// Inclua este script em todas as páginas do aluno
 // =====================================================
 
 const _sb = supabase.createClient(
   'https://fbjxampsauqfngdennpi.supabase.co',
-  'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg',
-  {
-    auth: {
-      persistSession: true,
-      storageKey: 'il_session',
-      autoRefreshToken: true
-    }
-  }
+  'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
 );
 
+// Verificar se o aluno está logado
+// Se não estiver, redireciona para o login
 async function verificarSessao() {
   try {
     const { data: { session } } = await _sb.auth.getSession();
@@ -28,11 +24,13 @@ async function verificarSessao() {
   }
 }
 
+// Fazer logout
 async function fazerLogout() {
   await _sb.auth.signOut();
   window.location.href = '../login.html';
 }
 
+// Pegar dados do usuário logado
 async function getDadosAluno() {
   const { data: { user } } = await _sb.auth.getUser();
   if (!user) return null;
@@ -40,6 +38,7 @@ async function getDadosAluno() {
   return { ...user, ...profile };
 }
 
+// Salvar progresso de uma aula
 async function marcarAulaConcluida(aulaId, moduloId) {
   const { data: { user } } = await _sb.auth.getUser();
   if (!user) return;
@@ -52,6 +51,7 @@ async function marcarAulaConcluida(aulaId, moduloId) {
   }, { onConflict: 'user_id,aula_id' });
 }
 
+// Pegar progresso do aluno
 async function getProgresso() {
   const { data: { user } } = await _sb.auth.getUser();
   if (!user) return [];
