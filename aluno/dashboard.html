@@ -328,7 +328,8 @@
   // ══ CARREGAR DADOS REAIS ══
   const _sbDash = supabase.createClient(
     'https://fbjxampsauqfngdennpi.supabase.co',
-    'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
+    'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg',
+    { auth: { persistSession: true, storageKey: 'il_session', autoRefreshToken: true } }
   );
 
   var _chartLinha = null;

@@ -155,7 +155,7 @@ var SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
 var HDRS={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
 var CORES={cyan:{bg:'rgba(0,200,255,0.15)',cor:'#00c8ff',brd:'rgba(0,200,255,0.25)'},green:{bg:'rgba(0,229,160,0.15)',cor:'#00e5a0',brd:'rgba(0,229,160,0.25)'},pink:{bg:'rgba(255,77,141,0.15)',cor:'#ff4d8d',brd:'rgba(255,77,141,0.25)'},purple:{bg:'rgba(124,92,255,0.15)',cor:'#7c5cff',brd:'rgba(124,92,255,0.25)'},yellow:{bg:'rgba(255,184,0,0.15)',cor:'#ffb800',brd:'rgba(255,184,0,0.25)'}};
 
-var _sb=supabase.createClient(SB_URL,SB_KEY);
+var _sb=supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, storageKey: 'il_session', autoRefreshToken: true } });
 
 // INIT — verificar sessão e carregar tudo
 (async function(){
