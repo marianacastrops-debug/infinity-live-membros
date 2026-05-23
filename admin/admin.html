@@ -435,7 +435,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 var _SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
 var _SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
 var _sb=supabase.createClient(_SB_URL,_SB_KEY);
-var _sb=supabase.createClient(_SB_URL,_SB_KEY);
 var MK='il_mods',AK='il_aulas',ALK='il_alunos',TK='il_tickets',MTK='il_materiais';
 function gMods(){try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return[];}}
 function sMods(d){try{localStorage.setItem(MK,JSON.stringify(d));}catch(e){}}
@@ -914,7 +913,7 @@ async function publicarNoSite(){
 
 
 // RESEND — chave API (substitua pela sua)
-var RESEND_KEY='re_Krt2JT15_5BeoMyJfHfwdkgxVMXMZeH7m';
+var RESEND_KEY='re_SUBSTITUA_PELA_SUA_CHAVE';
 var EMAIL_FROM='Infinity Live <noreply@mentoriainfinitylive.shop>';
 
 async function enviarEmailBoasVindas(nome,email,senha){
