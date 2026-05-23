@@ -442,39 +442,33 @@ var _SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
 var RESEND_KEY = 're_Krt2JT15_5BeoMyJfHfwdkgxVMXMZeH7m';
 var EMAIL_REMETENTE = 'Infinity Live <noreply@mentoriainfinitylive.shop>';
 
-async function enviarEmailBoasVindas(nome, email, senha) {
-  try {
-    var html = \`<!DOCTYPE html>
-<html><head><meta charset="UTF-8"/></head>
-<body style="margin:0;padding:0;background:#060810;font-family:'Segoe UI',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#060810;padding:40px 20px;">
-<tr><td align="center">
-<table width="560" cellpadding="0" cellspacing="0" style="background:#0f1320;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
-<tr><td style="background:linear-gradient(135deg,#00c8ff,#3b7fff);padding:32px;text-align:center;">
-<div style="font-size:28px;font-weight:800;color:#fff;">∞ Infinity Live</div>
-<div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:4px;letter-spacing:3px;">ÁREA DE MEMBROS</div>
-</td></tr>
-<tr><td style="padding:36px 40px;">
-<p style="font-size:22px;font-weight:700;color:#f0f4ff;margin:0 0 8px;">Olá, \${nome}! 🎉</p>
-<p style="font-size:15px;color:#8b96b8;margin:0 0 24px;line-height:1.6;">
-Sua conta na <strong style="color:#00c8ff;">Infinity Live</strong> foi criada! Acesse agora com os dados abaixo:
-</p>
-<table cellpadding="0" cellspacing="0" width="100%" style="background:#161b2e;border-radius:10px;padding:16px;margin-bottom:24px;">
-<tr><td style="padding:6px 16px;"><span style="font-size:12px;color:#4a5270;">E-MAIL</span><br/><span style="font-size:14px;font-weight:600;color:#f0f4ff;">\${email}</span></td></tr>
-<tr><td style="padding:6px 16px;border-top:1px solid rgba(255,255,255,0.05);"><span style="font-size:12px;color:#4a5270;">SENHA</span><br/><span style="font-size:14px;font-weight:600;color:#00c8ff;">\${senha}</span></td></tr>
-</table>
-<table cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
-<tr><td style="background:linear-gradient(135deg,#00c8ff,#3b7fff);border-radius:10px;">
-<a href="https://mentoriainfinitylive.shop/login.html" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;">
-▶ Acessar minha conta
-</a></td></tr></table>
-<p style="font-size:12px;color:#4a5270;margin:0;">Guarde esses dados em local seguro. Você pode trocar a senha após entrar.</p>
-</td></tr>
-<tr><td style="background:#080b14;padding:20px 40px;text-align:center;border-top:1px solid rgba(255,255,255,0.07);">
-<p style="font-size:11px;color:#4a5270;margin:0;">© 2026 Infinity Live · Todos os direitos reservados</p>
-</td></tr>
-</table></td></tr></table>
-</body></html>\`;
+async function enviarEmailBoasVindas(nome, email, senha){
+  try{
+    var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"/></head>'
+      + '<body style="margin:0;padding:0;background:#060810;font-family:Arial,sans-serif;">'
+      + '<table width="100%" cellpadding="0" cellspacing="0" style="background:#060810;padding:40px 20px;">'
+      + '<tr><td align="center">'
+      + '<table width="560" cellpadding="0" cellspacing="0" style="background:#0f1320;border-radius:16px;border:1px solid rgba(255,255,255,0.08);">'
+      + '<tr><td style="background:linear-gradient(135deg,#00c8ff,#3b7fff);padding:32px;text-align:center;border-radius:16px 16px 0 0;">'
+      + '<div style="font-size:28px;font-weight:800;color:#fff;">&#8734; Infinity Live</div>'
+      + '<div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:4px;letter-spacing:3px;">ÁREA DE MEMBROS</div>'
+      + '</td></tr>'
+      + '<tr><td style="padding:36px 40px;">'
+      + '<p style="font-size:22px;font-weight:700;color:#f0f4ff;margin:0 0 8px;">Olá, ' + nome + '! 🎉</p>'
+      + '<p style="font-size:15px;color:#8b96b8;margin:0 0 24px;line-height:1.6;">Sua conta na <strong style="color:#00c8ff;">Infinity Live</strong> foi criada! Acesse com os dados abaixo:</p>'
+      + '<table cellpadding="0" cellspacing="0" width="100%" style="background:#161b2e;border-radius:10px;margin-bottom:24px;">'
+      + '<tr><td style="padding:12px 16px;"><span style="font-size:11px;color:#4a5270;">E-MAIL</span><br/><span style="font-size:14px;font-weight:600;color:#f0f4ff;">' + email + '</span></td></tr>'
+      + '<tr><td style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.05);"><span style="font-size:11px;color:#4a5270;">SENHA</span><br/><span style="font-size:16px;font-weight:700;color:#00c8ff;">' + senha + '</span></td></tr>'
+      + '</table>'
+      + '<table cellpadding="0" cellspacing="0" style="margin:0 0 20px;">'
+      + '<tr><td style="background:linear-gradient(135deg,#00c8ff,#3b7fff);border-radius:10px;">'
+      + '<a href="https://mentoriainfinitylive.shop/login.html" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;">▶ Acessar minha conta</a>'
+      + '</td></tr></table>'
+      + '<p style="font-size:12px;color:#4a5270;margin:0;">Guarde esses dados. Você pode trocar a senha após entrar.</p>'
+      + '</td></tr>'
+      + '<tr><td style="background:#080b14;padding:20px 40px;text-align:center;border-top:1px solid rgba(255,255,255,0.07);border-radius:0 0 16px 16px;">'
+      + '<p style="font-size:11px;color:#4a5270;margin:0;">© 2026 Infinity Live · Todos os direitos reservados</p>'
+      + '</td></tr></table></td></tr></table></body></html>';
 
     var res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -490,286 +484,14 @@ Sua conta na <strong style="color:#00c8ff;">Infinity Live</strong> foi criada! A
       })
     });
     var data = await res.json();
-    if (data.id) {
-      console.log('E-mail enviado:', data.id);
-      return true;
-    } else {
-      console.error('Erro Resend:', data);
-      return false;
-    }
-  } catch(e) {
+    if(data.id){console.log('E-mail enviado:', data.id);return true;}
+    else{console.error('Erro Resend:', data);return false;}
+  }catch(e){
     console.error('Erro ao enviar e-mail:', e);
     return false;
   }
 }
-var _sb=supabase.createClient(_SB_URL,_SB_KEY);
-var MK='il_mods',AK='il_aulas',ALK='il_alunos',TK='il_tickets',MTK='il_materiais';
-function gMods(){try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return[];}}
-function sMods(d){try{localStorage.setItem(MK,JSON.stringify(d));}catch(e){}}
-function gAulas(){try{return JSON.parse(localStorage.getItem(AK))||[];}catch(e){return[];}}
-function sAulas(d){try{localStorage.setItem(AK,JSON.stringify(d));}catch(e){}}
-function gAlunos(){try{return JSON.parse(localStorage.getItem(ALK))||[];}catch(e){return[];}}
-function sAlunos(d){try{localStorage.setItem(ALK,JSON.stringify(d));}catch(e){}}
-function gTickets(){try{return JSON.parse(localStorage.getItem(TK))||[];}catch(e){return[];}}
-function sTickets(d){try{localStorage.setItem(TK,JSON.stringify(d));}catch(e){}}
-function gMats(){try{return JSON.parse(localStorage.getItem(MTK))||[];}catch(e){return[];}}
-function sMats(d){try{localStorage.setItem(MTK,JSON.stringify(d));}catch(e){}}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
-var CORES={cyan:{bg:'rgba(0,200,255,0.15)',cor:'#00c8ff',brd:'rgba(0,200,255,0.25)'},green:{bg:'rgba(0,229,160,0.15)',cor:'#00e5a0',brd:'rgba(0,229,160,0.25)'},pink:{bg:'rgba(255,77,141,0.15)',cor:'#ff4d8d',brd:'rgba(255,77,141,0.25)'},purple:{bg:'rgba(124,92,255,0.15)',cor:'#7c5cff',brd:'rgba(124,92,255,0.25)'},yellow:{bg:'rgba(255,184,0,0.15)',cor:'#ffb800',brd:'rgba(255,184,0,0.25)'}};
 
-function irPara(pg,el){
-  document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
-  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('ativo');});
-  var alvo=document.getElementById('pg-'+pg);
-  if(alvo){alvo.style.display='block';alvo.classList.add('ativa');}
-  if(el)el.classList.add('ativo');
-  var titulos={dashboard:['Dashboard','Visão geral da plataforma'],alunos:['Alunos','Gerencie os membros'],tickets:['Tickets','Central de atendimento'],modulos:['Módulos & Aulas','Crie e organize o conteúdo'],preview:['Ver como aluno','Prévia da área de membros'],materiais:['Materiais','Arquivos para download'],config:['Configurações','Personalize a plataforma']};
-  var t=titulos[pg]||[pg,''];
-  document.getElementById('pg-titulo').textContent=t[0];
-  document.getElementById('pg-sub').textContent=t[1];
-  if(pg==='modulos')renderMods();
-  if(pg==='tickets')renderTickets();
-  if(pg==='alunos')renderAlunos(gAlunos());
-  if(pg==='preview')renderPreview();
-  if(pg==='materiais')renderMats();
-  if(pg==='dashboard')atualizarStats();
-}
-
-function abrirModal(id){document.getElementById(id).classList.add('aberto');}
-function fecharModal(id){document.getElementById(id).classList.remove('aberto');}
-document.addEventListener('click',function(e){if(e.target.classList.contains('overlay'))e.target.classList.remove('aberto');});
-
-var _confirmCb=null;
-function confirmar(titulo,msg,cb){
-  document.getElementById('confirm-titulo').textContent=titulo||'Confirmar';
-  document.getElementById('confirm-msg').textContent=msg||'Tem certeza?';
-  _confirmCb=cb;
-  document.getElementById('overlay-confirm').classList.add('aberto');
-}
-function fecharConfirm(){document.getElementById('overlay-confirm').classList.remove('aberto');_confirmCb=null;}
-function executarConfirm(){if(_confirmCb)_confirmCb();fecharConfirm();}
-document.getElementById('overlay-confirm').addEventListener('click',function(e){if(e.target===this)fecharConfirm();});
-
-var _toastT;
-function toast(msg,erro){
-  var el=document.getElementById('toast');
-  el.querySelector('i').style.color=erro?'var(--pink)':'var(--green)';
-  document.getElementById('toast-msg').textContent=msg;
-  el.style.display='flex';
-  clearTimeout(_toastT);
-  _toastT=setTimeout(function(){el.style.display='none';},3000);
-}
-
-function atualizarStats(){
-  var a=gAlunos(),m=gMods(),au=gAulas().filter(function(x){return x.status!=='draft';}),t=gTickets();
-  var ab=t.filter(function(x){return x.status==='aberto'||x.status==='pendente';}).length;
-  function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
-  set('st-alunos',a.length);set('st-alunos-b',a.length);
-  set('st-mods',m.filter(function(x){return x.status!=='hidden';}).length);
-  set('st-mods-b',au.length+' aulas');
-  set('st-tickets',t.length);set('st-tickets-b',ab+' aberto'+(ab!==1?'s':''));
-  set('st-aulas',au.length);
-  set('cnt-alunos',a.length);set('cnt-tickets',t.length);
-}
-
-function renderMods(){
-  var mods=gMods().sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-  var aulas=gAulas();
-  var el=document.getElementById('mods-lista');
-  var empty=document.getElementById('empty-mods');
-  var cnt=document.getElementById('mods-count');
-  var pub=aulas.filter(function(a){return a.status!=='draft';});
-  if(cnt)cnt.textContent=mods.length+' módulo(s) · '+pub.length+' aula(s) publicada(s)';
-  if(!mods.length){el.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  var stL={visible:'Visível',locked:'Bloqueado',hidden:'Oculto'};
-  var stC={visible:'st-v',locked:'st-l',hidden:'st-h'};
-  el.innerHTML=mods.map(function(m){
-    var am=aulas.filter(function(a){return a.moduloId===m.id;});
-    var c=CORES[m.cor||'cyan'];
-    var thumb=m.imagem?'<img class="mod-thumb" src="'+m.imagem+'" onerror="this.style.display=\'none\'">':'<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';"><i class="ti ti-photo-off"></i></div>';
-    var aulasHtml=am.length?am.map(function(a,i){
-      return '<div class="aula-item"><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
-    }).join(''):'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
-    return '<div class="mod-card"><div class="mod-hd">'+thumb+'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stC[m.status||'visible']+'">'+stL[m.status||'visible']+'</span></div><div class="mod-acts"><button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button><button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button></div></div><div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">AULAS</div>'+aulasHtml+'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button></div></div>';
-  }).join('');
-  atualizarStats();
-}
-
-function abrirNovoMod(){
-  document.getElementById('mod-modal-titulo').textContent='Criar módulo';
-  document.getElementById('mod-id').value='';
-  document.getElementById('mod-nome').value='';
-  document.getElementById('mod-desc').value='';
-  document.getElementById('mod-status').value='visible';
-  document.getElementById('mod-cor').value='cyan';
-  document.getElementById('mod-ordem').value=gMods().length+1;
-  document.getElementById('btn-del-mod').style.display='none';
-  removerImg();
-  abrirModal('modal-modulo');
-}
-
-function editarMod(id){
-  var m=gMods().find(function(x){return x.id===id;});
-  if(!m)return;
-  document.getElementById('mod-modal-titulo').textContent='Editar módulo';
-  document.getElementById('mod-id').value=m.id;
-  document.getElementById('mod-nome').value=m.nome;
-  document.getElementById('mod-desc').value=m.desc||'';
-  document.getElementById('mod-status').value=m.status||'visible';
-  document.getElementById('mod-cor').value=m.cor||'cyan';
-  document.getElementById('mod-ordem').value=m.ordem||1;
-  document.getElementById('btn-del-mod').style.display='flex';
-  if(m.imagem&&m.imagem.length>5){document.getElementById('img-prev').src=m.imagem;document.getElementById('img-prev-box').style.display='block';document.getElementById('upload-area').style.display='none';}
-  else removerImg();
-  abrirModal('modal-modulo');
-}
-
-function salvarMod(){
-  var nome=document.getElementById('mod-nome').value.trim();
-  if(!nome){alert('O nome é obrigatório.');return;}
-  var editId=document.getElementById('mod-id').value;
-  var img=document.getElementById('img-prev').src||'';
-  if(img===window.location.href||img.length<10)img='';
-  if(img.startsWith('data:image')){
-    var c2=document.createElement('canvas');
-    var tempImg=new Image();
-    tempImg.onload=function(){
-      var mW=400,mH=600,w=tempImg.width,h=tempImg.height;
-      if(w>mW){h=Math.round(h*mW/w);w=mW;}
-      if(h>mH){w=Math.round(w*mH/h);h=mH;}
-      c2.width=w;c2.height=h;
-      c2.getContext('2d').drawImage(tempImg,0,0,w,h);
-      _fazerSalvarMod(editId,nome,c2.toDataURL('image/jpeg',0.7));
-    };
-    tempImg.onerror=function(){_fazerSalvarMod(editId,nome,'');};
-    tempImg.src=img;
-  } else {
-    _fazerSalvarMod(editId,nome,img);
-  }
-}
-
-function _fazerSalvarMod(editId,nome,img){
-  var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||gMods().length+1};
-  var mods=gMods();
-  if(editId){var i=mods.findIndex(function(m){return m.id===editId;});if(i!==-1)mods[i]=dados;}
-  else mods.push(dados);
-  sMods(mods);
-  fecharModal('modal-modulo');
-  renderMods();
-  toast(editId?'Módulo atualizado!':'Módulo criado! Clique em "Publicar no site" para os alunos verem.');
-}
-
-function excluirModAtual(){
-  var id=document.getElementById('mod-id').value;
-  var nome=document.getElementById('mod-nome').value;
-  if(!id)return;
-  fecharModal('modal-modulo');
-  confirmar('Excluir módulo','Excluir "'+nome+'" e todas as suas aulas?',function(){
-    sMods(gMods().filter(function(m){return m.id!==id;}));
-    sAulas(gAulas().filter(function(a){return a.moduloId!==id;}));
-    renderMods();toast('Módulo excluído.');
-  });
-}
-
-function novaAula(modId){
-  document.getElementById('aula-modal-titulo').textContent='Adicionar aula';
-  document.getElementById('aula-id').value='';
-  document.getElementById('aula-mod-id').value=modId;
-  ['aula-nome','aula-url','aula-embed','aula-dur','aula-desc'].forEach(function(id){document.getElementById(id).value='';});
-  document.getElementById('aula-status').value='published';
-  document.getElementById('btn-del-aula').style.display='none';
-  abrirModal('modal-aula');
-}
-
-function editarAula(id){
-  var a=gAulas().find(function(x){return x.id===id;});
-  if(!a)return;
-  document.getElementById('aula-modal-titulo').textContent='Editar aula';
-  document.getElementById('aula-id').value=a.id;
-  document.getElementById('aula-mod-id').value=a.moduloId;
-  document.getElementById('aula-nome').value=a.nome;
-  document.getElementById('aula-url').value=a.url||'';
-  document.getElementById('aula-embed').value=a.embed||'';
-  document.getElementById('aula-dur').value=a.duracao||'';
-  document.getElementById('aula-status').value=a.status||'published';
-  document.getElementById('aula-desc').value=a.desc||'';
-  document.getElementById('btn-del-aula').style.display='flex';
-  abrirModal('modal-aula');
-}
-
-function gerarEmbed(url){
-  var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  document.getElementById('aula-embed').value=m?'https://www.youtube.com/embed/'+m[1]:'';
-}
-
-function salvarAula(){
-  var nome=document.getElementById('aula-nome').value.trim();
-  var url=document.getElementById('aula-url').value.trim();
-  if(!nome){alert('O título é obrigatório.');return;}
-  if(!url){alert('A URL é obrigatória.');return;}
-  var editId=document.getElementById('aula-id').value;
-  var modId=document.getElementById('aula-mod-id').value;
-  var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:m?'https://www.youtube.com/embed/'+m[1]:url,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim()};
-  var aulas=gAulas();
-  if(editId){var i=aulas.findIndex(function(a){return a.id===editId;});if(i!==-1)aulas[i]=dados;}
-  else aulas.push(dados);
-  sAulas(aulas);
-  fecharModal('modal-aula');
-  renderMods();
-  toast(editId?'Aula atualizada!':'Aula adicionada!');
-}
-
-function excluirAulaAtual(){
-  var id=document.getElementById('aula-id').value;
-  var nome=document.getElementById('aula-nome').value;
-  if(!id)return;
-  fecharModal('modal-aula');
-  confirmar('Excluir aula','Excluir "'+nome+'"?',function(){
-    sAulas(gAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
-  });
-}
-
-function delAula(id){
-  sAulas(gAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
-}
-
-function uploadImg(input){
-  var file=input.files[0];
-  if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    document.getElementById('img-prev').src=e.target.result;
-    document.getElementById('img-prev-box').style.display='block';
-    document.getElementById('upload-area').style.display='none';
-  };
-  reader.readAsDataURL(file);
-}
-
-function removerImg(){
-  document.getElementById('img-prev').src='';
-  document.getElementById('img-prev-box').style.display='none';
-  document.getElementById('upload-area').style.display='flex';
-  document.getElementById('mod-img-file').value='';
-}
-
-function renderAlunos(lista){
-  var tbody=document.getElementById('tbody-alunos');
-  var empty=document.getElementById('empty-alunos');
-  if(!lista.length){tbody.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff'];
-  tbody.innerHTML=lista.map(function(a,i){
-    var inits=a.nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
-    var spCls=a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new';
-    var spLbl=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
-    return '<tr onclick="verPerfil(\''+a.id+'\')"><td class="td-b"><div style="display:flex;align-items:center;gap:8px;"><div class="av" style="background:'+(a.cor||cores[i%cores.length])+'">'+inits+'</div>'+a.nome+'</div></td><td>'+a.email+'</td><td><span style="font-size:11px;font-weight:700;color:var(--text2);">'+(a.prog||0)+'%</span></td><td><span class="sp '+spCls+'">'+spLbl+'</span></td><td onclick="event.stopPropagation()"><div class="acts"><button class="rb rb-v" onclick="verPerfil(\''+a.id+'\')"><i class="ti ti-eye"></i></button><button class="rb rb-d" onclick="confirmar(\'Excluir aluno\',\'Excluir '+a.nome+'?\',function(){excluirAluno(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></td></tr>';
-  }).join('');
-}
-
-function filtrarAlunos(q){renderAlunos(gAlunos().filter(function(a){return a.nome.toLowerCase().includes(q.toLowerCase())||a.email.toLowerCase().includes(q.toLowerCase());}));}
-function filtrarStatusAluno(s){renderAlunos(s?gAlunos().filter(function(a){return a.status===s;}):gAlunos());}
 
 async function salvarAluno(){
   var nome=document.getElementById('aluno-nome').value.trim();
