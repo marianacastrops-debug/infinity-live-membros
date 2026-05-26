@@ -459,8 +459,28 @@ function selecionarAula(aulaId) {
   var h169 = Math.round(pw.offsetWidth * 9/16);
   pw.style.height = Math.min(h169, maxH)+'px';
 
-  // Carregar vídeo
-  document.getElementById('player-iframe').src = aula.embed || aula.url || '';
+  // Carregar vídeo — suporte YouTube e Bunny
+  var embedUrl = aula.embed || aula.url || '';
+  var isBunny = embedUrl.includes('mediadelivery.net') || embedUrl.includes('bunny');
+  
+  // Converter URL do Bunny para embed se necessário
+  if(isBunny && embedUrl.includes('/play/')){
+    // Converter play URL para embed URL
+    embedUrl = embedUrl.replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/');
+    embedUrl += '?autoplay=false&preload=false';
+  }
+  
+  var iframe = document.getElementById('player-iframe');
+  iframe.src = embedUrl;
+  
+  // Adicionar atributos necessários para o Bunny
+  if(isBunny){
+    iframe.setAttribute('allow', 'accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture');
+    iframe.setAttribute('allowfullscreen', 'true');
+  } else {
+    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+    iframe.setAttribute('allowfullscreen', 'true');
+  }
   document.getElementById('player-titulo').textContent = aula.nome;
   document.getElementById('player-dur').textContent = aula.duracao || '—';
   // Descrição da aula
