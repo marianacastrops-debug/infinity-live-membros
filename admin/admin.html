@@ -344,11 +344,11 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 <div class="overlay" id="modal-aula">
   <div class="modal">
     <div class="modal-title" id="aula-modal-titulo">Adicionar aula</div>
-    <div class="modal-sub">Cole o link do YouTube — o embed é gerado automaticamente.</div>
+    <div class="modal-sub">Cole o link do YouTube ou Bunny — o embed é gerado automaticamente.</div>
     <input type="hidden" id="aula-id"/>
     <input type="hidden" id="aula-mod-id"/>
     <div class="mf"><label class="ml">Título *</label><input class="mi" id="aula-nome" placeholder="Ex: Meta Ads na Prática"/></div>
-    <div class="mf"><label class="ml">URL do YouTube *</label><input class="mi" id="aula-url" placeholder="https://youtube.com/watch?v=..." oninput="gerarEmbed(this.value)"/></div>
+    <div class="mf"><label class="ml">URL do vídeo (YouTube ou Bunny) *</label><input class="mi" id="aula-url" placeholder="https://youtube.com/watch?v=... ou https://player.mediadelivery.net/play/..." oninput="gerarEmbed(this.value)"/></div>
     <div class="mf"><label class="ml">Embed (automático)</label><input class="mi" id="aula-embed" readonly style="opacity:.5;font-size:11px;" placeholder="Gerado após colar a URL..."/></div>
     <div class="grid2m">
       <div class="mf"><label class="ml">Duração</label><input class="mi" id="aula-dur" placeholder="Ex: 28min"/></div>
@@ -631,8 +631,18 @@ function editarAula(id){
 }
 
 function gerarEmbed(url){
+  if(!url){document.getElementById('aula-embed').value='';return;}
+  // YouTube
   var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  document.getElementById('aula-embed').value=m?'https://www.youtube.com/embed/'+m[1]:'';
+  if(m){document.getElementById('aula-embed').value='https://www.youtube.com/embed/'+m[1];return;}
+  // Bunny — converter play URL para embed
+  if(url.includes('mediadelivery.net')||url.includes('bunny')){
+    var embedUrl=url.replace('player.mediadelivery.net/play/','iframe.mediadelivery.net/embed/');
+    if(!embedUrl.includes('?'))embedUrl+='?autoplay=false&preload=false';
+    document.getElementById('aula-embed').value=embedUrl;
+    return;
+  }
+  document.getElementById('aula-embed').value=url;
 }
 
 function salvarAula(){
