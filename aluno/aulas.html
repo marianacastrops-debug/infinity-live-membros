@@ -208,7 +208,7 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
         </div>
         <div id="player-content" style="display:none;flex-direction:column;height:100%;">
           <div class="player-wrap" id="player-wrap">
-            <iframe id="player-iframe" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            <iframe id="player-iframe" src="" loading="lazy" allowfullscreen allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" style="border:none;width:100%;height:100%;"></iframe>
           </div>
           <div class="player-info">
             <div class="player-title" id="player-titulo">—</div>
@@ -471,16 +471,17 @@ function selecionarAula(aulaId) {
   }
   
   var iframe = document.getElementById('player-iframe');
-  iframe.src = embedUrl;
-  
-  // Adicionar atributos necessários para o Bunny
-  if(isBunny){
-    iframe.setAttribute('allow', 'accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture');
-    iframe.setAttribute('allowfullscreen', 'true');
-  } else {
-    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-    iframe.setAttribute('allowfullscreen', 'true');
-  }
+  // Recriar iframe para forçar reload limpo
+  var pw = document.getElementById('player-wrap');
+  var newIframe = document.createElement('iframe');
+  newIframe.id = 'player-iframe';
+  newIframe.loading = 'lazy';
+  newIframe.allowFullscreen = true;
+  newIframe.style.cssText = 'border:none;width:100%;height:100%;';
+  newIframe.setAttribute('allow', 'accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;');
+  newIframe.src = embedUrl;
+  var oldIframe = document.getElementById('player-iframe');
+  if(oldIframe) oldIframe.parentNode.replaceChild(newIframe, oldIframe);
   document.getElementById('player-titulo').textContent = aula.nome;
   document.getElementById('player-dur').textContent = aula.duracao || '—';
   // Descrição da aula
