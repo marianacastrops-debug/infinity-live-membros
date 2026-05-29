@@ -104,6 +104,12 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .roteiro-box{background:var(--card2);border:1px solid rgba(0,229,160,0.15);border-radius:12px;padding:20px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;}
 .roteiro-box strong{color:var(--green);}
 
+.tom-btn{background:var(--card2);border:2px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;user-select:none;}
+.tom-btn:hover{border-color:rgba(124,92,255,0.4);background:rgba(124,92,255,0.08);}
+.tom-btn.active{background:rgba(124,92,255,0.15);border-color:rgba(124,92,255,0.5);color:var(--purple);}
+#formato-grid .tom-btn:hover{border-color:rgba(255,184,0,0.4);background:rgba(255,184,0,0.08);}
+#formato-grid .tom-btn.active{background:rgba(255,184,0,0.15);border-color:rgba(255,184,0,0.5);}
+
 /* LOADING */
 .loading-wrap{display:none;text-align:center;padding:32px;}
 .loading-wrap .spinner{width:40px;height:40px;border:3px solid rgba(124,92,255,0.2);border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px;}
@@ -267,14 +273,11 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
           <!-- UPLOAD DO PRODUTO -->
           <div class="input-label" style="color:var(--yellow);"><i class="ti ti-photo-up" style="color:var(--yellow);"></i> Foto do produto</div>
           <input type="file" id="input-imgs-produto" accept="image/*" style="display:none;" onchange="adicionarImagensProduto(this)" multiple/>
-          <div class="upload-zone" id="upload-produto-zone" style="border-color:rgba(255,184,0,0.25);background:rgba(255,184,0,0.03);" onclick="triggerUploadProduto()">
-            <i class="ti ti-cloud-upload" style="color:var(--yellow);"></i>
-            <p>Clique para enviar a foto do produto</p>
-            <span>Foto clara do produto em fundo branco ou neutro</span>
-          </div>
-          <div id="produto-prev-box" style="display:none;position:relative;margin-bottom:16px;">
-            <img id="produto-prev-img" src="" style="width:100%;max-height:180px;object-fit:contain;border-radius:10px;border:1px solid var(--border);background:#111;"/>
-            <button onclick="removerImagemProduto()" style="position:absolute;top:6px;right:6px;background:rgba(255,59,92,0.9);color:#fff;border:none;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;">Remover</button>
+          <div id="upload-produto-zone" style="border:2px dashed rgba(255,184,0,0.3);border-radius:12px;background:rgba(255,184,0,0.03);padding:24px;text-align:center;margin-bottom:12px;">
+            <i class="ti ti-cloud-upload" style="color:var(--yellow);font-size:32px;display:block;margin-bottom:10px;"></i>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:6px;font-weight:600;">Fotos do produto (até 3)</p>
+            <span style="font-size:11px;color:var(--text3);display:block;margin-bottom:12px;">Frente, lateral, detalhe</span>
+            <button type="button" onclick="document.getElementById('input-imgs-produto').click()" style="background:rgba(255,184,0,0.15);border:1px solid rgba(255,184,0,0.4);color:var(--yellow);padding:9px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="ti ti-photo-up" style="font-size:14px;vertical-align:-2px;margin-right:6px;"></i>Selecionar imagens</button>
           </div>
 
           <!-- FORMATO -->
