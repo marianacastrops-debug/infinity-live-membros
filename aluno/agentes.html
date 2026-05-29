@@ -267,7 +267,7 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
           <!-- UPLOAD DO PRODUTO -->
           <div class="input-label" style="color:var(--yellow);"><i class="ti ti-photo-up" style="color:var(--yellow);"></i> Foto do produto</div>
           <input type="file" id="input-imgs-produto" accept="image/*" style="display:none;" onchange="adicionarImagensProduto(this)" multiple/>
-          <div class="upload-zone" id="upload-produto-zone" style="border-color:rgba(255,184,0,0.25);background:rgba(255,184,0,0.03);" onclick="document.getElementById('input-imgs-produto').click()">
+          <div class="upload-zone" id="upload-produto-zone" style="border-color:rgba(255,184,0,0.25);background:rgba(255,184,0,0.03);" onclick="triggerUploadProduto()">
             <i class="ti ti-cloud-upload" style="color:var(--yellow);"></i>
             <p>Clique para enviar a foto do produto</p>
             <span>Foto clara do produto em fundo branco ou neutro</span>
@@ -279,21 +279,26 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
 
           <!-- FORMATO -->
           <div class="input-label" style="color:var(--yellow);"><i class="ti ti-layout" style="color:var(--yellow);"></i> Formato da imagem</div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
-            <div class="tom-btn active" data-formato="pov" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">📱</div>
-              <div style="font-size:11px;font-weight:700;">POV</div>
-              <div style="font-size:10px;color:var(--text3);">Mão segurando</div>
+          <div id="formato-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;">
+            <div class="tom-btn active" data-formato="pov" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.3);padding:16px 10px;">
+              <div style="font-size:22px;margin-bottom:6px;">📱</div>
+              <div style="font-size:12px;font-weight:700;">POV</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:3px;">Mão segurando — perspectiva de quem assiste</div>
             </div>
-            <div class="tom-btn" data-formato="usando" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">🧍</div>
-              <div style="font-size:11px;font-weight:700;">Usando</div>
-              <div style="font-size:10px;color:var(--text3);">Pessoa vestindo</div>
+            <div class="tom-btn" data-formato="usando" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);padding:16px 10px;">
+              <div style="font-size:22px;margin-bottom:6px;">🧍</div>
+              <div style="font-size:12px;font-weight:700;">Usando</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:3px;">Modelo usando — canela pra baixo, mão, corpo</div>
             </div>
-            <div class="tom-btn" data-formato="mostrando" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">🎯</div>
-              <div style="font-size:11px;font-weight:700;">Mostrando</div>
-              <div style="font-size:10px;color:var(--text3);">Apresentando pro viewer</div>
+            <div class="tom-btn" data-formato="mostrando" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);padding:16px 10px;">
+              <div style="font-size:22px;margin-bottom:6px;">🎯</div>
+              <div style="font-size:12px;font-weight:700;">Mostrando</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:3px;">Pessoa apresentando direto para câmera</div>
+            </div>
+            <div class="tom-btn" data-formato="broll" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);padding:16px 10px;">
+              <div style="font-size:22px;margin-bottom:6px;">🎬</div>
+              <div style="font-size:12px;font-weight:700;">B-Roll</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:3px;">Cena ambiente — produto em cenário real</div>
             </div>
           </div>
 
