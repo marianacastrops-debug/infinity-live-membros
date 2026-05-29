@@ -376,13 +376,31 @@ Gere APENAS o roteiro, sem explicações adicionais antes ou depois.`;
   msgContent.push({type:'text',text:textoUsuario});
 
   try{
+    // Buscar chave e prompt do Supabase
+    var apiKey = '', promptSistema = PROMPT_SISTEMA;
+    try{
+      var confRes = await _sb.from('configuracoes').select('*').in('chave',['anthropic_api_key','agente_roteiro_prompt']);
+      if(confRes.data){
+        confRes.data.forEach(function(row){
+          if(row.chave==='anthropic_api_key') apiKey = row.valor;
+          if(row.chave==='agente_roteiro_prompt') promptSistema = row.valor;
+        });
+      }
+    }catch(e){}
+    // Fallback localStorage
+    if(!apiKey) apiKey = localStorage.getItem('ag_key')||'';
+    if(!apiKey){
+      alert('Chave API não configurada! Peça ao administrador para configurar em Agentes de IA no painel admin.');
+      return;
+    }
+
     var res = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-calls':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
-        system: PROMPT_SISTEMA,
+        system: promptSistema,
         messages:[{role:'user',content:msgContent}]
       })
     });
