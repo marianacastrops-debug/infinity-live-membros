@@ -344,11 +344,11 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 <div class="overlay" id="modal-aula">
   <div class="modal">
     <div class="modal-title" id="aula-modal-titulo">Adicionar aula</div>
-    <div class="modal-sub">Cole o link do YouTube ou Bunny — o embed é gerado automaticamente.</div>
+    <div class="modal-sub">Cole o link do YouTube — o embed é gerado automaticamente.</div>
     <input type="hidden" id="aula-id"/>
     <input type="hidden" id="aula-mod-id"/>
     <div class="mf"><label class="ml">Título *</label><input class="mi" id="aula-nome" placeholder="Ex: Meta Ads na Prática"/></div>
-    <div class="mf"><label class="ml">URL do vídeo (YouTube ou Bunny) *</label><input class="mi" id="aula-url" placeholder="https://youtube.com/watch?v=... ou https://player.mediadelivery.net/play/..." oninput="gerarEmbed(this.value)"/></div>
+    <div class="mf"><label class="ml">URL do YouTube *</label><input class="mi" id="aula-url" placeholder="https://youtube.com/watch?v=..." oninput="gerarEmbed(this.value)"/></div>
     <div class="mf"><label class="ml">Embed (automático)</label><input class="mi" id="aula-embed" readonly style="opacity:.5;font-size:11px;" placeholder="Gerado após colar a URL..."/></div>
     <div class="grid2m">
       <div class="mf"><label class="ml">Duração</label><input class="mi" id="aula-dur" placeholder="Ex: 28min"/></div>
@@ -637,15 +637,13 @@ function gerarEmbed(url){
   if(m){document.getElementById('aula-embed').value='https://www.youtube.com/embed/'+m[1];return;}
   // Panda Video
   if(url.includes('pandavideo.com')||url.includes('tv.pandavideo')){
-    document.getElementById('aula-embed').value=url;
-    return;
+    document.getElementById('aula-embed').value=url;return;
   }
   // Bunny
-  if(url.includes('mediadelivery.net')||url.includes('bunny')){
+  if(url.includes('mediadelivery.net')){
     var embedUrl=url.replace('player.mediadelivery.net/play/','iframe.mediadelivery.net/embed/');
     if(!embedUrl.includes('?'))embedUrl+='?autoplay=false&preload=false';
-    document.getElementById('aula-embed').value=embedUrl;
-    return;
+    document.getElementById('aula-embed').value=embedUrl;return;
   }
   document.getElementById('aula-embed').value=url;
 }
@@ -718,39 +716,17 @@ function renderAlunos(lista){
 function filtrarAlunos(q){renderAlunos(gAlunos().filter(function(a){return a.nome.toLowerCase().includes(q.toLowerCase())||a.email.toLowerCase().includes(q.toLowerCase());}));}
 function filtrarStatusAluno(s){renderAlunos(s?gAlunos().filter(function(a){return a.status===s;}):gAlunos());}
 
-async function salvarAluno(){
+function salvarAluno(){
   var nome=document.getElementById('aluno-nome').value.trim();
   var email=document.getElementById('aluno-email').value.trim();
-  var senha=document.getElementById('aluno-senha').value.trim();
   if(!nome||!email){alert('Nome e e-mail são obrigatórios.');return;}
-  var btn=document.querySelector('#modal-aluno .btn-p');
-  if(btn){btn.textContent='Criando...';btn.disabled=true;}
-  try{
-    var senhaFinal=senha||gerarSenha();
-    var res=await _sb.auth.signUp({email:email,password:senhaFinal,options:{data:{nome:nome},emailRedirectTo:'https://mentoriainfinitylive.shop/login.html'}});
-    if(res.error){alert('Erro: '+res.error.message);}
-    else{
-      var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff'];
-      var a=gAlunos();
-      a.push({id:res.data.user?res.data.user.id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:cores[Math.floor(Math.random()*cores.length)],aulas:0});
-      sAlunos(a);
-      fecharModal('modal-aluno');
-      document.getElementById('aluno-nome').value='';
-      document.getElementById('aluno-email').value='';
-      document.getElementById('aluno-senha').value='';
-      renderAlunos(a);atualizarStats();
-      var emailOk=await enviarEmailBoasVindas(nome,email,senhaFinal);
-      if(emailOk){toast('Aluno criado! E-mail enviado para '+email);}
-      else{toast('Aluno criado!');alert('Aluno: '+nome+'\nE-mail: '+email+'\nSenha: '+senhaFinal+'\n\n(E-mail não enviado automaticamente)');}
-    }
-  }catch(e){alert('Erro: '+e.message);}
-  if(btn){btn.textContent='Adicionar aluno';btn.disabled=false;}
-}
-
-function gerarSenha(){
-  var chars='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#';
-  var s='';for(var i=0;i<10;i++)s+=chars[Math.floor(Math.random()*chars.length)];
-  return s;
+  var a=gAlunos();
+  a.push({id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:'#00c8ff',aulas:0});
+  sAlunos(a);fecharModal('modal-aluno');
+  document.getElementById('aluno-nome').value='';
+  document.getElementById('aluno-email').value='';
+  document.getElementById('aluno-senha').value='';
+  renderAlunos(a);atualizarStats();toast('Aluno adicionado!');
 }
 
 function verPerfil(id){
@@ -926,77 +902,10 @@ async function publicarNoSite(){
   btn.disabled=false;
 }
 
-
-// RESEND — chave API (substitua pela sua)
-var RESEND_KEY='re_YCne5srk_HvQx4v7KPrkHB8SfqdCXBu7H';
-var EMAIL_FROM='Infinity Live <noreply@mentoriainfinitylive.shop>';
-
-async function enviarEmailBoasVindas(nome,email,senha){
-  try{
-    // Chamar via Supabase RPC para evitar CORS
-    var res = await _sb.rpc('enviar_email_resend', {
-      p_nome: nome,
-      p_email: email,
-      p_senha: senha
-    });
-    if(res.error){
-      console.error('Email RPC erro:', res.error);
-      return false;
-    }
-    return true;
-  }catch(e){
-    console.error('Email erro:',e);
-    return false;
-  }
-}
-
-async function _enviarEmailBoasVindasLEGACY(nome,email,senha){
-  try{
-    var html='<body style="background:#060810;font-family:Arial,sans-serif;padding:40px 20px;">'
-      +'<div style="max-width:560px;margin:0 auto;background:#0f1320;border-radius:16px;overflow:hidden;">'
-      +'<div style="background:linear-gradient(135deg,#00c8ff,#3b7fff);padding:28px;text-align:center;">'
-      +'<div style="font-size:26px;font-weight:800;color:#fff;">&#8734; Infinity Live</div>'
-      +'<div style="font-size:11px;color:rgba(255,255,255,0.8);letter-spacing:3px;margin-top:4px;">ÁREA DE MEMBROS</div>'
-      +'</div>'
-      +'<div style="padding:32px;">'
-      +'<p style="font-size:20px;font-weight:700;color:#f0f4ff;">Olá, '+nome+'! 🎉</p>'
-      +'<p style="color:#8b96b8;line-height:1.6;">Sua conta na <strong style="color:#00c8ff;">Infinity Live</strong> foi criada! Acesse com os dados abaixo:</p>'
-      +'<div style="background:#161b2e;border-radius:10px;padding:16px;margin:20px 0;">'
-      +'<p style="color:#4a5270;font-size:11px;margin:0 0 4px;">E-MAIL</p>'
-      +'<p style="color:#f0f4ff;font-weight:600;margin:0 0 12px;">'+email+'</p>'
-      +'<p style="color:#4a5270;font-size:11px;margin:0 0 4px;">SENHA</p>'
-      +'<p style="color:#00c8ff;font-weight:700;font-size:18px;margin:0;">'+senha+'</p>'
-      +'</div>'
-      +'<a href="https://mentoriainfinitylive.shop/login.html" style="display:inline-block;background:linear-gradient(135deg,#00c8ff,#3b7fff);color:#fff;padding:13px 28px;border-radius:9px;text-decoration:none;font-weight:700;">▶ Acessar minha conta</a>'
-      +'<p style="color:#4a5270;font-size:12px;margin-top:20px;">Guarde esses dados. Você pode trocar a senha após entrar.</p>'
-      +'</div>'
-      +'<div style="background:#080b14;padding:16px;text-align:center;">'
-      +'<p style="color:#4a5270;font-size:11px;margin:0;">© 2026 Infinity Live</p>'
-      +'</div></div></body>';
-    var res=await fetch('https://api.resend.com/emails',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+RESEND_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({from:EMAIL_FROM,to:[email],subject:'Bem-vindo à Infinity Live! Seus dados de acesso 🚀',html:html})
-    });
-    var d=await res.json();
-    return !!d.id;
-  }catch(e){console.error('Email erro:',e);return false;}
-}
-
-(async function(){
+(function(){
   document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
   document.getElementById('pg-dashboard').style.display='block';
   document.getElementById('pg-dashboard').classList.add('ativa');
-  try{
-    var rM=await _sb.from('modulos').select('*').order('ordem',{ascending:true});
-    var rA=await _sb.from('aulas').select('*').order('ordem',{ascending:true});
-    if(rM.data&&rM.data.length>0){
-      sMods(rM.data.map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};}));
-    }
-    if(rA.data&&rA.data.length>0){
-      sAulas(rA.data.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};}));
-    }
-  }catch(e){console.warn('Sync falhou:',e);}
   atualizarStats();
 })();
 </script>
