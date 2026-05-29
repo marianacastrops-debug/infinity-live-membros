@@ -370,12 +370,13 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
             <p>Analisando suas métricas...</p>
           </div>
           <div class="resultado-wrap" id="resultado-metricas">
-            <div class="resultado-header">
-              <div class="resultado-title" style="color:var(--green);"><i class="ti ti-circle-check" style="font-size:18px;"></i> Análise pronta!</div>
-              <button class="btn-copiar" onclick="copiarTexto('analise-conteudo',this)" style="border-color:rgba(0,229,160,0.3);"><i class="ti ti-copy" style="font-size:14px;"></i> Copiar</button>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+              <div style="font-size:14px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:8px;"><i class="ti ti-circle-check" style="font-size:18px;"></i> Análise pronta!</div>
+              <button class="btn-copiar" onclick="copiarTexto('analise-conteudo-raw',this)" style="border-color:rgba(0,229,160,0.3);"><i class="ti ti-copy" style="font-size:14px;"></i> Copiar</button>
             </div>
-            <div class="roteiro-box" id="analise-conteudo" style="border-color:rgba(0,229,160,0.15);"></div>
-            <button onclick="gerarAnaliseMetricas()" style="margin-top:12px;width:100%;padding:10px;border-radius:9px;border:1px solid rgba(0,229,160,0.3);color:var(--green);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:5px;"></i>Analisar novamente</button>
+            <div id="analise-cards"></div>
+            <div id="analise-conteudo-raw" style="display:none;"></div>
+            <button onclick="gerarAnaliseMetricas()" style="margin-top:16px;width:100%;padding:10px;border-radius:9px;border:1px solid rgba(0,229,160,0.3);color:var(--green);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:5px;"></i>Analisar novamente</button>
           </div>
         </div>
       </div>
@@ -402,6 +403,17 @@ var _tipoProduto = 'calçado'; // tipo de produto selecionado
 var _formatoImg = 'pov'; // formato da imagem
 
 // AUTH
+// Buscar chave API por agente
+async function getApiKey(agente){
+  var chave='api_key_'+agente;
+  try{
+    var r=await _sb.from('configuracoes').select('valor').eq('chave',chave).single();
+    if(r.data&&r.data.valor) return r.data.valor;
+  }catch(e){}
+  // Fallback localStorage
+  return localStorage.getItem('ag_key_'+agente)||localStorage.getItem('ag_key')||'';
+}
+
 (async function(){
   var sess = await _sb.auth.getSession();
   if(!sess.data.session){window.location.href='../login.html';return;}
@@ -482,13 +494,8 @@ async function gerarPromptImagem(){
   document.getElementById('resultado-imagem').style.display='none';
   document.getElementById('loading-imagem').style.display='block';
 
-  var apiKey='';
-  try{
-    var confRes=await _sb.from('configuracoes').select('*').eq('chave','anthropic_api_key').single();
-    if(confRes.data) apiKey=confRes.data.valor;
-  }catch(e){}
-  if(!apiKey) apiKey=localStorage.getItem('ag_key')||'';
-  if(!apiKey){alert('Chave API nao configurada! Configure no painel admin.');return;}
+  var apiKey=await getApiKey('imagem');
+  if(!apiKey){alert('Chave API do Gerador de Imagem não configurada! Configure no painel admin.');return;}
 
   var formatoDesc={
     pov:'POV point-of-view style: first-person perspective shot, person hand(s) holding or interacting with the product toward the camera, intimate close-up composition, as if the viewer is holding it.',
@@ -661,25 +668,14 @@ async function gerarRoteiro(){
   msgContent.push({type:'text',text:textoUsuario});
 
   try{
-    // Buscar chave e prompt do Supabase
-    var apiKey = '', promptSistema = PROMPT_SISTEMA;
-    // Injetar tom no prompt
-    promptSistema += '\n\nTOM OBRIGATÓRIO PARA ESTE ROTEIRO: ' + _tom + '\nAdapte TODO o roteiro — linguagem, ritmo, intensidade e escolha de palavras — conforme este tom. Não misture tons.';
+    var apiKey = await getApiKey('roteiro');
+    if(!apiKey){alert('Chave API do Gerador de Roteiro não configurada! Configure no painel admin.');return;}
+    var promptSistema = PROMPT_SISTEMA;
+    promptSistema += '\n\nTOM OBRIGATÓRIO PARA ESTE ROTEIRO: ' + _tom + '\nAdapte TODO o roteiro conforme este tom.';
     try{
-      var confRes = await _sb.from('configuracoes').select('*').in('chave',['anthropic_api_key','agente_roteiro_prompt']);
-      if(confRes.data){
-        confRes.data.forEach(function(row){
-          if(row.chave==='anthropic_api_key') apiKey = row.valor;
-          if(row.chave==='agente_roteiro_prompt') promptSistema = row.valor;
-        });
-      }
+      var confRes=await _sb.from('configuracoes').select('valor').eq('chave','agente_roteiro_prompt').single();
+      if(confRes.data&&confRes.data.valor) promptSistema=confRes.data.valor+'\n\nTOM: '+_tom;
     }catch(e){}
-    // Fallback localStorage
-    if(!apiKey) apiKey = localStorage.getItem('ag_key')||'';
-    if(!apiKey){
-      alert('Chave API não configurada! Peça ao administrador para configurar em Agentes de IA no painel admin.');
-      return;
-    }
 
     var res = await fetch('/api/roteiro',{
       method:'POST',
@@ -770,13 +766,8 @@ async function gerarAnaliseMetricas(){
   document.getElementById('resultado-metricas').style.display='none';
   document.getElementById('loading-metricas').style.display='block';
 
-  var apiKey='';
-  try{
-    var confRes=await _sb.from('configuracoes').select('*').eq('chave','anthropic_api_key').single();
-    if(confRes.data) apiKey=confRes.data.valor;
-  }catch(e){}
-  if(!apiKey) apiKey=localStorage.getItem('ag_key')||'';
-  if(!apiKey){alert('Chave API não configurada! Configure no painel admin.');return;}
+  var apiKey=await getApiKey('metricas');
+  if(!apiKey){alert('Chave API do Analista de Métricas não configurada! Configure no painel admin.');return;}
 
   var SYSTEM_METRICAS = 'Voce e um especialista em analise de lives no TikTok Shop com foco em vendas ao vivo.'
     +' Analise as metricas e entregue uma analise SIMPLES, DIRETA e EM PORTUGUES como se estivesse explicando para uma amiga que esta aprendendo.'
@@ -817,7 +808,8 @@ async function gerarAnaliseMetricas(){
     var data=await res.json();
     var texto=data.content&&data.content[0]?data.content[0].text:'';
     if(!texto){alert('Erro ao gerar análise. Tente novamente.');return;}
-    document.getElementById('analise-conteudo').innerHTML=formatarRoteiro(texto);
+    document.getElementById('analise-conteudo-raw').textContent=texto;
+    renderAnaliseCards(texto);
     document.getElementById('resultado-metricas').style.display='block';
     document.getElementById('resultado-metricas').scrollIntoView({behavior:'smooth'});
   }catch(e){
@@ -826,6 +818,46 @@ async function gerarAnaliseMetricas(){
     document.getElementById('loading-metricas').style.display='none';
     document.getElementById('btn-gerar-metricas').disabled=false;
   }
+}
+
+function renderAnaliseCards(texto){
+  var secoes=[
+    {emoji:'📊',titulo:'Resumo Geral',cor:'#00c8ff',bg:'rgba(0,200,255,0.08)',brd:'rgba(0,200,255,0.2)'},
+    {emoji:'✅',titulo:'O que foi bem',cor:'#00e5a0',bg:'rgba(0,229,160,0.08)',brd:'rgba(0,229,160,0.2)'},
+    {emoji:'⚠️',titulo:'O que pode melhorar',cor:'#ffb800',bg:'rgba(255,184,0,0.08)',brd:'rgba(255,184,0,0.2)'},
+    {emoji:'🎯',titulo:'Dicas práticas',cor:'#7c5cff',bg:'rgba(124,92,255,0.08)',brd:'rgba(124,92,255,0.2)'},
+    {emoji:'🪝',titulo:'Ganchos para testar',cor:'#ff4d8d',bg:'rgba(255,77,141,0.08)',brd:'rgba(255,77,141,0.2)'},
+    {emoji:'📣',titulo:'CTAs para testar',cor:'#ff8c42',bg:'rgba(255,140,66,0.08)',brd:'rgba(255,140,66,0.2)'},
+    {emoji:'🔁',titulo:'Uma coisa para fazer diferente',cor:'#00e5a0',bg:'rgba(0,229,160,0.12)',brd:'rgba(0,229,160,0.3)'}
+  ];
+
+  var html='';
+  secoes.forEach(function(s){
+    // Extrair conteúdo da seção
+    var regex=new RegExp(s.emoji+'[\\s\\S]*?(?='+['📊','✅','⚠️','🎯','🪝','📣','🔁'].filter(function(e){return e!==s.emoji;}).map(function(e){return e.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|')+'|$)');
+    var match=texto.match(regex);
+    if(!match) return;
+    var conteudo=match[0].replace(new RegExp('^'+s.emoji+'.*?(\n|$)'),'').trim();
+    if(!conteudo) return;
+
+    // Formatar linhas como itens
+    var linhas=conteudo.split('\n').filter(function(l){return l.trim();});
+    var corpo=linhas.map(function(l){
+      var txt=l.replace(/^[-•*]\s*/,'').trim();
+      if(!txt) return '';
+      return '<div style="display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;"><span style="color:'+s.cor+';flex-shrink:0;margin-top:2px;">▸</span><span style="font-size:13px;color:var(--text2);line-height:1.6;">'+txt+'</span></div>';
+    }).join('');
+
+    html+='<div style="background:'+s.bg+';border:1px solid '+s.brd+';border-radius:12px;padding:16px;margin-bottom:12px;">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">'
+      +'<div style="width:36px;height:36px;border-radius:9px;background:'+s.brd+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+s.emoji+'</div>'
+      +'<div style="font-size:13px;font-weight:700;color:'+s.cor+';">'+s.titulo+'</div>'
+      +'</div>'
+      +corpo
+      +'</div>';
+  });
+
+  document.getElementById('analise-cards').innerHTML=html||'<div class="roteiro-box">'+formatarRoteiro(texto)+'</div>';
 }
 
 function copiarRoteiro(){
