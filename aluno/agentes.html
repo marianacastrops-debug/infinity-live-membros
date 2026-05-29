@@ -118,6 +118,18 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .fmt-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:var(--card2);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
 .fmt-btn:hover{border-color:rgba(255,184,0,0.4);color:var(--yellow);}
 .fmt-btn.active{background:rgba(255,184,0,0.15);border-color:rgba(255,184,0,0.5);color:var(--yellow);}
+
+/* CARDS DE MÉTRICAS */
+.met-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.met-card{border-radius:14px;padding:16px;position:relative;overflow:hidden;}
+.met-card-full{border-radius:14px;padding:16px;margin-bottom:12px;}
+.met-card-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;}
+.met-card-title{font-size:12px;font-weight:700;margin-bottom:8px;}
+.met-card-item{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px;}
+.met-card-item span{font-size:12px;color:var(--text2);line-height:1.5;}
+.met-destaque{background:linear-gradient(135deg,rgba(0,229,160,0.15),rgba(0,200,255,0.08));border:1px solid rgba(0,229,160,0.25);border-radius:14px;padding:18px;margin-bottom:12px;display:flex;align-items:center;gap:14px;}
+.met-destaque-txt{font-size:13px;font-weight:700;color:var(--text);line-height:1.5;}
+.met-destaque-sub{font-size:11px;color:var(--text2);margin-top:3px;}
 </style>
 </head>
 <body>
@@ -767,17 +779,25 @@ async function gerarAnaliseMetricas(){
   var apiKey=await getApiKey('metricas');
   if(!apiKey){alert('Chave API do Analista de Métricas não configurada! Configure no painel admin.');return;}
 
-  var SYSTEM_METRICAS = 'Voce e um especialista em analise de lives no TikTok Shop com foco em vendas ao vivo.'
-    +' Analise as metricas e entregue uma analise SIMPLES, DIRETA e EM PORTUGUES como se estivesse explicando para uma amiga que esta aprendendo.'
-    +'\n\nESTRUTURA OBRIGATORIA DA ANALISE:'
-    +'\n\n📊 RESUMO GERAL\nEm 2-3 frases como foi a live no geral?'
-    +'\n\n✅ O QUE FOI BEM\nListe 3 a 5 pontos positivos explicando POR QUE aquilo e bom com linguagem simples.'
-    +'\n\n⚠️ O QUE PODE MELHORAR\nListe 3 a 5 pontos fracos explicando o que significa aquele numero ruim e por que acontece.'
-    +'\n\n🎯 DICAS PRATICAS PARA A PROXIMA LIVE\nPelo menos 5 dicas especificas e acionaveis. Diga exatamente o que fazer.'
-    +'\n\n🪝 GANCHOS PARA TESTAR\nSugira 3 ganchos de abertura especificos baseados no produto e publico identificado.'
-    +'\n\n📣 CTAs PARA TESTAR\nSugira 3 CTAs diferentes para testar durante a live.'
-    +'\n\n🔁 UMA COISA SO PARA FAZER DIFERENTE AMANHA\nUma unica acao prioritaria que vai ter mais impacto imediato.'
-    +'\n\nREGRAS: Linguagem simples sem jargoes tecnicos. Se usar termos tecnicos explique. Seja especifico com os numeros. Seja encorajador mas honesto.';
+  var SYSTEM_METRICAS = 'Voce e um especialista em analise de lives no TikTok Shop.'
+    +' IMPORTANTE: O modelo de live analisado nao tem produto fisico em maos. O apresentador fica na camera falando enquanto um VIDEO DO PRODUTO passa na tela embaixo. Todas as dicas devem ser adaptadas para esse formato.'
+    +' Analise as metricas e entregue uma analise SIMPLES, DIRETA e EM PORTUGUES como se fosse uma mentora experiente explicando para uma aluna.'
+    +'\n\nESTRUTURA OBRIGATORIA:'
+    +'\n\n📊 RESUMO GERAL'
+    +'\nEm 2-3 frases diretas: como foi a live? Use os numeros reais das metricas para embasar.'
+    +'\n\n✅ O QUE FOI BEM'
+    +'\nListe 3-4 pontos positivos com explicacao simples do que significa aquele numero bom.'
+    +'\n\n⚠️ O QUE PODE MELHORAR'
+    +'\nListe 3-4 pontos com o que o numero fraco significa e por que aconteceu.'
+    +'\n\n🎯 DICAS PARA A PROXIMA LIVE'
+    +'\nMinimo 5 dicas especificas e acionaveis. FOCO NO FORMATO: camera ligada + video do produto passando. Exemplos: como melhorar o que voce fala enquanto o video passa, tom de voz, ritmo, como reagir aos comentarios, quanto tempo ficar em cada produto, etc.'
+    +'\n\n🪝 GANCHOS PARA TESTAR'
+    +'\n3 frases de abertura especificas para usar nos primeiros segundos da live. Devem ser falas reais que a pessoa pode usar.'
+    +'\n\n📣 CTAs PARA TESTAR'
+    +'\n3 CTAs diferentes e especificos para usar durante a live. Frases prontas para usar.'
+    +'\n\n🔁 UMA COISA SO PARA FAZER DIFERENTE AMANHA'
+    +'\nA acao mais importante e de maior impacto. Uma frase clara e direta.'
+    +'\n\nREGRAS: Linguagem simples e direta. Explique termos se necessario. Use os numeros reais. Seja encorajador mas honesto. NUNCA sugira segurar produto ou mostrar produto fisicamente.';
 
   var msgContent=[];
   _imgsMetricas.forEach(function(img){
@@ -818,42 +838,103 @@ async function gerarAnaliseMetricas(){
   }
 }
 
+function extrairSecao(texto, emoji, proximos){
+  var idx=texto.indexOf(emoji);
+  if(idx===-1) return '';
+  var fim=texto.length;
+  proximos.forEach(function(e){var i=texto.indexOf(e,idx+1);if(i>-1&&i<fim)fim=i;});
+  var bloco=texto.slice(idx,fim).trim();
+  return bloco.split('\n').slice(1).join('\n').trim();
+}
+
+function linhasParaHtml(texto, cor){
+  return texto.split('\n').filter(function(l){return l.trim();}).map(function(l){
+    var txt=l.replace(/^[-•*\d.]+\s*/,'').trim();
+    if(!txt)return '';
+    return '<div class="met-card-item"><span style="color:'+cor+';font-size:10px;flex-shrink:0;margin-top:4px;">●</span><span>'+txt+'</span></div>';
+  }).join('');
+}
+
 function renderAnaliseCards(texto){
-  var secoes=[
-    {emoji:'📊',titulo:'Resumo Geral',cor:'#00c8ff',bg:'rgba(0,200,255,0.08)',brd:'rgba(0,200,255,0.2)'},
-    {emoji:'✅',titulo:'O que foi bem',cor:'#00e5a0',bg:'rgba(0,229,160,0.08)',brd:'rgba(0,229,160,0.2)'},
-    {emoji:'⚠️',titulo:'O que pode melhorar',cor:'#ffb800',bg:'rgba(255,184,0,0.08)',brd:'rgba(255,184,0,0.2)'},
-    {emoji:'🎯',titulo:'Dicas práticas',cor:'#7c5cff',bg:'rgba(124,92,255,0.08)',brd:'rgba(124,92,255,0.2)'},
-    {emoji:'🪝',titulo:'Ganchos para testar',cor:'#ff4d8d',bg:'rgba(255,77,141,0.08)',brd:'rgba(255,77,141,0.2)'},
-    {emoji:'📣',titulo:'CTAs para testar',cor:'#ff8c42',bg:'rgba(255,140,66,0.08)',brd:'rgba(255,140,66,0.2)'},
-    {emoji:'🔁',titulo:'Uma coisa para fazer diferente',cor:'#00e5a0',bg:'rgba(0,229,160,0.12)',brd:'rgba(0,229,160,0.3)'}
-  ];
+  var todos=['📊','✅','⚠️','🎯','🪝','📣','🔁'];
+
+  var resumo=extrairSecao(texto,'📊',todos.filter(function(e){return e!=='📊';}));
+  var bem=extrairSecao(texto,'✅',todos.filter(function(e){return e!=='✅';}));
+  var melhorar=extrairSecao(texto,'⚠️',todos.filter(function(e){return e!=='⚠️';}));
+  var dicas=extrairSecao(texto,'🎯',todos.filter(function(e){return e!=='🎯';}));
+  var ganchos=extrairSecao(texto,'🪝',todos.filter(function(e){return e!=='🪝';}));
+  var ctas=extrairSecao(texto,'📣',todos.filter(function(e){return e!=='📣';}));
+  var acao=extrairSecao(texto,'🔁',todos.filter(function(e){return e!=='🔁';}));
 
   var html='';
-  secoes.forEach(function(s){
-    // Extrair conteúdo da seção
-    var regex=new RegExp(s.emoji+'[\\s\\S]*?(?='+['📊','✅','⚠️','🎯','🪝','📣','🔁'].filter(function(e){return e!==s.emoji;}).map(function(e){return e.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|')+'|$)');
-    var match=texto.match(regex);
-    if(!match) return;
-    var conteudo=match[0].replace(new RegExp('^'+s.emoji+'.*?(\n|$)'),'').trim();
-    if(!conteudo) return;
 
-    // Formatar linhas como itens
-    var linhas=conteudo.split('\n').filter(function(l){return l.trim();});
-    var corpo=linhas.map(function(l){
-      var txt=l.replace(/^[-•*]\s*/,'').trim();
-      if(!txt) return '';
-      return '<div style="display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;"><span style="color:'+s.cor+';flex-shrink:0;margin-top:2px;">▸</span><span style="font-size:13px;color:var(--text2);line-height:1.6;">'+txt+'</span></div>';
-    }).join('');
-
-    html+='<div style="background:'+s.bg+';border:1px solid '+s.brd+';border-radius:12px;padding:16px;margin-bottom:12px;">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">'
-      +'<div style="width:36px;height:36px;border-radius:9px;background:'+s.brd+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">'+s.emoji+'</div>'
-      +'<div style="font-size:13px;font-weight:700;color:'+s.cor+';">'+s.titulo+'</div>'
-      +'</div>'
-      +corpo
+  // RESUMO GERAL — card largo com destaque
+  if(resumo){
+    html+='<div class="met-destaque">'
+      +'<div style="font-size:32px;flex-shrink:0;">📊</div>'
+      +'<div><div class="met-destaque-txt">'+resumo.replace(/\n/g,' ')+'</div></div>'
       +'</div>';
-  });
+  }
+
+  // BEM e MELHORAR — lado a lado
+  if(bem||melhorar){
+    html+='<div class="met-grid">';
+    if(bem){
+      html+='<div class="met-card" style="background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.2);">'
+        +'<div class="met-card-ico" style="background:rgba(0,229,160,0.15);">✅</div>'
+        +'<div class="met-card-title" style="color:#00e5a0;">O que foi bem</div>'
+        +linhasParaHtml(bem,'#00e5a0')
+        +'</div>';
+    }
+    if(melhorar){
+      html+='<div class="met-card" style="background:rgba(255,184,0,0.07);border:1px solid rgba(255,184,0,0.2);">'
+        +'<div class="met-card-ico" style="background:rgba(255,184,0,0.15);">⚠️</div>'
+        +'<div class="met-card-title" style="color:#ffb800;">Melhorar</div>'
+        +linhasParaHtml(melhorar,'#ffb800')
+        +'</div>';
+    }
+    html+='</div>';
+  }
+
+  // DICAS — card largo roxo
+  if(dicas){
+    html+='<div class="met-card-full" style="background:rgba(124,92,255,0.07);border:1px solid rgba(124,92,255,0.2);">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'
+      +'<div class="met-card-ico" style="background:rgba(124,92,255,0.15);margin-bottom:0;">🎯</div>'
+      +'<div class="met-card-title" style="color:#7c5cff;margin-bottom:0;">Dicas para a próxima live</div>'
+      +'</div>'
+      +linhasParaHtml(dicas,'#7c5cff')
+      +'</div>';
+  }
+
+  // GANCHOS e CTAs — lado a lado
+  if(ganchos||ctas){
+    html+='<div class="met-grid">';
+    if(ganchos){
+      html+='<div class="met-card" style="background:rgba(255,77,141,0.07);border:1px solid rgba(255,77,141,0.2);">'
+        +'<div class="met-card-ico" style="background:rgba(255,77,141,0.15);">🪝</div>'
+        +'<div class="met-card-title" style="color:#ff4d8d;">Ganchos</div>'
+        +linhasParaHtml(ganchos,'#ff4d8d')
+        +'</div>';
+    }
+    if(ctas){
+      html+='<div class="met-card" style="background:rgba(255,140,66,0.07);border:1px solid rgba(255,140,66,0.2);">'
+        +'<div class="met-card-ico" style="background:rgba(255,140,66,0.15);">📣</div>'
+        +'<div class="met-card-title" style="color:#ff8c42;">CTAs</div>'
+        +linhasParaHtml(ctas,'#ff8c42')
+        +'</div>';
+    }
+    html+='</div>';
+  }
+
+  // AÇÃO PRIORITÁRIA — card destaque final
+  if(acao){
+    html+='<div style="background:linear-gradient(135deg,rgba(0,229,160,0.15),rgba(0,200,255,0.1));border:1px solid rgba(0,229,160,0.3);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:center;">'
+      +'<div style="font-size:30px;flex-shrink:0;">🔁</div>'
+      +'<div><div style="font-size:11px;font-weight:700;color:#00e5a0;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">Foco para amanhã</div>'
+      +'<div style="font-size:13px;font-weight:600;color:var(--text);line-height:1.6;">'+acao.replace(/\n/g,' ')+'</div></div>'
+      +'</div>';
+  }
 
   document.getElementById('analise-cards').innerHTML=html||'<div class="roteiro-box">'+formatarRoteiro(texto)+'</div>';
 }
