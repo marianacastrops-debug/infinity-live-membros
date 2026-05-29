@@ -213,6 +213,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <button class="nav-btn" id="nav-preview" onclick="irPara('preview',this)"><i class="ti ti-eye"></i> Ver como aluno</button>
     <button class="nav-btn" id="nav-materiais" onclick="irPara('materiais',this)"><i class="ti ti-file-upload"></i> Materiais</button>
     <div class="nav-lbl">Sistema</div>
+    <button class="nav-btn" id="nav-agentes" onclick="irPara('agentes',this)"><i class="ti ti-robot"></i> Agentes de IA</button>
     <button class="nav-btn" id="nav-config" onclick="irPara('config',this)"><i class="ti ti-settings"></i> Configurações</button>
   </div>
   <div class="sidebar-bottom">
@@ -287,6 +288,72 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
         <button class="btn btn-p" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
       </div>
       <div id="mats-lista"><div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado.</p></div></div>
+    </div>
+
+    <div class="pg" id="pg-agentes">
+      <div class="grid2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title"><i class="ti ti-key" style="color:var(--cyan);"></i> Chave API Anthropic</span></div>
+            <div class="mf">
+              <label class="ml">Chave API (sk-ant-...)</label>
+              <input class="mi" id="ag-api-key" type="password" placeholder="sk-ant-api03-..."/>
+              <div style="font-size:10px;color:var(--text3);margin-top:4px;">🔒 Salva com segurança. Só você tem acesso via painel admin.</div>
+            </div>
+            <button class="btn btn-p" onclick="salvarConfAgentes()"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar configurações</button>
+          </div>
+          <div class="card" style="margin-top:12px;">
+            <div class="card-hd"><span class="card-title"><i class="ti ti-info-circle" style="color:var(--cyan);"></i> Como obter a chave</span></div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.7;">
+              1. Acesse <strong style="color:var(--cyan);">console.anthropic.com</strong><br/>
+              2. Vá em <strong>API Keys</strong><br/>
+              3. Clique em <strong>Create Key</strong><br/>
+              4. Copie e cole aqui
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title"><i class="ti ti-brain" style="color:var(--purple);"></i> Prompt do Agente de Roteiro</span></div>
+            <div class="mf">
+              <label class="ml">Prompt de treinamento</label>
+              <textarea class="mta" id="ag-prompt" style="min-height:320px;font-size:11px;line-height:1.6;">Você é um especialista em vendas ao vivo no TikTok Shop e um mestre em criar roteiros de live que convertem muito.
+
+Sua missão é criar roteiros de 30 a 40 segundos para serem repetidos em loop durante a live.
+
+ESTRUTURA OBRIGATÓRIA DO ROTEIRO:
+⏱️ Duração estimada: ~3X segundos
+
+🎬 GANCHO (0–5s)
+Frase de impacto que para o scroll. Surpresa, curiosidade ou choque de preço.
+
+👟 PRODUTO (5–18s)
+Descreva o produto de forma sensorial e emocional. Benefícios reais. Inclua prova social se houver.
+
+💸 OFERTA (18–28s)
+Preço original → preço atual → % desconto → frete → garantia. Falar o preço devagar.
+
+📣 CTA (28–40s)
+Chamada urgente e específica. Criar escassez real. Terminar com energia.
+
+REGRAS:
+- Linguagem natural como pessoa real falando
+- Tom animado mas crível
+- Urgência genuína, não forçada
+- Soar natural quando lido em voz alta
+- Usar prova social quando disponível
+- Adaptar tom ao tipo de produto
+
+Gere APENAS o roteiro, sem explicações antes ou depois.</textarea>
+              <div style="font-size:10px;color:var(--text3);margin-top:4px;">✏️ Edite para personalizar o comportamento do agente. O prompt padrão já está otimizado.</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-p" onclick="salvarConfAgentes()" style="flex:1;"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar</button>
+              <button class="btn btn-o" onclick="resetarPrompt()"><i class="ti ti-refresh" style="font-size:13px;"></i> Restaurar padrão</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="pg" id="pg-config">
@@ -467,11 +534,12 @@ function irPara(pg,el){
   var alvo=document.getElementById('pg-'+pg);
   if(alvo){alvo.style.display='block';alvo.classList.add('ativa');}
   if(el)el.classList.add('ativo');
-  var titulos={dashboard:['Dashboard','Visão geral da plataforma'],alunos:['Alunos','Gerencie os membros'],tickets:['Tickets','Central de atendimento'],modulos:['Módulos & Aulas','Crie e organize o conteúdo'],preview:['Ver como aluno','Prévia da área de membros'],materiais:['Materiais','Arquivos para download'],config:['Configurações','Personalize a plataforma']};
+  var titulos={dashboard:['Dashboard','Visão geral da plataforma'],alunos:['Alunos','Gerencie os membros'],tickets:['Tickets','Central de atendimento'],modulos:['Módulos & Aulas','Crie e organize o conteúdo'],preview:['Ver como aluno','Prévia da área de membros'],materiais:['Materiais','Arquivos para download'],agentes:['Agentes de IA','Configure os agentes e chave API'],config:['Configurações','Personalize a plataforma']};
   var t=titulos[pg]||[pg,''];
   document.getElementById('pg-titulo').textContent=t[0];
   document.getElementById('pg-sub').textContent=t[1];
   if(pg==='modulos')renderMods();
+  if(pg==='agentes')carregarConfAgentes();
   if(pg==='tickets')renderTickets();
   if(pg==='alunos')renderAlunos(gAlunos());
   if(pg==='preview')renderPreview();
@@ -865,6 +933,88 @@ function enviarResposta(id){
 
 function delTicket(id){
   sTickets(gTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
+}
+
+// ================================================
+// AGENTES DE IA — CONFIGURAÇÕES
+// ================================================
+var PROMPT_PADRAO_AG = `Você é um especialista em vendas ao vivo no TikTok Shop e um mestre em criar roteiros de live que convertem muito.
+
+Sua missão é criar roteiros de 30 a 40 segundos para serem repetidos em loop durante a live.
+
+ESTRUTURA OBRIGATÓRIA DO ROTEIRO:
+⏱️ Duração estimada: ~3X segundos
+
+🎬 GANCHO (0–5s)
+Frase de impacto que para o scroll. Surpresa, curiosidade ou choque de preço.
+
+👟 PRODUTO (5–18s)
+Descreva o produto de forma sensorial e emocional. Benefícios reais. Inclua prova social se houver.
+
+💸 OFERTA (18–28s)
+Preço original → preço atual → % desconto → frete → garantia. Falar o preço devagar.
+
+📣 CTA (28–40s)
+Chamada urgente e específica. Criar escassez real. Terminar com energia.
+
+REGRAS:
+- Linguagem natural como pessoa real falando
+- Tom animado mas crível
+- Urgência genuína, não forçada
+- Soar natural quando lido em voz alta
+- Usar prova social quando disponível
+- Adaptar tom ao tipo de produto
+
+Gere APENAS o roteiro, sem explicações antes ou depois.`;
+
+async function salvarConfAgentes(){
+  var key = document.getElementById('ag-api-key').value.trim();
+  var prompt = document.getElementById('ag-prompt').value.trim();
+  
+  if(!key && !prompt){alert('Preencha pelo menos a chave API.');return;}
+  
+  // Salvar no Supabase como configuração
+  try{
+    if(key){
+      await _sb.from('configuracoes').upsert({chave:'anthropic_api_key', valor:key});
+    }
+    if(prompt){
+      await _sb.from('configuracoes').upsert({chave:'agente_roteiro_prompt', valor:prompt});
+    }
+    // Salvar também no localStorage como cache
+    if(key) localStorage.setItem('ag_key', key);
+    if(prompt) localStorage.setItem('ag_prompt', prompt);
+    toast('Configurações dos agentes salvas!');
+  }catch(e){
+    // Fallback: só localStorage
+    if(key) localStorage.setItem('ag_key', key);
+    if(prompt) localStorage.setItem('ag_prompt', prompt);
+    toast('Configurações salvas localmente!');
+  }
+}
+
+function resetarPrompt(){
+  document.getElementById('ag-prompt').value = PROMPT_PADRAO_AG;
+  toast('Prompt restaurado para o padrão!');
+}
+
+async function carregarConfAgentes(){
+  try{
+    // Tentar carregar do Supabase
+    var res = await _sb.from('configuracoes').select('*').in('chave',['anthropic_api_key','agente_roteiro_prompt']);
+    if(res.data && res.data.length){
+      res.data.forEach(function(row){
+        if(row.chave==='anthropic_api_key') document.getElementById('ag-api-key').value = row.valor;
+        if(row.chave==='agente_roteiro_prompt') document.getElementById('ag-prompt').value = row.valor;
+      });
+      return;
+    }
+  }catch(e){}
+  // Fallback: localStorage
+  var k = localStorage.getItem('ag_key');
+  var p = localStorage.getItem('ag_prompt');
+  if(k) document.getElementById('ag-api-key').value = k;
+  if(p) document.getElementById('ag-prompt').value = p;
 }
 
 function renderMats(){
