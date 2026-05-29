@@ -266,8 +266,8 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
 
           <!-- UPLOAD DO PRODUTO -->
           <div class="input-label" style="color:var(--yellow);"><i class="ti ti-photo-up" style="color:var(--yellow);"></i> Foto do produto</div>
-          <input type="file" id="input-img-produto" accept="image/*" style="display:none;" onchange="adicionarImagemProduto(this)"/>
-          <div class="upload-zone" id="upload-produto-zone" style="border-color:rgba(255,184,0,0.25);background:rgba(255,184,0,0.03);" onclick="document.getElementById('input-img-produto').click()">
+          <input type="file" id="input-imgs-produto" accept="image/*" style="display:none;" onchange="adicionarImagensProduto(this)" multiple/>
+          <div class="upload-zone" id="upload-produto-zone" style="border-color:rgba(255,184,0,0.25);background:rgba(255,184,0,0.03);" onclick="document.getElementById('input-imgs-produto').click()">
             <i class="ti ti-cloud-upload" style="color:var(--yellow);"></i>
             <p>Clique para enviar a foto do produto</p>
             <span>Foto clara do produto em fundo branco ou neutro</span>
@@ -275,41 +275,6 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
           <div id="produto-prev-box" style="display:none;position:relative;margin-bottom:16px;">
             <img id="produto-prev-img" src="" style="width:100%;max-height:180px;object-fit:contain;border-radius:10px;border:1px solid var(--border);background:#111;"/>
             <button onclick="removerImagemProduto()" style="position:absolute;top:6px;right:6px;background:rgba(255,59,92,0.9);color:#fff;border:none;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;">Remover</button>
-          </div>
-
-          <!-- TIPO DE PRODUTO -->
-          <div class="input-label" style="color:var(--yellow);"><i class="ti ti-tag" style="color:var(--yellow);"></i> Tipo de produto</div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
-            <div class="tom-btn active" data-tipo="calçado" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">👟</div>
-              <div style="font-size:11px;font-weight:700;">Calçado</div>
-              <div style="font-size:10px;color:var(--text3);">Tênis, bota, sandália</div>
-            </div>
-            <div class="tom-btn" data-tipo="roupa" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">👗</div>
-              <div style="font-size:11px;font-weight:700;">Roupa</div>
-              <div style="font-size:10px;color:var(--text3);">Conjunto, vestido, blusa</div>
-            </div>
-            <div class="tom-btn" data-tipo="acessorio" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">💍</div>
-              <div style="font-size:11px;font-weight:700;">Acessório</div>
-              <div style="font-size:10px;color:var(--text3);">Bolsa, colar, relógio</div>
-            </div>
-            <div class="tom-btn" data-tipo="utilidade" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">🔧</div>
-              <div style="font-size:11px;font-weight:700;">Utilidade</div>
-              <div style="font-size:10px;color:var(--text3);">Ferramenta, gadget</div>
-            </div>
-            <div class="tom-btn" data-tipo="beleza" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">💄</div>
-              <div style="font-size:11px;font-weight:700;">Beleza</div>
-              <div style="font-size:10px;color:var(--text3);">Maquiagem, skincare</div>
-            </div>
-            <div class="tom-btn" data-tipo="outro" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
-              <div style="font-size:18px;margin-bottom:4px;">📦</div>
-              <div style="font-size:11px;font-weight:700;">Outro</div>
-              <div style="font-size:10px;color:var(--text3);">Qualquer produto</div>
-            </div>
           </div>
 
           <!-- FORMATO -->
@@ -413,122 +378,87 @@ function selecionarTom(el){
 }
 
 // AGENTE DE IMAGEM
-function adicionarImagemProduto(input){
-  var file=input.files[0];
-  if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    var img=new Image();
-    img.onload=function(){
-      var cv=document.createElement('canvas');
-      var maxW=800,w=img.width,h=img.height;
-      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
-      cv.width=w;cv.height=h;
-      cv.getContext('2d').drawImage(img,0,0,w,h);
-      _imgProduto=cv.toDataURL('image/jpeg',0.85);
-      document.getElementById('produto-prev-img').src=_imgProduto;
-      document.getElementById('produto-prev-box').style.display='block';
-      document.getElementById('upload-produto-zone').style.display='none';
+var _imgsProduto = [];
+
+function adicionarImagensProduto(input){
+  var files=Array.from(input.files);
+  var max=3;
+  files.slice(0,max-_imgsProduto.length).forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        var cv=document.createElement('canvas');
+        var maxW=900,w=img.width,h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        _imgsProduto.push(cv.toDataURL('image/jpeg',0.85));
+        renderImgsProduto();
+      };
+      img.src=e.target.result;
     };
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
+  });
+  input.value='';
 }
 
-function removerImagemProduto(){
-  _imgProduto='';
-  document.getElementById('produto-prev-img').src='';
-  document.getElementById('produto-prev-box').style.display='none';
-  document.getElementById('upload-produto-zone').style.display='block';
-  document.getElementById('input-img-produto').value='';
+function renderImgsProduto(){
+  var el=document.getElementById('imgs-produto-preview');
+  el.innerHTML=_imgsProduto.map(function(src,i){
+    return '<div class="img-thumb"><img src="'+src+'"/><button class="img-thumb-del" onclick="removerImgProduto('+i+')">x</button></div>';
+  }).join('');
+  document.getElementById('upload-produto-zone').style.display=_imgsProduto.length>=3?'none':'block';
 }
 
-function selecionarTipoProduto(el){
-  el.closest('[style*="grid"]').querySelectorAll('.tom-btn').forEach(function(b){b.classList.remove('active');});
-  el.classList.add('active');
-  _tipoProduto=el.dataset.tipo;
+function removerImgProduto(i){
+  _imgsProduto.splice(i,1);
+  renderImgsProduto();
 }
 
 function selecionarFormato(el){
   el.closest('[style*="grid"]').querySelectorAll('.tom-btn').forEach(function(b){b.classList.remove('active');});
   el.classList.add('active');
   _formatoImg=el.dataset.formato;
+  var nomes={pov:'POV',usando:'Usando',mostrando:'Mostrando'};
+  var txt=document.getElementById('btn-img-txt');
+  if(txt) txt.textContent='Gerar Prompt — '+(nomes[_formatoImg]||_formatoImg);
 }
 
 async function gerarPromptImagem(){
   var desc=document.getElementById('input-desc-produto').value.trim();
-  if(!_imgProduto&&!desc){alert('Envie a foto do produto ou descreva ele!');return;}
+  if(!_imgsProduto.length&&!desc){alert('Envie pelo menos uma foto do produto!');return;}
 
   document.getElementById('btn-gerar-img').disabled=true;
   document.getElementById('resultado-imagem').style.display='none';
   document.getElementById('loading-imagem').style.display='block';
 
-  // Buscar chave
   var apiKey='';
   try{
     var confRes=await _sb.from('configuracoes').select('*').eq('chave','anthropic_api_key').single();
     if(confRes.data) apiKey=confRes.data.valor;
   }catch(e){}
   if(!apiKey) apiKey=localStorage.getItem('ag_key')||'';
-  if(!apiKey){alert('Chave API não configurada! Configure no painel admin → Agentes de IA.');return;}
+  if(!apiKey){alert('Chave API nao configurada! Configure no painel admin.');return;}
 
-  var formatoInstrucoes={
-    pov:{
-      calcado:'Close-up POV shot from waist down, person holding the shoe/sneaker/boot in one hand toward the camera, other hand relaxed. Shot from the perspective of someone looking down at their own hands.',
-      roupa:'POV shot, person holding the garment up toward camera with both hands, fabric visible and well-lit, shot from chest level looking down.',
-      acessorio:'Extreme close-up POV, hand holding the accessory/jewelry/bag toward camera, shot from first-person perspective.',
-      utilidade:'POV close-up, hand gripping the tool/gadget and pointing it toward camera, first-person perspective.',
-      beleza:'POV close-up, elegant hand holding the beauty product between fingers toward camera.',
-      outro:'POV close-up, hand holding the product toward camera, first-person perspective.'
-    },
-    usando:{
-      calcado:'Lifestyle photo from knees down, person wearing the shoes while walking on clean surface, natural light, candid feel.',
-      roupa:'Full body or 3/4 shot of person wearing the outfit, facing camera with natural pose, lifestyle setting.',
-      acessorio:'Lifestyle close-up of person wearing the accessory, partial body shot focusing on the accessory.',
-      utilidade:'Lifestyle shot of person using the tool/gadget with both hands, focused and engaged.',
-      beleza:'Lifestyle portrait of person with the beauty product applied or in use, glowing skin, natural light.',
-      outro:'Lifestyle shot of person using the product naturally.'
-    },
-    mostrando:{
-      calcado:'Person holding the shoe up toward camera at chest height with both hands, smiling, direct eye contact with camera, white or clean background.',
-      roupa:'Person holding the garment open and flat toward camera, showing the front design, neutral background.',
-      acessorio:'Person holding the accessory up with one hand toward camera, showing details, clean background.',
-      utilidade:'Person holding the product with both hands presenting it to camera, demonstrating size and features.',
-      beleza:'Person presenting the beauty product to camera, holding it elegantly, soft studio background.',
-      outro:'Person presenting the product to camera with both hands, engaging expression.'
-    }
+  var formatoDesc={
+    pov:'POV point-of-view style: first-person perspective shot, person hand(s) holding or interacting with the product toward the camera, intimate close-up composition, as if the viewer is holding it.',
+    usando:'Lifestyle wearing/using style: only the relevant body part shown — knees down for footwear, hands for accessories, full or 3/4 body for clothing. Natural candid lifestyle feel.',
+    mostrando:'Presenting style: person facing camera directly, holding product up at chest level with both hands, direct eye contact, engaging expression, clean simple background.'
   };
 
-  var instrucaoFormato = formatoInstrucoes[_formatoImg][_tipoProduto] || formatoInstrucoes[_formatoImg]['outro'];
-
-  var SYSTEM_IMG = `Você é um especialista em criar prompts para geração de imagens com IA, com foco em resultados ultra-realistas e fotográficos para uso em lives de e-commerce no TikTok Shop.
-
-Seu objetivo é criar um único prompt em inglês, otimizado para funcionar tanto no Flow quanto no ChatGPT (DALL-E), que gere uma imagem ultra-realista do produto enviado.
-
-REGRAS DO PROMPT:
-- Sempre em INGLÊS
-- Começar com o estilo: "hyperrealistic product photography, 8K resolution, photorealistic, shot on Sony A7R IV"
-- Incluir iluminação profissional: "professional studio lighting, soft shadows, high detail"
-- Descrever o produto com máximo de detalhes visuais (cor, textura, material, acabamento)
-- Usar a instrução de composição adequada ao formato escolhido
-- Terminar com: "commercial photography quality, sharp focus, no artifacts, no distortion"
-- NÃO incluir texto, marcas d'água ou logos na imagem
-- O prompt deve ter entre 80 e 150 palavras
-- Retorne APENAS o prompt, sem explicações, sem títulos, sem markdown`;
+  var SYSTEM_IMG = 'You are an expert AI image prompt engineer for ultra-realistic e-commerce TikTok Shop photography. Create ONE prompt in English for Flow AI and ChatGPT DALL-E. Rules: Start with hyperrealistic lifestyle photography 8K shot on Canon EOS R5 85mm. Focus on SCENE ACTION COMPOSITION not product description since reference image is provided. Always include: The product must be 100 percent faithful to the reference image same colors textures materials design and details do not alter or reimagine the product. Specify lighting and atmosphere briefly. End with photorealistic sharp focus high detail no artifacts commercial photography quality. 60 to 100 words total. Return ONLY the prompt no explanations no titles.';
 
   var msgContent=[];
-  if(_imgProduto){
+  _imgsProduto.forEach(function(img){
     msgContent.push({
       type:'image',
-      source:{type:'base64',media_type:'image/jpeg',data:_imgProduto.replace('data:image/jpeg;base64,','').replace('data:image/png;base64,','')}
+      source:{type:'base64',media_type:'image/jpeg',data:img.replace('data:image/jpeg;base64,','').replace('data:image/png;base64,','')}
     });
-  }
+  });
 
-  var userMsg='Create an ultra-realistic image generation prompt for this product.';
-  userMsg+=' Product type: '+_tipoProduto+'.';
-  userMsg+=' Composition: '+instrucaoFormato;
-  if(desc) userMsg+=' Additional details: '+desc;
-
+  var userMsg='Create ultra-realistic image prompt. Format: '+formatoDesc[_formatoImg];
+  if(desc) userMsg+=' Extra context: '+desc;
   msgContent.push({type:'text',text:userMsg});
 
   try{
@@ -537,7 +467,7 @@ REGRAS DO PROMPT:
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:500,
+        max_tokens:400,
         system:SYSTEM_IMG,
         messages:[{role:'user',content:msgContent}],
         apiKey:apiKey
@@ -556,7 +486,6 @@ REGRAS DO PROMPT:
     document.getElementById('btn-gerar-img').disabled=false;
   }
 }
-
 function copiarPromptImagem(){
   var texto=document.getElementById('prompt-imagem-conteudo').textContent;
   navigator.clipboard.writeText(texto).then(function(){
@@ -575,15 +504,14 @@ function abrirAgente(tipo){
 function fecharAgente(){
   document.getElementById('agentes-grid').style.display='grid';
   document.querySelectorAll('.agente-painel').forEach(function(p){p.style.display='none';});
-  _imagens=[];_imgProduto='';
+  _imagens=[];_imgsProduto=[];
   document.getElementById('imgs-preview').innerHTML='';
   document.getElementById('input-detalhes').value='';
   document.getElementById('resultado-roteiro').style.display='none';
   document.getElementById('loading-roteiro').style.display='none';
   document.getElementById('resultado-imagem').style.display='none';
   document.getElementById('loading-imagem').style.display='none';
-  if(document.getElementById('produto-prev-box')) document.getElementById('produto-prev-box').style.display='none';
-  if(document.getElementById('upload-produto-zone')) document.getElementById('upload-produto-zone').style.display='block';
+  var pp=document.getElementById('imgs-produto-preview');if(pp)pp.innerHTML='';var upz=document.getElementById('upload-produto-zone');if(upz)upz.style.display='block';
 }
 
 // UPLOAD DE IMAGENS
