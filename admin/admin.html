@@ -635,7 +635,12 @@ function gerarEmbed(url){
   // YouTube
   var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if(m){document.getElementById('aula-embed').value='https://www.youtube.com/embed/'+m[1];return;}
-  // Bunny — converter play URL para embed
+  // Panda Video
+  if(url.includes('pandavideo.com')||url.includes('tv.pandavideo')){
+    document.getElementById('aula-embed').value=url;
+    return;
+  }
+  // Bunny
   if(url.includes('mediadelivery.net')||url.includes('bunny')){
     var embedUrl=url.replace('player.mediadelivery.net/play/','iframe.mediadelivery.net/embed/');
     if(!embedUrl.includes('?'))embedUrl+='?autoplay=false&preload=false';
