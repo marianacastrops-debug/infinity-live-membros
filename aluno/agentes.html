@@ -201,6 +201,31 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 
 Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entrega, tamanhos disponíveis, cores, diferenciais do produto, prova social, público alvo..."></textarea>
 
+          <!-- SELETOR DE TOM -->
+          <div class="input-label"><i class="ti ti-mood-smile"></i> Tom do roteiro</div>
+          <div id="tom-selector" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;">
+            <div class="tom-btn active" data-tom="VISCERAL PARA CONVERSÃO" onclick="selecionarTom(this)">
+              <div style="font-size:18px;margin-bottom:4px;">🔥</div>
+              <div style="font-size:12px;font-weight:700;">Visceral</div>
+              <div style="font-size:10px;color:var(--text3);">Alta conversão</div>
+            </div>
+            <div class="tom-btn" data-tom="EMOCIONAL" onclick="selecionarTom(this)">
+              <div style="font-size:18px;margin-bottom:4px;">💜</div>
+              <div style="font-size:12px;font-weight:700;">Emocional</div>
+              <div style="font-size:10px;color:var(--text3);">Conecta com sentimentos</div>
+            </div>
+            <div class="tom-btn" data-tom="INFORMATIVO" onclick="selecionarTom(this)">
+              <div style="font-size:18px;margin-bottom:4px;">📊</div>
+              <div style="font-size:12px;font-weight:700;">Informativo</div>
+              <div style="font-size:10px;color:var(--text3);">Dados e benefícios</div>
+            </div>
+            <div class="tom-btn" data-tom="SÉRIO E DIRETO" onclick="selecionarTom(this)">
+              <div style="font-size:18px;margin-bottom:4px;">🧊</div>
+              <div style="font-size:12px;font-weight:700;">Sério e direto</div>
+              <div style="font-size:10px;color:var(--text3);">Confiante e objetivo</div>
+            </div>
+          </div>
+
           <!-- BOTÃO GERAR -->
           <button class="btn-gerar" id="btn-gerar" onclick="gerarRoteiro()">
             <i class="ti ti-wand"></i> Gerar Roteiro de Live
@@ -247,6 +272,7 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
 
 <script>
 var _imagens = []; // base64 das imagens
+var _tom = 'VISCERAL PARA CONVERSÃO'; // tom padrão
 
 // AUTH
 (async function(){
@@ -259,6 +285,13 @@ var _imagens = []; // base64 das imagens
     document.getElementById('user-nome').textContent=nome;
   });
 })();
+
+// TOM
+function selecionarTom(el){
+  document.querySelectorAll('.tom-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  _tom = el.dataset.tom;
+}
 
 // AGENTES
 function abrirAgente(tipo){
@@ -371,7 +404,7 @@ Gere APENAS o roteiro, sem explicações adicionais antes ou depois.`;
     });
   });
 
-  var textoUsuario = 'Crie um roteiro de live para este produto.';
+  var textoUsuario = 'Crie um roteiro de live para este produto. Tom: '+_tom+'.';
   if(detalhes) textoUsuario += '\n\nDetalhes adicionais:\n' + detalhes;
   msgContent.push({type:'text',text:textoUsuario});
 
