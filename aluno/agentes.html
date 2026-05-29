@@ -380,6 +380,11 @@ function selecionarTom(el){
 // AGENTE DE IMAGEM
 var _imgsProduto = [];
 
+function triggerUploadProduto(){
+  var el = document.getElementById('input-imgs-produto');
+  if(el){ el.value=''; el.click(); }
+}
+
 function adicionarImagensProduto(input){
   var files=Array.from(input.files);
   var max=3;
@@ -417,10 +422,10 @@ function removerImgProduto(i){
 }
 
 function selecionarFormato(el){
-  el.closest('[style*="grid"]').querySelectorAll('.tom-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('#formato-grid .tom-btn').forEach(function(b){b.classList.remove('active');});
   el.classList.add('active');
   _formatoImg=el.dataset.formato;
-  var nomes={pov:'POV',usando:'Usando',mostrando:'Mostrando'};
+  var nomes={pov:'POV 📱',usando:'Usando 🧍',mostrando:'Mostrando 🎯',broll:'B-Roll 🎬'};
   var txt=document.getElementById('btn-img-txt');
   if(txt) txt.textContent='Gerar Prompt — '+(nomes[_formatoImg]||_formatoImg);
 }
@@ -444,13 +449,15 @@ async function gerarPromptImagem(){
   var formatoDesc={
     pov:'POV point-of-view style: first-person perspective shot, person hand(s) holding or interacting with the product toward the camera, intimate close-up composition, as if the viewer is holding it.',
     usando:'Lifestyle wearing/using style: only the relevant body part shown — knees down for footwear, hands for accessories, full or 3/4 body for clothing. Natural candid lifestyle feel.',
-    mostrando:'Presenting style: person facing camera directly, holding product up at chest level with both hands, direct eye contact, engaging expression, clean simple background.'
+    mostrando:'Presenting style: person facing camera directly, holding product up at chest level with both hands, direct eye contact, engaging expression, clean simple background.',
+    broll:'B-Roll cinematic style: product placed naturally in a real-life environment that matches its use case. No person, just the product in scene. Lifestyle context, beautiful ambient lighting, depth of field.'
   };
 
   var videoDesc={
     pov:'A hand gently picks up the product from a surface, turns it slowly showing all angles, then holds it up close to the camera. Movement is slow, confident and natural. Camera stays still.',
     usando:'Person naturally walks into frame wearing the product, pauses, looks down at it, then looks up at camera with a satisfied smile. Movement is fluid and candid, like a real person.',
-    mostrando:'Person walks into frame holding the product with both hands, lifts it slightly toward camera, rotates it gently to show front and back, then smiles directly at camera. Natural and engaging.'
+    mostrando:'Person walks into frame holding the product with both hands, lifts it slightly toward camera, rotates it gently to show front and back, then smiles directly at camera. Natural and engaging.',
+    broll:'Slow cinematic pan across the product in its environment. Gentle camera movement, shallow depth of field softly blurring the background. Product stays in focus throughout. Moody and atmospheric.'
   };
 
   var SYSTEM_IMG = 'You are an expert AI prompt engineer for ultra-realistic e-commerce content for TikTok Shop. Generate TWO prompts in English. FIRST: an image prompt for Flow AI and ChatGPT DALL-E. SECOND: a video/motion prompt for Runway, Kling or Pika AI to animate that image. Rules for IMAGE prompt: Start with hyperrealistic lifestyle photography 8K shot on Canon EOS R5 85mm f1.8. Focus on SCENE ACTION COMPOSITION not product description. Always include: product must be 100 percent faithful to reference image same colors textures materials details. Specify lighting. End with photorealistic sharp focus high detail commercial quality. 60 to 100 words. Rules for VIDEO prompt: Describe the natural human movement that should happen. Be very specific about body movement speed direction. Make it ultra-realistic and natural like a real human. No sudden movements. 40 to 70 words. Format your response EXACTLY like this: [image prompt here] ---VIDEO--- [video prompt here]';
