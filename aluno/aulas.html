@@ -102,22 +102,34 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .aula-dur{font-size:10px;color:var(--text3);flex-shrink:0;}
 
 /* PLAYER */
-.player-area{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+.player-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;background:var(--bg);}
+.player-area::-webkit-scrollbar{width:4px;}
+.player-area::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:4px;}
 .player-wrap{width:100%;background:#000;position:relative;flex-shrink:0;}
 .player-wrap iframe{width:100%;height:100%;border:none;display:block;}
-.player-info{flex:1;overflow-y:auto;padding:20px 24px;}
-.player-info::-webkit-scrollbar{width:4px;}
-.player-info::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:4px;}
-.player-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.player-meta{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text2);margin-bottom:16px;}
-.player-actions{display:flex;gap:10px;margin-bottom:16px;}
-.btn{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;padding:9px 18px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;transition:all .15s;}
+.player-info{padding:20px 28px 32px;}
+.player-header{margin-bottom:12px;}
+.player-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.3;}
+.player-meta{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text2);}
+.player-actions{display:flex;gap:10px;margin:16px 0 24px;}
+.btn{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13px;padding:11px 20px;border-radius:10px;border:none;cursor:pointer;font-family:inherit;transition:all .15s;}
 .btn-primary{background:var(--g1);color:#fff;}
 .btn-primary:hover{opacity:.88;}
 .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2);}
 .btn-outline:hover{border-color:rgba(0,200,255,0.3);color:var(--text);}
-.btn-green{background:linear-gradient(135deg,#00e5a0,#00c8ff);color:#000;}
-.player-desc{font-size:13px;color:var(--text2);line-height:1.7;}
+.btn-green{background:linear-gradient(135deg,#00e5a0,#00c8ff);color:#000;font-size:13px;padding:11px 22px;}
+.btn-green:hover{opacity:.9;}
+/* TABS de conteúdo */
+.content-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.content-tab{padding:10px 20px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;}
+.content-tab:hover{color:var(--text2);}
+.content-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.content-panel{display:none;}
+.content-panel.active{display:block;}
+.player-desc{font-size:13px;color:var(--text2);line-height:1.8;white-space:pre-wrap;}
+.pdf-btn{display:inline-flex;align-items:center;gap:10px;background:rgba(255,77,141,0.08);border:1px solid rgba(255,77,141,0.2);color:var(--pink);padding:13px 20px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700;transition:all .15s;}
+.pdf-btn:hover{background:rgba(255,77,141,0.15);}
+.pdf-btn i{font-size:20px;}
 
 /* EMPTY */
 .empty-player{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--text3);padding:40px;}
@@ -205,25 +217,40 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
           <p id="empty-msg">Escolha uma aula no menu ao lado para começar a assistir.</p>
           <a href="modulos.html" style="margin-top:8px;font-size:13px;font-weight:700;color:var(--cyan);text-decoration:none;display:none;" id="btn-voltar">← Voltar para módulos</a>
         </div>
-        <div id="player-content" style="display:none;flex-direction:column;height:100%;">
+        <div id="player-content" style="display:none;">
+          <!-- PLAYER 70% -->
           <div class="player-wrap" id="player-wrap">
-            <iframe id="player-iframe" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            <iframe id="player-iframe" src="" allowfullscreen allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"></iframe>
           </div>
+          <!-- INFO ABAIXO DO PLAYER -->
           <div class="player-info">
-            <div class="player-title" id="player-titulo">—</div>
-            <div class="player-meta">
-              <span><i class="ti ti-clock" style="font-size:13px;vertical-align:-1px;"></i> <span id="player-dur">—</span></span>
-              <span id="player-mod-nome" style="color:var(--cyan);font-weight:600;"></span>
+            <div class="player-header">
+              <div class="player-title" id="player-titulo">—</div>
+              <div class="player-meta">
+                <span><i class="ti ti-clock" style="font-size:13px;vertical-align:-1px;"></i> <span id="player-dur">—</span></span>
+                <span id="player-mod-nome" style="color:var(--cyan);font-weight:600;"></span>
+              </div>
             </div>
+            <!-- BOTÕES DE AÇÃO -->
             <div class="player-actions">
               <button class="btn btn-green" id="btn-concluir" onclick="marcarConcluida()">
-                <i class="ti ti-circle-check" style="font-size:14px;"></i> Marcar como concluída
+                <i class="ti ti-circle-check" style="font-size:15px;"></i> Marcar como concluída
               </button>
               <button class="btn btn-outline" id="btn-proxima" onclick="proximaAula()">
                 Próxima aula <i class="ti ti-arrow-right" style="font-size:14px;"></i>
               </button>
             </div>
-            <div class="player-desc" id="player-desc"></div>
+            <!-- TABS -->
+            <div class="content-tabs">
+              <div class="content-tab active" onclick="mudarTab('desc',this)"><i class="ti ti-align-left" style="font-size:14px;vertical-align:-2px;margin-right:4px;"></i> Descrição</div>
+              <div class="content-tab" id="tab-pdf-btn" onclick="mudarTab('pdf',this)" style="display:none;"><i class="ti ti-file-type-pdf" style="font-size:14px;vertical-align:-2px;margin-right:4px;color:var(--pink);"></i> Material PDF</div>
+            </div>
+            <div class="content-panel active" id="panel-desc">
+              <div class="player-desc" id="player-desc"><span style="color:var(--text3);font-size:13px;">Nenhuma descrição disponível.</span></div>
+            </div>
+            <div class="content-panel" id="panel-pdf">
+              <div id="player-pdf"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -452,9 +479,9 @@ function selecionarAula(aulaId) {
   var itemEl = document.getElementById('aula-item-'+aulaId);
   if (itemEl) itemEl.classList.add('active');
 
-  // Player com altura moderada para caber conteúdo abaixo
+  // Player com 70% da viewport
   var pw = document.getElementById('player-wrap');
-  var maxH = Math.round(window.innerHeight * 0.50);
+  var maxH = Math.round(window.innerHeight * 0.70);
   var h169 = Math.round(pw.offsetWidth * 9/16);
   pw.style.height = Math.min(h169, maxH)+'px';
 
@@ -463,18 +490,25 @@ function selecionarAula(aulaId) {
   document.getElementById('player-titulo').textContent = aula.nome;
   document.getElementById('player-dur').textContent = aula.duracao || '—';
   // Descrição da aula
+  // Descrição
   var descEl = document.getElementById('player-desc');
-  if (descEl) {
-    var conteudo = '';
-    if(aula.pdf && aula.pdf.length > 5){
-      conteudo += '<a href="'+aula.pdf+'" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,77,141,0.1);border:1px solid rgba(255,77,141,0.25);color:#ff4d8d;padding:10px 16px;border-radius:9px;text-decoration:none;font-size:13px;font-weight:700;margin-bottom:14px;">'
-        + '<i class="ti ti-file-type-pdf" style="font-size:18px;"></i> Baixar material de apoio</a><br/>';
-    }
-    if(aula.desc && aula.desc.length > 0){
-      conteudo += '<div style="white-space:pre-wrap;font-size:13px;color:var(--text2);line-height:1.7;">'+aula.desc+'</div>';
-    }
-    descEl.innerHTML = conteudo || '<span style="color:var(--text3);font-size:12px;">Nenhuma descrição disponível.</span>';
+  if(descEl){
+    descEl.innerHTML = (aula.desc && aula.desc.length > 0)
+      ? '<div class="player-desc">'+aula.desc+'</div>'
+      : '<span style="color:var(--text3);font-size:13px;">Nenhuma descrição disponível.</span>';
   }
+  // PDF
+  var pdfEl = document.getElementById('player-pdf');
+  var tabPdf = document.getElementById('tab-pdf-btn');
+  if(aula.pdf && aula.pdf.length > 5){
+    if(pdfEl) pdfEl.innerHTML = '<a href="'+aula.pdf+'" target="_blank" class="pdf-btn"><i class="ti ti-file-type-pdf"></i> Baixar material de apoio</a>';
+    if(tabPdf) tabPdf.style.display = 'flex';
+  } else {
+    if(pdfEl) pdfEl.innerHTML = '<span style="color:var(--text3);font-size:13px;">Nenhum material disponível para esta aula.</span>';
+    if(tabPdf) tabPdf.style.display = 'none';
+  }
+  // Resetar para aba de descrição
+  mudarTab('desc', document.querySelector('.content-tab'));
 
   var mod = _mods.find(function(m){return m.id===aula.moduloId;});
   document.getElementById('player-mod-nome').textContent = mod ? mod.nome : '';
@@ -599,6 +633,14 @@ function abrirAdmin(){ document.getElementById('admin-senha-input').value=''; do
 function fecharAdmin(){ document.getElementById('overlay-admin').style.display='none'; }
 function verificarSenhaAdmin(){ var s=document.getElementById('admin-senha-input').value; if(s===SENHA_ADMIN){fecharAdmin();window.location.href='../admin/admin.html';}else{document.getElementById('admin-err').style.display='block';document.getElementById('admin-senha-input').value='';} }
 
+function mudarTab(tab, el){
+  document.querySelectorAll('.content-tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.content-panel').forEach(function(p){p.classList.remove('active');});
+  if(el) el.classList.add('active');
+  var panel = document.getElementById('panel-'+tab);
+  if(panel) panel.classList.add('active');
+}
+
 async function fazerLogout() {
   await _sb.auth.signOut();
   window.location.href = '../login.html';
@@ -608,7 +650,7 @@ async function fazerLogout() {
 window.addEventListener('resize', function(){
   var pw = document.getElementById('player-wrap');
   if (pw && pw.style.height) {
-    var maxH = Math.round(window.innerHeight * 0.50);
+    var maxH = Math.round(window.innerHeight * 0.70);
     var h169 = Math.round(pw.offsetWidth * 9/16);
     pw.style.height = Math.min(h169, maxH)+'px';
   }
