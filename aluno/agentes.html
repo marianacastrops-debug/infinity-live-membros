@@ -359,7 +359,16 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
           </div>
           <button onclick="fecharAgente()" style="margin-left:auto;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px;"><i class="ti ti-x"></i></button>
         </div>
-        <div class="agente-body">
+        <!-- ABAS -->
+        <div style="display:flex;border-bottom:1px solid var(--border);background:var(--bg2);">
+          <button id="aba-nova" onclick="mudarAbaMetrica('nova')" style="flex:1;padding:12px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:700;color:var(--green);border-bottom:2px solid var(--green);cursor:pointer;">
+            <i class="ti ti-chart-dots-3" style="font-size:14px;vertical-align:-2px;margin-right:5px;"></i>Nova análise
+          </button>
+          <button id="aba-historico" onclick="mudarAbaMetrica('historico')" style="flex:1;padding:12px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;cursor:pointer;">
+            <i class="ti ti-history" style="font-size:14px;vertical-align:-2px;margin-right:5px;"></i>Histórico
+          </button>
+        </div>
+        <div class="agente-body" id="body-nova-analise">
           <div class="input-label"><i class="ti ti-photo-up" style="color:var(--green);"></i> Prints do painel de análise (até 4)</div>
           <input type="file" id="input-imgs-metricas" accept="image/*" multiple style="display:none;" onchange="adicionarImgsMetricas(this)"/>
           <div id="zona-upload-metricas" style="border:2px dashed rgba(0,229,160,0.25);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;background:rgba(0,229,160,0.02);">
@@ -386,7 +395,18 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
             <div id="analise-conteudo-raw" style="display:none;"></div>
             <button onclick="gerarAnaliseMetricas()" style="margin-top:16px;width:100%;padding:10px;border-radius:9px;border:1px solid rgba(0,229,160,0.3);color:var(--green);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:5px;"></i>Analisar novamente</button>
           </div>
+
         </div>
+
+        <!-- HISTORICO -->
+        <div class="agente-body" id="body-historico" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="font-size:14px;font-weight:700;">Análises salvas</div>
+            <button onclick="limparHistorico()" style="background:transparent;border:1px solid rgba(255,59,92,0.2);color:var(--red);padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="ti ti-trash" style="font-size:12px;vertical-align:-1px;margin-right:4px;"></i>Limpar tudo</button>
+          </div>
+          <div id="historico-lista"></div>
+        </div>
+
       </div>
 
       <!-- MODAL ADMIN -->
@@ -824,6 +844,7 @@ async function gerarAnaliseMetricas(){
     if(!texto){alert('Erro ao gerar análise. Tente novamente.');return;}
     document.getElementById('analise-conteudo-raw').textContent=texto;
     renderAnaliseCards(texto);
+    salvarNoHistorico(texto);
     document.getElementById('resultado-metricas').style.display='block';
     document.getElementById('resultado-metricas').scrollIntoView({behavior:'smooth'});
   }catch(e){
@@ -937,6 +958,110 @@ function renderAnaliseCards(texto){
   }
 
   document.getElementById('analise-cards').innerHTML=html||'<div class="roteiro-box">'+formatarRoteiro(texto)+'</div>';
+}
+
+// ================================================
+// HISTÓRICO DE ANÁLISES
+// ================================================
+var _HIST_KEY = 'il_analises_hist';
+
+function salvarNoHistorico(texto){
+  try{
+    var hist = JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');
+    var entrada = {
+      id: Date.now(),
+      data: new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}),
+      hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+      texto: texto
+    };
+    hist.unshift(entrada);
+    if(hist.length>20) hist=hist.slice(0,20); // máx 20 análises
+    localStorage.setItem(_HIST_KEY, JSON.stringify(hist));
+  }catch(e){}
+}
+
+function carregarHistorico(){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');}catch(e){}
+  var el=document.getElementById('historico-lista');
+  if(!hist.length){
+    el.innerHTML='<div class="empty" style="padding:40px 0;"><i class="ti ti-history" style="font-size:32px;display:block;margin-bottom:8px;"></i><p>Nenhuma análise salva ainda.</p></div>';
+    return;
+  }
+  el.innerHTML=hist.map(function(h){
+    return '<div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">'
+      +'<div>'
+      +'<div style="font-size:13px;font-weight:700;color:var(--text);">📊 Análise de Live</div>'
+      +'<div style="font-size:11px;color:var(--text3);margin-top:2px;">'+h.data+' às '+h.hora+'</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<button onclick="baixarAnalise('+h.id+')" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-download" style="font-size:13px;"></i>Baixar</button>'
+      +'<button onclick="verAnalise('+h.id+')" style="background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--cyan);padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-eye" style="font-size:13px;"></i>Ver</button>'
+      +'<button onclick="deletarAnalise('+h.id+')" style="background:rgba(255,59,92,0.08);border:1px solid rgba(255,59,92,0.2);color:var(--red);padding:6px 8px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;"><i class="ti ti-trash" style="font-size:13px;"></i></button>'
+      +'</div>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--text2);line-height:1.6;max-height:60px;overflow:hidden;position:relative;">'
+      +h.texto.slice(0,200).replace(/\n/g,' ')+'...'
+      +'<div style="position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,var(--card2));"></div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function verAnalise(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');}catch(e){}
+  var h=hist.find(function(x){return x.id===id;});
+  if(!h) return;
+  mudarAbaMetrica('nova');
+  renderAnaliseCards(h.texto);
+  document.getElementById('analise-conteudo-raw').textContent=h.texto;
+  document.getElementById('resultado-metricas').style.display='block';
+  document.getElementById('resultado-metricas').scrollIntoView({behavior:'smooth'});
+}
+
+function baixarAnalise(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');}catch(e){}
+  var h=hist.find(function(x){return x.id===id;});
+  if(!h) return;
+  var conteudo='ANÁLISE DE LIVE - Infinity Live\n';
+  conteudo+='Data: '+h.data+' às '+h.hora+'\n';
+  conteudo+='\n'+'='.repeat(50)+'\n\n';
+  conteudo+=h.texto;
+  var blob=new Blob([conteudo],{type:'text/plain;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='analise-live-'+h.data.replace(/\//g,'-')+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function deletarAnalise(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');}catch(e){}
+  hist=hist.filter(function(x){return x.id!==id;});
+  localStorage.setItem(_HIST_KEY,JSON.stringify(hist));
+  carregarHistorico();
+}
+
+function limparHistorico(){
+  if(!confirm('Apagar todas as análises salvas?')) return;
+  localStorage.removeItem(_HIST_KEY);
+  carregarHistorico();
+}
+
+function mudarAbaMetrica(aba){
+  var novaAtiva = aba==='nova';
+  document.getElementById('body-nova-analise').style.display=novaAtiva?'block':'none';
+  document.getElementById('body-historico').style.display=novaAtiva?'none':'block';
+  document.getElementById('aba-nova').style.color=novaAtiva?'var(--green)':'var(--text3)';
+  document.getElementById('aba-nova').style.borderBottomColor=novaAtiva?'var(--green)':'transparent';
+  document.getElementById('aba-historico').style.color=novaAtiva?'var(--text3)':'var(--cyan)';
+  document.getElementById('aba-historico').style.borderBottomColor=novaAtiva?'transparent':'var(--cyan)';
+  if(!novaAtiva) carregarHistorico();
 }
 
 function copiarRoteiro(){
