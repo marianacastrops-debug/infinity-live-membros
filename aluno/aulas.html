@@ -147,7 +147,6 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
       <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
       <a class="nav-item active" href="modulos.html"><i class="ti ti-player-play"></i> Aulas</a>
       <a class="nav-item" href="materiais.html"><i class="ti ti-file-download"></i> Materiais</a>
-      <a class="nav-item" href="#" onclick="return false;" style="opacity:.5;cursor:default;" title="Em breve"><i class="ti ti-robot" style="color:#7c5cff;"></i> Agentes de IA <span style="font-size:9px;font-weight:700;background:rgba(124,92,255,0.15);color:#7c5cff;border:1px solid rgba(124,92,255,0.3);padding:1px 6px;border-radius:20px;margin-left:2px;">EM BREVE</span></a>
       
       <div class="nav-lbl">Conta</div>
       <a class="nav-item" href="perfil.html"><i class="ti ti-user-circle"></i> Meu Perfil</a>
@@ -208,7 +207,7 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
         </div>
         <div id="player-content" style="display:none;flex-direction:column;height:100%;">
           <div class="player-wrap" id="player-wrap">
-            <iframe id="player-iframe" src="" loading="lazy" allowfullscreen allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;" style="border:none;width:100%;height:100%;"></iframe>
+            <iframe id="player-iframe" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
           </div>
           <div class="player-info">
             <div class="player-title" id="player-titulo">—</div>
@@ -459,29 +458,8 @@ function selecionarAula(aulaId) {
   var h169 = Math.round(pw.offsetWidth * 9/16);
   pw.style.height = Math.min(h169, maxH)+'px';
 
-  // Carregar vídeo — suporte YouTube e Bunny
-  var embedUrl = aula.embed || aula.url || '';
-  var isBunny = embedUrl.includes('mediadelivery.net') || embedUrl.includes('bunny');
-  
-  // Converter URL do Bunny para embed se necessário
-  if(isBunny && embedUrl.includes('/play/')){
-    // Converter play URL para embed URL
-    embedUrl = embedUrl.replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/');
-    embedUrl += '?autoplay=false&preload=false';
-  }
-  
-  var iframe = document.getElementById('player-iframe');
-  // Recriar iframe para forçar reload limpo
-  var pw = document.getElementById('player-wrap');
-  var newIframe = document.createElement('iframe');
-  newIframe.id = 'player-iframe';
-  newIframe.loading = 'lazy';
-  newIframe.allowFullscreen = true;
-  newIframe.style.cssText = 'border:none;width:100%;height:100%;';
-  newIframe.setAttribute('allow', 'accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;');
-  newIframe.src = embedUrl;
-  var oldIframe = document.getElementById('player-iframe');
-  if(oldIframe) oldIframe.parentNode.replaceChild(newIframe, oldIframe);
+  // Carregar vídeo
+  document.getElementById('player-iframe').src = aula.embed || aula.url || '';
   document.getElementById('player-titulo').textContent = aula.nome;
   document.getElementById('player-dur').textContent = aula.duracao || '—';
   // Descrição da aula
