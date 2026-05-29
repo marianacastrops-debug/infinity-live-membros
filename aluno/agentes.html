@@ -394,14 +394,15 @@ Gere APENAS o roteiro, sem explicações adicionais antes ou depois.`;
       return;
     }
 
-    var res = await fetch('https://api.anthropic.com/v1/messages',{
+    var res = await fetch('/api/roteiro',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-calls':'true'},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
         system: promptSistema,
-        messages:[{role:'user',content:msgContent}]
+        messages:[{role:'user',content:msgContent}],
+        apiKey: apiKey
       })
     });
 
