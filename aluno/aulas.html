@@ -88,7 +88,7 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .mod-aulas.open{display:block;}
 
 /* ITEM AULA */
-.aula-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;cursor:pointer;transition:all .15s;margin-bottom:2px;}
+.aula-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;cursor:pointer;transition:all .15s;margin-bottom:3px;}
 .aula-item:hover{background:var(--hover);}
 .aula-item.active{background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.2);}
 .aula-item.locked{opacity:.45;cursor:not-allowed;pointer-events:none;}
@@ -102,12 +102,12 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .aula-dur{font-size:10px;color:var(--text3);flex-shrink:0;}
 
 /* PLAYER */
-.player-area{flex:1;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;background:var(--bg);}
+.player-area{flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg);}
 .player-area::-webkit-scrollbar{width:4px;}
 .player-area::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.07);border-radius:4px;}
 .player-wrap{width:100%;background:#000;position:relative;flex-shrink:0;}
 .player-wrap iframe{width:100%;height:100%;border:none;display:block;}
-.player-info{padding:20px 28px 32px;}
+.player-info{padding:20px 28px 32px;display:block;}
 .player-header{margin-bottom:12px;}
 .player-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.3;}
 .player-meta{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text2);}
@@ -453,8 +453,18 @@ function renderSidebar(aulasPublicadas) {
     } else {
       aulasM.forEach(function(a, ai) {
         var isDone = !!_progresso.find(function(p){return p.aula_id===a.id;});
+        // Gerar miniatura do vídeo
+        var thumbUrl = '';
+        var ytMatch = (a.embed||a.url||'').match(/(?:embed\/|v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        if(ytMatch) thumbUrl = 'https://img.youtube.com/vi/'+ytMatch[1]+'/mqdefault.jpg';
+        
         html += '<div class="aula-item" id="aula-item-'+a.id+'" onclick="selecionarAula(\''+a.id+'\')">';
         html += '<div class="aula-check'+(isDone?' done':'')+'"><i class="ti '+(isDone?'ti-check':'ti-player-play')+'" style="font-size:9px;"></i></div>';
+        if(thumbUrl){
+          html += '<div style="width:56px;height:36px;border-radius:5px;overflow:hidden;flex-shrink:0;background:#111;">'
+            + '<img src="'+thumbUrl+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">'
+            + '</div>';
+        }
         html += '<div class="aula-info"><div class="aula-name">'+a.nome+'</div></div>';
         html += '<span class="aula-dur">'+(a.duracao||'')+'</span>';
         html += '</div>';
@@ -534,7 +544,7 @@ function selecionarAula(aulaId) {
   // Mostrar player
   document.getElementById('empty-player').style.display = 'none';
   var pc = document.getElementById('player-content');
-  pc.style.display = 'flex';
+  pc.style.display = 'block';
 }
 
 // ══════════════════════════════════════
