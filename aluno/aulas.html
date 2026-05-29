@@ -464,7 +464,7 @@ function renderSidebar(aulasPublicadas) {
         html += '<div class="aula-check'+(isDone?' done':'')+'"><i class="ti '+(isDone?'ti-check':'ti-player-play')+'" style="font-size:9px;"></i></div>';
         if(thumbUrl){
           html += '<div style="width:56px;height:36px;border-radius:5px;overflow:hidden;flex-shrink:0;background:#111;">'
-            + '<img src="'+thumbUrl+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">'
+            + '<img src="'+thumbUrl+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">'
             + '</div>';
         }
         html += '<div class="aula-info"><div class="aula-name">'+a.nome+'</div></div>';
