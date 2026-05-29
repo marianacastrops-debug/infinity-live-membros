@@ -342,7 +342,7 @@ var _aulas = [];
       var dA=await rA.json();
       if(Array.isArray(dM)&&dM.length>0){
         var novosMods=dM.filter(function(m){return m.status!=='hidden';}).map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
-        var novasAulas=Array.isArray(dA)?dA.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||'',pdf:a.pdf||''};}):[]; 
+        var novasAulas=Array.isArray(dA)?dA.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||'',pdf:a.pdf||'',thumb:a.thumb||''};}):[]; 
         // Salvar no cache
         localStorage.setItem(CACHE_KEY_MODS,JSON.stringify(novosMods));
         localStorage.setItem(CACHE_KEY_AULAS,JSON.stringify(novasAulas));
@@ -455,16 +455,18 @@ function renderSidebar(aulasPublicadas) {
     } else {
       aulasM.forEach(function(a, ai) {
         var isDone = !!_progresso.find(function(p){return p.aula_id===a.id;});
-        // Gerar miniatura do vídeo
-        var thumbUrl = '';
-        var ytMatch = (a.embed||a.url||'').match(/(?:embed\/|v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-        if(ytMatch) thumbUrl = 'https://img.youtube.com/vi/'+ytMatch[1]+'/mqdefault.jpg';
+        // Miniatura da aula
+        var thumbUrl = a.thumb || '';
         
         html += '<div class="aula-item" id="aula-item-'+a.id+'" onclick="selecionarAula(\''+a.id+'\')">';
         html += '<div class="aula-check'+(isDone?' done':'')+'"><i class="ti '+(isDone?'ti-check':'ti-player-play')+'" style="font-size:9px;"></i></div>';
         if(thumbUrl){
-          html += '<div style="width:56px;height:36px;border-radius:5px;overflow:hidden;flex-shrink:0;background:#111;">'
+          html += '<div style="width:60px;height:38px;border-radius:5px;overflow:hidden;flex-shrink:0;background:#111;">'
             + '<img src="'+thumbUrl+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">'
+            + '</div>';
+        } else {
+          html += '<div style="width:60px;height:38px;border-radius:5px;flex-shrink:0;background:rgba(0,200,255,0.08);display:flex;align-items:center;justify-content:center;">'
+            + '<i class="ti ti-player-play" style="font-size:16px;color:var(--cyan);opacity:.5;"></i>'
             + '</div>';
         }
         html += '<div class="aula-info"><div class="aula-name">'+a.nome+'</div></div>';
