@@ -159,11 +159,11 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
           <div class="agente-desc">Envie o print do seu produto e especificações. O agente cria um roteiro de 30–40s para você repetir em loop durante a live.</div>
           <span class="badge-novo">✨ Disponível</span>
         </div>
-        <div class="agente-card em-breve">
-          <div class="agente-ico"><i class="ti ti-chart-bar"></i></div>
-          <div class="agente-nome">📊 Analista de Métricas</div>
-          <div class="agente-desc">Cole os números da sua live e receba análise completa com pontos de melhoria e estratégias.</div>
-          <span class="badge-breve">Em breve</span>
+        <div class="agente-card" onclick="abrirAgente('imagem')">
+          <div class="agente-ico" style="background:rgba(255,184,0,0.12);border-color:rgba(255,184,0,0.2);color:var(--yellow);"><i class="ti ti-camera"></i></div>
+          <div class="agente-nome">📸 Gerador de Prompt de Imagem</div>
+          <div class="agente-desc">Envie a foto do produto e escolha o formato. O agente gera um prompt ultra-realista para usar no Flow ou ChatGPT.</div>
+          <span class="badge-novo">✨ Disponível</span>
         </div>
         <div class="agente-card em-breve">
           <div class="agente-ico"><i class="ti ti-speakerphone"></i></div>
@@ -252,6 +252,119 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
         </div>
       </div>
 
+      <!-- PAINEL DO AGENTE DE IMAGEM -->
+      <div class="agente-painel" id="painel-imagem" style="display:none;border-color:rgba(255,184,0,0.2);">
+        <div class="agente-header" style="background:linear-gradient(135deg,rgba(255,184,0,0.12),rgba(255,140,0,0.06));border-bottom-color:rgba(255,184,0,0.15);">
+          <div class="agente-header-ico" style="background:rgba(255,184,0,0.15);border-color:rgba(255,184,0,0.3);color:var(--yellow);"><i class="ti ti-camera"></i></div>
+          <div>
+            <div class="agente-header-title">Gerador de Prompt de Imagem</div>
+            <div class="agente-header-sub">Prompt ultra-realista para Flow e ChatGPT · Baseado no seu produto</div>
+          </div>
+          <button onclick="fecharAgente()" style="margin-left:auto;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="agente-body">
+
+          <!-- UPLOAD DO PRODUTO -->
+          <div class="input-label" style="color:var(--yellow);"><i class="ti ti-photo-up" style="color:var(--yellow);"></i> Foto do produto</div>
+          <input type="file" id="input-img-produto" accept="image/*" style="display:none;" onchange="adicionarImagemProduto(this)"/>
+          <div class="upload-zone" id="upload-produto-zone" style="border-color:rgba(255,184,0,0.25);background:rgba(255,184,0,0.03);" onclick="document.getElementById('input-img-produto').click()">
+            <i class="ti ti-cloud-upload" style="color:var(--yellow);"></i>
+            <p>Clique para enviar a foto do produto</p>
+            <span>Foto clara do produto em fundo branco ou neutro</span>
+          </div>
+          <div id="produto-prev-box" style="display:none;position:relative;margin-bottom:16px;">
+            <img id="produto-prev-img" src="" style="width:100%;max-height:180px;object-fit:contain;border-radius:10px;border:1px solid var(--border);background:#111;"/>
+            <button onclick="removerImagemProduto()" style="position:absolute;top:6px;right:6px;background:rgba(255,59,92,0.9);color:#fff;border:none;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;">Remover</button>
+          </div>
+
+          <!-- TIPO DE PRODUTO -->
+          <div class="input-label" style="color:var(--yellow);"><i class="ti ti-tag" style="color:var(--yellow);"></i> Tipo de produto</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
+            <div class="tom-btn active" data-tipo="calçado" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">👟</div>
+              <div style="font-size:11px;font-weight:700;">Calçado</div>
+              <div style="font-size:10px;color:var(--text3);">Tênis, bota, sandália</div>
+            </div>
+            <div class="tom-btn" data-tipo="roupa" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">👗</div>
+              <div style="font-size:11px;font-weight:700;">Roupa</div>
+              <div style="font-size:10px;color:var(--text3);">Conjunto, vestido, blusa</div>
+            </div>
+            <div class="tom-btn" data-tipo="acessorio" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">💍</div>
+              <div style="font-size:11px;font-weight:700;">Acessório</div>
+              <div style="font-size:10px;color:var(--text3);">Bolsa, colar, relógio</div>
+            </div>
+            <div class="tom-btn" data-tipo="utilidade" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">🔧</div>
+              <div style="font-size:11px;font-weight:700;">Utilidade</div>
+              <div style="font-size:10px;color:var(--text3);">Ferramenta, gadget</div>
+            </div>
+            <div class="tom-btn" data-tipo="beleza" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">💄</div>
+              <div style="font-size:11px;font-weight:700;">Beleza</div>
+              <div style="font-size:10px;color:var(--text3);">Maquiagem, skincare</div>
+            </div>
+            <div class="tom-btn" data-tipo="outro" onclick="selecionarTipoProduto(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">📦</div>
+              <div style="font-size:11px;font-weight:700;">Outro</div>
+              <div style="font-size:10px;color:var(--text3);">Qualquer produto</div>
+            </div>
+          </div>
+
+          <!-- FORMATO -->
+          <div class="input-label" style="color:var(--yellow);"><i class="ti ti-layout" style="color:var(--yellow);"></i> Formato da imagem</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
+            <div class="tom-btn active" data-formato="pov" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">📱</div>
+              <div style="font-size:11px;font-weight:700;">POV</div>
+              <div style="font-size:10px;color:var(--text3);">Mão segurando</div>
+            </div>
+            <div class="tom-btn" data-formato="usando" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">🧍</div>
+              <div style="font-size:11px;font-weight:700;">Usando</div>
+              <div style="font-size:10px;color:var(--text3);">Pessoa vestindo</div>
+            </div>
+            <div class="tom-btn" data-formato="mostrando" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);">
+              <div style="font-size:18px;margin-bottom:4px;">🎯</div>
+              <div style="font-size:11px;font-weight:700;">Mostrando</div>
+              <div style="font-size:10px;color:var(--text3);">Apresentando pro viewer</div>
+            </div>
+          </div>
+
+          <!-- DETALHES EXTRAS -->
+          <div class="input-label" style="color:var(--yellow);"><i class="ti ti-pencil" style="color:var(--yellow);"></i> Descreva o produto (opcional)</div>
+          <textarea class="textarea-input" id="input-desc-produto" style="border-color:rgba(255,184,0,0.15);min-height:80px;" placeholder="Ex: Tênis branco feminino, solado bege, cadarço branco, estilo minimalista...&#10;&#10;Quanto mais detalhes melhor — cor, material, estilo, público alvo"></textarea>
+
+          <!-- BOTÃO GERAR -->
+          <button class="btn-gerar" id="btn-gerar-img" onclick="gerarPromptImagem()" style="background:linear-gradient(135deg,#ffb800,#ff8c00);">
+            <i class="ti ti-wand"></i> <span id="btn-img-txt">Gerar Prompt de Imagem</span>
+          </button>
+
+          <!-- LOADING -->
+          <div class="loading-wrap" id="loading-imagem">
+            <div class="spinner" style="border-top-color:var(--yellow);"></div>
+            <p>Analisando produto e criando prompt ultra-realista...</p>
+          </div>
+
+          <!-- RESULTADO -->
+          <div class="resultado-wrap" id="resultado-imagem">
+            <div class="resultado-header">
+              <div class="resultado-title" style="color:var(--yellow);"><i class="ti ti-circle-check" style="font-size:18px;"></i> Prompt gerado!</div>
+              <button class="btn-copiar" onclick="copiarPromptImagem()" style="border-color:rgba(255,184,0,0.25);color:var(--yellow);background:rgba(255,184,0,0.08);"><i class="ti ti-copy" style="font-size:14px;"></i> Copiar prompt</button>
+            </div>
+            <div class="roteiro-box" id="prompt-imagem-conteudo" style="border-color:rgba(255,184,0,0.15);font-family:monospace;font-size:12px;line-height:1.7;"></div>
+            <div style="margin-top:10px;padding:12px;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.15);border-radius:10px;font-size:11px;color:var(--text2);line-height:1.6;">
+              💡 <strong style="color:var(--yellow);">Como usar:</strong> Copie o prompt e cole no <strong>Flow</strong> ou no <strong>ChatGPT (DALL-E)</strong> para gerar a imagem.
+            </div>
+            <button onclick="gerarPromptImagem()" style="margin-top:12px;width:100%;padding:11px;border-radius:10px;border:1px solid rgba(255,184,0,0.3);color:var(--yellow);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">
+              <i class="ti ti-refresh" style="font-size:14px;vertical-align:-2px;margin-right:6px;"></i>Gerar outro prompt
+            </button>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </main>
 </div>
@@ -273,6 +386,9 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
 <script>
 var _imagens = []; // base64 das imagens
 var _tom = 'VISCERAL PARA CONVERSÃO'; // tom padrão
+var _imgProduto = ''; // imagem do produto para o agente de imagem
+var _tipoProduto = 'calçado'; // tipo de produto selecionado
+var _formatoImg = 'pov'; // formato da imagem
 
 // AUTH
 (async function(){
@@ -291,8 +407,163 @@ function selecionarTom(el){
   document.querySelectorAll('.tom-btn').forEach(function(b){b.classList.remove('active');});
   el.classList.add('active');
   _tom = el.dataset.tom;
+  var nomes = {'VISCERAL PARA CONVERSÃO':'Visceral 🔥','EMOCIONAL':'Emocional 💜','INFORMATIVO':'Informativo 📊','SÉRIO E DIRETO':'Sério e Direto 🧊'};
   var txt = document.getElementById('btn-gerar-txt');
-  if(txt) txt.textContent = 'Gerar Roteiro — '+el.querySelector('div:nth-child(2)').textContent;
+  if(txt) txt.textContent = 'Gerar Roteiro — '+(nomes[_tom]||_tom);
+}
+
+// AGENTE DE IMAGEM
+function adicionarImagemProduto(input){
+  var file=input.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var img=new Image();
+    img.onload=function(){
+      var cv=document.createElement('canvas');
+      var maxW=800,w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      _imgProduto=cv.toDataURL('image/jpeg',0.85);
+      document.getElementById('produto-prev-img').src=_imgProduto;
+      document.getElementById('produto-prev-box').style.display='block';
+      document.getElementById('upload-produto-zone').style.display='none';
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removerImagemProduto(){
+  _imgProduto='';
+  document.getElementById('produto-prev-img').src='';
+  document.getElementById('produto-prev-box').style.display='none';
+  document.getElementById('upload-produto-zone').style.display='block';
+  document.getElementById('input-img-produto').value='';
+}
+
+function selecionarTipoProduto(el){
+  el.closest('[style*="grid"]').querySelectorAll('.tom-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  _tipoProduto=el.dataset.tipo;
+}
+
+function selecionarFormato(el){
+  el.closest('[style*="grid"]').querySelectorAll('.tom-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  _formatoImg=el.dataset.formato;
+}
+
+async function gerarPromptImagem(){
+  var desc=document.getElementById('input-desc-produto').value.trim();
+  if(!_imgProduto&&!desc){alert('Envie a foto do produto ou descreva ele!');return;}
+
+  document.getElementById('btn-gerar-img').disabled=true;
+  document.getElementById('resultado-imagem').style.display='none';
+  document.getElementById('loading-imagem').style.display='block';
+
+  // Buscar chave
+  var apiKey='';
+  try{
+    var confRes=await _sb.from('configuracoes').select('*').eq('chave','anthropic_api_key').single();
+    if(confRes.data) apiKey=confRes.data.valor;
+  }catch(e){}
+  if(!apiKey) apiKey=localStorage.getItem('ag_key')||'';
+  if(!apiKey){alert('Chave API não configurada! Configure no painel admin → Agentes de IA.');return;}
+
+  var formatoInstrucoes={
+    pov:{
+      calcado:'Close-up POV shot from waist down, person holding the shoe/sneaker/boot in one hand toward the camera, other hand relaxed. Shot from the perspective of someone looking down at their own hands.',
+      roupa:'POV shot, person holding the garment up toward camera with both hands, fabric visible and well-lit, shot from chest level looking down.',
+      acessorio:'Extreme close-up POV, hand holding the accessory/jewelry/bag toward camera, shot from first-person perspective.',
+      utilidade:'POV close-up, hand gripping the tool/gadget and pointing it toward camera, first-person perspective.',
+      beleza:'POV close-up, elegant hand holding the beauty product between fingers toward camera.',
+      outro:'POV close-up, hand holding the product toward camera, first-person perspective.'
+    },
+    usando:{
+      calcado:'Lifestyle photo from knees down, person wearing the shoes while walking on clean surface, natural light, candid feel.',
+      roupa:'Full body or 3/4 shot of person wearing the outfit, facing camera with natural pose, lifestyle setting.',
+      acessorio:'Lifestyle close-up of person wearing the accessory, partial body shot focusing on the accessory.',
+      utilidade:'Lifestyle shot of person using the tool/gadget with both hands, focused and engaged.',
+      beleza:'Lifestyle portrait of person with the beauty product applied or in use, glowing skin, natural light.',
+      outro:'Lifestyle shot of person using the product naturally.'
+    },
+    mostrando:{
+      calcado:'Person holding the shoe up toward camera at chest height with both hands, smiling, direct eye contact with camera, white or clean background.',
+      roupa:'Person holding the garment open and flat toward camera, showing the front design, neutral background.',
+      acessorio:'Person holding the accessory up with one hand toward camera, showing details, clean background.',
+      utilidade:'Person holding the product with both hands presenting it to camera, demonstrating size and features.',
+      beleza:'Person presenting the beauty product to camera, holding it elegantly, soft studio background.',
+      outro:'Person presenting the product to camera with both hands, engaging expression.'
+    }
+  };
+
+  var instrucaoFormato = formatoInstrucoes[_formatoImg][_tipoProduto] || formatoInstrucoes[_formatoImg]['outro'];
+
+  var SYSTEM_IMG = `Você é um especialista em criar prompts para geração de imagens com IA, com foco em resultados ultra-realistas e fotográficos para uso em lives de e-commerce no TikTok Shop.
+
+Seu objetivo é criar um único prompt em inglês, otimizado para funcionar tanto no Flow quanto no ChatGPT (DALL-E), que gere uma imagem ultra-realista do produto enviado.
+
+REGRAS DO PROMPT:
+- Sempre em INGLÊS
+- Começar com o estilo: "hyperrealistic product photography, 8K resolution, photorealistic, shot on Sony A7R IV"
+- Incluir iluminação profissional: "professional studio lighting, soft shadows, high detail"
+- Descrever o produto com máximo de detalhes visuais (cor, textura, material, acabamento)
+- Usar a instrução de composição adequada ao formato escolhido
+- Terminar com: "commercial photography quality, sharp focus, no artifacts, no distortion"
+- NÃO incluir texto, marcas d'água ou logos na imagem
+- O prompt deve ter entre 80 e 150 palavras
+- Retorne APENAS o prompt, sem explicações, sem títulos, sem markdown`;
+
+  var msgContent=[];
+  if(_imgProduto){
+    msgContent.push({
+      type:'image',
+      source:{type:'base64',media_type:'image/jpeg',data:_imgProduto.replace('data:image/jpeg;base64,','').replace('data:image/png;base64,','')}
+    });
+  }
+
+  var userMsg='Create an ultra-realistic image generation prompt for this product.';
+  userMsg+=' Product type: '+_tipoProduto+'.';
+  userMsg+=' Composition: '+instrucaoFormato;
+  if(desc) userMsg+=' Additional details: '+desc;
+
+  msgContent.push({type:'text',text:userMsg});
+
+  try{
+    var res=await fetch('/api/roteiro',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:500,
+        system:SYSTEM_IMG,
+        messages:[{role:'user',content:msgContent}],
+        apiKey:apiKey
+      })
+    });
+    var data=await res.json();
+    var texto=data.content&&data.content[0]?data.content[0].text:'';
+    if(!texto){alert('Erro ao gerar prompt. Tente novamente.');return;}
+    document.getElementById('prompt-imagem-conteudo').textContent=texto;
+    document.getElementById('resultado-imagem').style.display='block';
+    document.getElementById('resultado-imagem').scrollIntoView({behavior:'smooth'});
+  }catch(e){
+    alert('Erro: '+e.message);
+  }finally{
+    document.getElementById('loading-imagem').style.display='none';
+    document.getElementById('btn-gerar-img').disabled=false;
+  }
+}
+
+function copiarPromptImagem(){
+  var texto=document.getElementById('prompt-imagem-conteudo').textContent;
+  navigator.clipboard.writeText(texto).then(function(){
+    var btn=document.querySelector('[onclick="copiarPromptImagem()"]');
+    btn.innerHTML='<i class="ti ti-check" style="font-size:14px;"></i> Copiado!';
+    setTimeout(function(){btn.innerHTML='<i class="ti ti-copy" style="font-size:14px;"></i> Copiar prompt';},2000);
+  });
 }
 
 // AGENTES
@@ -304,11 +575,15 @@ function abrirAgente(tipo){
 function fecharAgente(){
   document.getElementById('agentes-grid').style.display='grid';
   document.querySelectorAll('.agente-painel').forEach(function(p){p.style.display='none';});
-  _imagens=[];
+  _imagens=[];_imgProduto='';
   document.getElementById('imgs-preview').innerHTML='';
   document.getElementById('input-detalhes').value='';
   document.getElementById('resultado-roteiro').style.display='none';
   document.getElementById('loading-roteiro').style.display='none';
+  document.getElementById('resultado-imagem').style.display='none';
+  document.getElementById('loading-imagem').style.display='none';
+  if(document.getElementById('produto-prev-box')) document.getElementById('produto-prev-box').style.display='none';
+  if(document.getElementById('upload-produto-zone')) document.getElementById('upload-produto-zone').style.display='block';
 }
 
 // UPLOAD DE IMAGENS
