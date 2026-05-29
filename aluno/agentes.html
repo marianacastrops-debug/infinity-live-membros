@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Infinity Live — Agentes de IA</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="auth.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#080b14;--bg2:#0c0f1d;--card:#111525;--card2:#161b2e;--hover:#1a2035;
+  --cyan:#00c8ff;--purple:#7c5cff;--pink:#ff4d8d;--green:#00e5a0;--yellow:#ffb800;
+  --text:#f0f4ff;--text2:#8b96b8;--text3:#4a5270;
+  --border:rgba(255,255,255,0.07);
+  --g1:linear-gradient(135deg,#00c8ff,#3b7fff);
+  --g3:linear-gradient(135deg,#ff4d8d,#ff8c42);
+  --gp:linear-gradient(135deg,#7c5cff,#c84bff);
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);}
+.layout{display:flex;height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:245px;min-width:245px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.logo-area{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:74px;}
+.logo-area img{width:128px;object-fit:contain;}
+.logo-fb{display:none;align-items:center;gap:10px;}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;}
+.logo-name{font-size:15px;font-weight:700;}
+.nav-wrap{flex:1;padding:8px 10px;overflow-y:auto;}
+.nav-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;padding:14px 10px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--text2);margin-bottom:1px;transition:all .15s;text-decoration:none;}
+.nav-item:hover{background:var(--hover);color:var(--text);}
+.nav-item.active{background:linear-gradient(135deg,rgba(124,92,255,0.15),rgba(200,75,255,0.1));color:#fff;font-weight:600;border:1px solid rgba(124,92,255,0.25);}
+.nav-item.active i{color:var(--purple);}
+.nav-item i{font-size:18px;flex-shrink:0;}
+.sidebar-bottom{padding:14px 10px;border-top:1px solid var(--border);}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--g1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;}
+.user-name{font-size:13px;font-weight:600;}
+.user-role{font-size:10px;color:var(--cyan);font-weight:600;margin-top:1px;}
+.logout{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;color:var(--text3);margin-top:6px;cursor:pointer;}
+.logout:hover{color:var(--pink);background:rgba(255,77,141,0.07);}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.page-title{font-size:18px;font-weight:700;}
+.page-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.content{flex:1;overflow-y:auto;padding:24px 28px;}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
+
+/* AGENTES GRID */
+.agentes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:28px;}
+.agente-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.agente-card:hover{transform:translateY(-3px);border-color:rgba(124,92,255,0.3);box-shadow:0 12px 40px rgba(0,0,0,0.3);}
+.agente-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gp);}
+.agente-card.em-breve{opacity:.5;cursor:default;}
+.agente-card.em-breve:hover{transform:none;box-shadow:none;}
+.agente-ico{width:48px;height:48px;border-radius:12px;background:rgba(124,92,255,0.12);border:1px solid rgba(124,92,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--purple);margin-bottom:14px;}
+.agente-nome{font-size:15px;font-weight:700;margin-bottom:6px;}
+.agente-desc{font-size:12px;color:var(--text2);line-height:1.6;}
+.badge-novo{display:inline-block;background:rgba(0,229,160,0.12);color:var(--green);border:1px solid rgba(0,229,160,0.25);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:10px;}
+.badge-breve{display:inline-block;background:rgba(255,255,255,0.06);color:var(--text3);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:10px;}
+
+/* PAINEL DO AGENTE */
+.agente-painel{background:var(--card);border:1px solid rgba(124,92,255,0.2);border-radius:16px;overflow:hidden;}
+.agente-header{background:linear-gradient(135deg,rgba(124,92,255,0.15),rgba(200,75,255,0.08));padding:20px 24px;border-bottom:1px solid rgba(124,92,255,0.15);display:flex;align-items:center;gap:14px;}
+.agente-header-ico{width:44px;height:44px;border-radius:11px;background:rgba(124,92,255,0.2);border:1px solid rgba(124,92,255,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--purple);flex-shrink:0;}
+.agente-header-title{font-size:16px;font-weight:800;}
+.agente-header-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.agente-body{padding:24px;}
+
+/* INPUTS */
+.input-label{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.input-label i{font-size:14px;color:var(--purple);}
+.upload-zone{border:2px dashed rgba(124,92,255,0.25);border-radius:12px;background:rgba(124,92,255,0.04);padding:20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;}
+.upload-zone:hover{border-color:rgba(124,92,255,0.5);background:rgba(124,92,255,0.08);}
+.upload-zone i{font-size:28px;color:var(--purple);opacity:.6;display:block;margin-bottom:8px;}
+.upload-zone p{font-size:12px;color:var(--text2);}
+.upload-zone span{font-size:11px;color:var(--text3);}
+.imgs-preview{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.img-thumb{position:relative;width:100px;height:70px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.img-thumb img{width:100%;height:100%;object-fit:cover;}
+.img-thumb-del{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(255,59,92,0.9);border:none;color:#fff;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;}
+.textarea-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:vertical;min-height:100px;line-height:1.6;transition:border-color .15s;margin-bottom:20px;}
+.textarea-input:focus{border-color:rgba(124,92,255,0.4);}
+.textarea-input::placeholder{color:var(--text3);}
+.btn-gerar{width:100%;padding:14px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:700;background:var(--gp);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .15s;}
+.btn-gerar:hover{opacity:.9;}
+.btn-gerar:disabled{opacity:.5;cursor:not-allowed;}
+.btn-gerar i{font-size:18px;}
+
+/* RESULTADO */
+.resultado-wrap{margin-top:24px;display:none;}
+.resultado-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.resultado-title{font-size:14px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:8px;}
+.btn-copiar{display:flex;align-items:center;gap:6px;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn-copiar:hover{background:rgba(0,229,160,0.18);}
+.roteiro-box{background:var(--card2);border:1px solid rgba(0,229,160,0.15);border-radius:12px;padding:20px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;}
+.roteiro-box strong{color:var(--green);}
+
+/* LOADING */
+.loading-wrap{display:none;text-align:center;padding:32px;}
+.loading-wrap .spinner{width:40px;height:40px;border:3px solid rgba(124,92,255,0.2);border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-wrap p{font-size:13px;color:var(--text2);}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo-area">
+      <img src="../imagens/logo-infinity-live.png" alt="Infinity Live" onerror="this.style.display='none';document.getElementById('lfb').style.display='flex'"/>
+      <div class="logo-fb" id="lfb"><div class="logo-icon">∞</div><div class="logo-name">Infinity Live</div></div>
+    </div>
+    <div class="nav-wrap">
+      <div class="nav-lbl">Menu</div>
+      <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+      <a class="nav-item" href="modulos.html"><i class="ti ti-player-play"></i> Aulas</a>
+      <a class="nav-item" href="materiais.html"><i class="ti ti-file-download"></i> Materiais</a>
+      <a class="nav-item active" href="agentes.html"><i class="ti ti-robot"></i> Agentes de IA</a>
+      <div class="nav-lbl">Conta</div>
+      <a class="nav-item" href="perfil.html"><i class="ti ti-user-circle"></i> Meu Perfil</a>
+      <a class="nav-item" href="configuracoes.html"><i class="ti ti-settings"></i> Configurações</a>
+    </div>
+    <div style="padding:0 10px 6px;">
+      <button onclick="abrirAdmin()" style="width:100%;display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:9px;font-size:12px;font-weight:600;color:rgba(255,77,141,0.7);background:rgba(255,77,141,0.06);border:1px solid rgba(255,77,141,0.15);cursor:pointer;font-family:inherit;">
+        <i class="ti ti-shield-check" style="font-size:15px;"></i> Painel Admin
+      </button>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="avatar" id="av">?</div>
+        <div style="flex:1;min-width:0;"><div class="user-name" id="user-nome">Carregando...</div><div class="user-role">◆ Membro Pro</div></div>
+      </div>
+      <div class="logout" onclick="fazerLogout()"><i class="ti ti-logout" style="font-size:16px;"></i> Sair da conta</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Agentes de IA</div>
+        <div class="page-sub">Ferramentas inteligentes para turbinar suas lives</div>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- GRID DE AGENTES -->
+      <div class="agentes-grid" id="agentes-grid">
+        <div class="agente-card" onclick="abrirAgente('roteiro')">
+          <div class="agente-ico"><i class="ti ti-script"></i></div>
+          <div class="agente-nome">🎬 Gerador de Roteiro</div>
+          <div class="agente-desc">Envie o print do seu produto e especificações. O agente cria um roteiro de 30–40s para você repetir em loop durante a live.</div>
+          <span class="badge-novo">✨ Disponível</span>
+        </div>
+        <div class="agente-card em-breve">
+          <div class="agente-ico"><i class="ti ti-chart-bar"></i></div>
+          <div class="agente-nome">📊 Analista de Métricas</div>
+          <div class="agente-desc">Cole os números da sua live e receba análise completa com pontos de melhoria e estratégias.</div>
+          <span class="badge-breve">Em breve</span>
+        </div>
+        <div class="agente-card em-breve">
+          <div class="agente-ico"><i class="ti ti-speakerphone"></i></div>
+          <div class="agente-nome">✍️ Criador de Copy</div>
+          <div class="agente-desc">Gera títulos, descrições e textos de divulgação para suas lives e produtos.</div>
+          <span class="badge-breve">Em breve</span>
+        </div>
+      </div>
+
+      <!-- PAINEL DO AGENTE DE ROTEIRO -->
+      <div class="agente-painel" id="painel-roteiro" style="display:none;">
+        <div class="agente-header">
+          <div class="agente-header-ico"><i class="ti ti-script"></i></div>
+          <div>
+            <div class="agente-header-title">Gerador de Roteiro de Live</div>
+            <div class="agente-header-sub">Roteiro de 30–40s para repetir em loop · Baseado no seu produto</div>
+          </div>
+          <button onclick="fecharAgente()" style="margin-left:auto;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="agente-body">
+
+          <!-- UPLOAD DE PRINTS -->
+          <div class="input-label"><i class="ti ti-photo-up"></i> Prints do produto (até 3 imagens)</div>
+          <input type="file" id="input-imgs" accept="image/*" multiple style="display:none;" onchange="adicionarImagens(this)"/>
+          <div class="upload-zone" onclick="document.getElementById('input-imgs').click()">
+            <i class="ti ti-cloud-upload"></i>
+            <p>Clique para enviar prints do produto</p>
+            <span>Print da tela do TikTok Shop, foto do produto, especificações em imagem</span>
+          </div>
+          <div class="imgs-preview" id="imgs-preview"></div>
+
+          <!-- DETALHES EXTRAS -->
+          <div class="input-label"><i class="ti ti-pencil"></i> Detalhes extras (opcional)</div>
+          <textarea class="textarea-input" id="input-detalhes" placeholder="Ex: Tênis branco feminino, R$29,99, frete grátis, 70% off, tamanhos 34-39, já vendeu 36 mil unidades...
+
+Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entrega, tamanhos disponíveis, cores, diferenciais do produto, prova social, público alvo..."></textarea>
+
+          <!-- BOTÃO GERAR -->
+          <button class="btn-gerar" id="btn-gerar" onclick="gerarRoteiro()">
+            <i class="ti ti-wand"></i> Gerar Roteiro de Live
+          </button>
+
+          <!-- LOADING -->
+          <div class="loading-wrap" id="loading-roteiro">
+            <div class="spinner"></div>
+            <p>Analisando produto e criando seu roteiro...</p>
+          </div>
+
+          <!-- RESULTADO -->
+          <div class="resultado-wrap" id="resultado-roteiro">
+            <div class="resultado-header">
+              <div class="resultado-title"><i class="ti ti-circle-check" style="font-size:18px;"></i> Roteiro gerado!</div>
+              <button class="btn-copiar" onclick="copiarRoteiro()"><i class="ti ti-copy" style="font-size:14px;"></i> Copiar tudo</button>
+            </div>
+            <div class="roteiro-box" id="roteiro-conteudo"></div>
+            <button onclick="gerarRoteiro()" style="margin-top:12px;width:100%;padding:11px;border-radius:10px;border:1px solid rgba(124,92,255,0.3);color:var(--purple);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">
+              <i class="ti ti-refresh" style="font-size:14px;vertical-align:-2px;margin-right:6px;"></i>Gerar outro roteiro
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODAL ADMIN -->
+<div style="position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:999;display:none;align-items:center;justify-content:center;" id="overlay-admin" onclick="if(event.target===this)fecharAdmin()">
+  <div style="background:#0f1320;border:1px solid rgba(255,77,141,0.25);border-radius:14px;padding:28px;width:380px;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;"><i class="ti ti-shield-check" style="color:#ff4d8d;"></i> Painel Admin</div>
+    <div style="font-size:12px;color:#8b96b8;margin-bottom:20px;">Digite a senha de administrador.</div>
+    <input style="width:100%;background:#141828;border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:11px 14px;color:#f0f4ff;font-family:inherit;font-size:14px;outline:none;margin-bottom:14px;" type="password" id="admin-pw" placeholder="Senha do admin" onkeydown="if(event.key==='Enter')checkAdmin()"/>
+    <div style="font-size:12px;color:#ff4d8d;display:none;margin-bottom:12px;" id="admin-err">Senha incorreta.</div>
+    <div style="display:flex;gap:9px;">
+      <button onclick="checkAdmin()" style="flex:1;padding:11px;background:linear-gradient(135deg,#ff4d8d,#ff8c42);color:#fff;font-weight:700;font-size:13px;border-radius:9px;border:none;cursor:pointer;font-family:inherit;">Entrar</button>
+      <button onclick="fecharAdmin()" style="padding:11px 16px;background:transparent;border:1px solid rgba(255,255,255,0.07);color:#8b96b8;font-weight:600;font-size:13px;border-radius:9px;cursor:pointer;font-family:inherit;">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var _imagens = []; // base64 das imagens
+
+// AUTH
+(async function(){
+  var sess = await _sb.auth.getSession();
+  if(!sess.data.session){window.location.href='../login.html';return;}
+  var user = sess.data.session.user;
+  _sb.from('profiles').select('nome').eq('id',user.id).single().then(function(r){
+    var nome=(r.data&&r.data.nome)?r.data.nome:user.email.split('@')[0];
+    document.getElementById('av').textContent=nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
+    document.getElementById('user-nome').textContent=nome;
+  });
+})();
+
+// AGENTES
+function abrirAgente(tipo){
+  document.getElementById('agentes-grid').style.display='none';
+  document.getElementById('painel-'+tipo).style.display='block';
+  window.scrollTo(0,0);
+}
+function fecharAgente(){
+  document.getElementById('agentes-grid').style.display='grid';
+  document.querySelectorAll('.agente-painel').forEach(function(p){p.style.display='none';});
+  _imagens=[];
+  document.getElementById('imgs-preview').innerHTML='';
+  document.getElementById('input-detalhes').value='';
+  document.getElementById('resultado-roteiro').style.display='none';
+  document.getElementById('loading-roteiro').style.display='none';
+}
+
+// UPLOAD DE IMAGENS
+function adicionarImagens(input){
+  var files=Array.from(input.files);
+  var max=3;
+  files.slice(0,max-_imagens.length).forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      // Comprimir
+      var img=new Image();
+      img.onload=function(){
+        var cv=document.createElement('canvas');
+        var maxW=800,w=img.width,h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        var data=cv.toDataURL('image/jpeg',0.8);
+        _imagens.push(data);
+        renderImagens();
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function renderImagens(){
+  var el=document.getElementById('imgs-preview');
+  el.innerHTML=_imagens.map(function(src,i){
+    return '<div class="img-thumb"><img src="'+src+'"/><button class="img-thumb-del" onclick="removerImagem('+i+')">×</button></div>';
+  }).join('');
+  document.querySelector('.upload-zone').style.display=_imagens.length>=3?'none':'block';
+}
+
+function removerImagem(i){
+  _imagens.splice(i,1);
+  renderImagens();
+}
+
+// GERAR ROTEIRO
+async function gerarRoteiro(){
+  var detalhes=document.getElementById('input-detalhes').value.trim();
+  if(!_imagens.length&&!detalhes){
+    alert('Envie pelo menos um print do produto ou descreva os detalhes!');
+    return;
+  }
+
+  document.getElementById('btn-gerar').disabled=true;
+  document.getElementById('resultado-roteiro').style.display='none';
+  document.getElementById('loading-roteiro').style.display='block';
+
+  var PROMPT_SISTEMA = `Você é um especialista em vendas ao vivo no TikTok Shop e um mestre em criar roteiros de live que convertem muito.
+
+Sua missão é criar roteiros de 30 a 40 segundos para serem repetidos em loop durante a live.
+
+ESTRUTURA OBRIGATÓRIA DO ROTEIRO:
+⏱️ Duração estimada: ~3X segundos
+
+🎬 GANCHO (0–5s)
+Frase de impacto que para o scroll. Pode ser surpresa, curiosidade ou choque de preço.
+
+👟 PRODUTO (5–18s)  
+Descreva o produto de forma sensorial e emocional. Benefícios reais, como ele resolve um problema ou melhora a vida. Inclua prova social se tiver.
+
+💸 OFERTA (18–28s)
+Preço original → preço atual → % de desconto → frete → garantia. Falar devagar no preço.
+
+📣 CTA (28–40s)
+Chamada para ação urgente e específica. Criar escassez real. Terminar com energia.
+
+REGRAS IMPORTANTES:
+- Linguagem natural, como uma pessoa real falando
+- Tom animado mas crível — não exagerar
+- Incluir emojis nos títulos das seções
+- Criar urgência genuína, não forçada
+- O roteiro deve soar natural quando lido em voz alta
+- Se tiver informações de prova social (quantidade vendida, avaliações), usar
+- Adaptar o tom ao tipo de produto
+
+Gere APENAS o roteiro, sem explicações adicionais antes ou depois.`;
+
+  // Montar mensagem com imagens
+  var msgContent = [];
+  
+  _imagens.forEach(function(img){
+    msgContent.push({
+      type: 'image',
+      source: {
+        type: 'base64',
+        media_type: 'image/jpeg',
+        data: img.replace('data:image/jpeg;base64,','').replace('data:image/png;base64,','')
+      }
+    });
+  });
+
+  var textoUsuario = 'Crie um roteiro de live para este produto.';
+  if(detalhes) textoUsuario += '\n\nDetalhes adicionais:\n' + detalhes;
+  msgContent.push({type:'text',text:textoUsuario});
+
+  try{
+    var res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: PROMPT_SISTEMA,
+        messages:[{role:'user',content:msgContent}]
+      })
+    });
+
+    var data = await res.json();
+    var texto = data.content && data.content[0] ? data.content[0].text : '';
+
+    if(!texto){
+      alert('Erro ao gerar roteiro. Tente novamente.');
+      return;
+    }
+
+    // Formatar e exibir
+    document.getElementById('roteiro-conteudo').innerHTML = formatarRoteiro(texto);
+    document.getElementById('resultado-roteiro').style.display='block';
+    document.getElementById('resultado-roteiro').scrollIntoView({behavior:'smooth'});
+
+  }catch(e){
+    console.error(e);
+    alert('Erro: '+e.message);
+  }finally{
+    document.getElementById('loading-roteiro').style.display='none';
+    document.getElementById('btn-gerar').disabled=false;
+  }
+}
+
+function formatarRoteiro(texto){
+  return texto
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n/g,'<br/>');
+}
+
+function copiarRoteiro(){
+  var texto = document.getElementById('roteiro-conteudo').innerText;
+  navigator.clipboard.writeText(texto).then(function(){
+    var btn = document.querySelector('.btn-copiar');
+    btn.innerHTML='<i class="ti ti-check" style="font-size:14px;"></i> Copiado!';
+    setTimeout(function(){btn.innerHTML='<i class="ti ti-copy" style="font-size:14px;"></i> Copiar tudo';},2000);
+  });
+}
+
+function abrirAdmin(){document.getElementById('admin-pw').value='';document.getElementById('admin-err').style.display='none';document.getElementById('overlay-admin').style.display='flex';setTimeout(function(){document.getElementById('admin-pw').focus();},200);}
+function fecharAdmin(){document.getElementById('overlay-admin').style.display='none';}
+function checkAdmin(){if(document.getElementById('admin-pw').value==='infinity@admin2026'){fecharAdmin();window.location.href='../admin/admin.html';}else{document.getElementById('admin-err').style.display='block';document.getElementById('admin-pw').value='';}}
+async function fazerLogout(){await _sb.auth.signOut();window.location.href='../login.html';}
+</script>
+</body>
+</html>
