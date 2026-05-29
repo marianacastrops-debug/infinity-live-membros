@@ -355,6 +355,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div class="mf"><label class="ml">Status</label><select class="msel" id="aula-status"><option value="published">Publicada</option><option value="draft">Rascunho</option></select></div>
     </div>
     <div class="mf"><label class="ml">Descrição / Conteúdo da aula</label><textarea class="mta" id="aula-desc" style="min-height:100px;" placeholder="Descreva os tópicos, cole links, ou adicione qualquer conteúdo extra...&#10;&#10;Exemplo:&#10;🔗 Material: https://...&#10;📊 Planilha: https://...&#10;📌 Ponto importante da aula"></textarea></div>
+    <div class="mf"><label class="ml"><i class="ti ti-file-type-pdf" style="color:#ff4d8d;"></i> PDF / Material de apoio</label><input class="mi" id="aula-pdf" placeholder="Cole o link do PDF (Google Drive, Dropbox, etc)"/><div style="font-size:10px;color:var(--text3);margin-top:4px;">💡 Use Google Drive: clique em "Compartilhar" → "Qualquer pessoa com o link" → copie o link</div></div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarAula()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar aula</button>
       <button class="btn btn-d btn-sm" id="btn-del-aula" style="display:none;" onclick="excluirAulaAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
@@ -608,7 +609,7 @@ function novaAula(modId){
   document.getElementById('aula-modal-titulo').textContent='Adicionar aula';
   document.getElementById('aula-id').value='';
   document.getElementById('aula-mod-id').value=modId;
-  ['aula-nome','aula-url','aula-embed','aula-dur','aula-desc'].forEach(function(id){document.getElementById(id).value='';});
+  ['aula-nome','aula-url','aula-embed','aula-dur','aula-desc','aula-pdf'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('aula-status').value='published';
   document.getElementById('btn-del-aula').style.display='none';
   abrirModal('modal-aula');
@@ -626,6 +627,7 @@ function editarAula(id){
   document.getElementById('aula-dur').value=a.duracao||'';
   document.getElementById('aula-status').value=a.status||'published';
   document.getElementById('aula-desc').value=a.desc||'';
+  document.getElementById('aula-pdf').value=a.pdf||'';
   document.getElementById('btn-del-aula').style.display='flex';
   abrirModal('modal-aula');
 }
@@ -656,7 +658,7 @@ function salvarAula(){
   var editId=document.getElementById('aula-id').value;
   var modId=document.getElementById('aula-mod-id').value;
   var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:m?'https://www.youtube.com/embed/'+m[1]:url,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim()};
+  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:m?'https://www.youtube.com/embed/'+m[1]:url,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim(),pdf:document.getElementById('aula-pdf').value.trim()};
   var aulas=gAulas();
   if(editId){var i=aulas.findIndex(function(a){return a.id===editId;});if(i!==-1)aulas[i]=dados;}
   else aulas.push(dados);
@@ -891,7 +893,7 @@ async function publicarNoSite(){
     }
     for(var j=0;j<aulas.length;j++){
       var a=aulas[j];
-      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',ordem:j+1});
+      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',pdf:a.pdf||'',ordem:j+1});
       if(ra.error){console.error('Erro aula:',ra.error);}
     }
     toast('✅ '+mods.length+' módulo(s) publicados! Alunos já podem ver.');
