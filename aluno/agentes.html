@@ -115,6 +115,9 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .loading-wrap .spinner{width:40px;height:40px;border:3px solid rgba(124,92,255,0.2);border-top-color:var(--purple);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-wrap p{font-size:13px;color:var(--text2);}
+.fmt-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:var(--card2);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+.fmt-btn:hover{border-color:rgba(255,184,0,0.4);color:var(--yellow);}
+.fmt-btn.active{background:rgba(255,184,0,0.15);border-color:rgba(255,184,0,0.5);color:var(--yellow);}
 </style>
 </head>
 <body>
@@ -260,89 +263,79 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
 
       <!-- PAINEL DO AGENTE DE IMAGEM -->
       <div class="agente-painel" id="painel-imagem" style="display:none;border-color:rgba(255,184,0,0.2);">
-        <div class="agente-header" style="background:linear-gradient(135deg,rgba(255,184,0,0.12),rgba(255,140,0,0.06));border-bottom-color:rgba(255,184,0,0.15);">
+        <div class="agente-header" style="background:linear-gradient(135deg,rgba(255,184,0,0.1),rgba(255,140,0,0.05));border-bottom:1px solid rgba(255,184,0,0.15);">
           <div class="agente-header-ico" style="background:rgba(255,184,0,0.15);border-color:rgba(255,184,0,0.3);color:var(--yellow);"><i class="ti ti-camera"></i></div>
           <div>
             <div class="agente-header-title">Gerador de Prompt de Imagem</div>
-            <div class="agente-header-sub">Prompt ultra-realista para Flow e ChatGPT · Baseado no seu produto</div>
+            <div class="agente-header-sub">Prompt ultra-realista para Flow e ChatGPT · Produto identificado automaticamente</div>
           </div>
-          <button onclick="fecharAgente()" style="margin-left:auto;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;"><i class="ti ti-x"></i></button>
+          <button onclick="fecharAgente()" style="margin-left:auto;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px;"><i class="ti ti-x"></i></button>
         </div>
         <div class="agente-body">
 
-          <!-- UPLOAD DO PRODUTO -->
-          <div class="input-label" style="color:var(--yellow);"><i class="ti ti-photo-up" style="color:var(--yellow);"></i> Foto do produto</div>
-          <input type="file" id="input-imgs-produto" accept="image/*" style="display:none;" onchange="adicionarImagensProduto(this)" multiple/>
-          <div id="upload-produto-zone" style="border:2px dashed rgba(255,184,0,0.3);border-radius:12px;background:rgba(255,184,0,0.03);padding:24px;text-align:center;margin-bottom:12px;">
-            <i class="ti ti-cloud-upload" style="color:var(--yellow);font-size:32px;display:block;margin-bottom:10px;"></i>
-            <p style="font-size:13px;color:var(--text2);margin-bottom:6px;font-weight:600;">Fotos do produto (até 3)</p>
-            <span style="font-size:11px;color:var(--text3);display:block;margin-bottom:12px;">Frente, lateral, detalhe</span>
-            <button type="button" onclick="document.getElementById('input-imgs-produto').click()" style="background:rgba(255,184,0,0.15);border:1px solid rgba(255,184,0,0.4);color:var(--yellow);padding:9px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="ti ti-photo-up" style="font-size:14px;vertical-align:-2px;margin-right:6px;"></i>Selecionar imagens</button>
+          <!-- UPLOAD -->
+          <div class="input-label"><i class="ti ti-photo-up" style="color:var(--yellow);"></i> Fotos do produto (até 3)</div>
+          <input type="file" id="input-imgs-produto" accept="image/*" multiple style="display:none;" onchange="adicionarImagensProduto(this)"/>
+          <div id="zona-upload-img" style="border:2px dashed rgba(255,184,0,0.25);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;background:rgba(255,184,0,0.02);">
+            <i class="ti ti-photo" style="font-size:28px;color:var(--yellow);opacity:.5;display:block;margin-bottom:8px;"></i>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Envie fotos do produto — frente, lateral, detalhe</div>
+            <label for="input-imgs-produto" style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,184,0,0.12);border:1px solid rgba(255,184,0,0.35);color:var(--yellow);padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">
+              <i class="ti ti-upload" style="font-size:14px;"></i> Escolher imagens
+            </label>
           </div>
+          <div id="imgs-produto-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;"></div>
 
           <!-- FORMATO -->
-          <div class="input-label" style="color:var(--yellow);"><i class="ti ti-layout" style="color:var(--yellow);"></i> Formato da imagem</div>
-          <div id="formato-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;">
-            <div class="tom-btn active" data-formato="pov" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.3);padding:16px 10px;">
-              <div style="font-size:22px;margin-bottom:6px;">📱</div>
-              <div style="font-size:12px;font-weight:700;">POV</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:3px;">Mão segurando — perspectiva de quem assiste</div>
-            </div>
-            <div class="tom-btn" data-formato="usando" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);padding:16px 10px;">
-              <div style="font-size:22px;margin-bottom:6px;">🧍</div>
-              <div style="font-size:12px;font-weight:700;">Usando</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:3px;">Modelo usando — canela pra baixo, mão, corpo</div>
-            </div>
-            <div class="tom-btn" data-formato="mostrando" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);padding:16px 10px;">
-              <div style="font-size:22px;margin-bottom:6px;">🎯</div>
-              <div style="font-size:12px;font-weight:700;">Mostrando</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:3px;">Pessoa apresentando direto para câmera</div>
-            </div>
-            <div class="tom-btn" data-formato="broll" onclick="selecionarFormato(this)" style="border-color:rgba(255,184,0,0.2);padding:16px 10px;">
-              <div style="font-size:22px;margin-bottom:6px;">🎬</div>
-              <div style="font-size:12px;font-weight:700;">B-Roll</div>
-              <div style="font-size:10px;color:var(--text3);margin-top:3px;">Cena ambiente — produto em cenário real</div>
-            </div>
+          <div class="input-label"><i class="ti ti-layout" style="color:var(--yellow);"></i> Formato</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="formato-grid">
+            <button class="fmt-btn active" data-formato="pov" onclick="selecionarFormato(this)">📱 POV</button>
+            <button class="fmt-btn" data-formato="usando" onclick="selecionarFormato(this)">🧍 Usando</button>
+            <button class="fmt-btn" data-formato="mostrando" onclick="selecionarFormato(this)">🎯 Mostrando</button>
+            <button class="fmt-btn" data-formato="broll" onclick="selecionarFormato(this)">🎬 B-Roll</button>
           </div>
 
-          <!-- DETALHES EXTRAS -->
-          <div class="input-label" style="color:var(--yellow);"><i class="ti ti-pencil" style="color:var(--yellow);"></i> Descreva o produto (opcional)</div>
-          <textarea class="textarea-input" id="input-desc-produto" style="border-color:rgba(255,184,0,0.15);min-height:80px;" placeholder="Ex: Tênis branco feminino, solado bege, cadarço branco, estilo minimalista...&#10;&#10;Quanto mais detalhes melhor — cor, material, estilo, público alvo"></textarea>
+          <!-- CONTEXTO -->
+          <div class="input-label"><i class="ti ti-pencil" style="color:var(--yellow);"></i> Contexto extra (opcional)</div>
+          <textarea class="textarea-input" id="input-desc-produto" style="border-color:rgba(255,184,0,0.15);min-height:70px;" placeholder="Ex: cenário ao ar livre, luz natural, modelo feminina..."></textarea>
 
-          <!-- BOTÃO GERAR -->
+          <!-- BOTÃO -->
           <button class="btn-gerar" id="btn-gerar-img" onclick="gerarPromptImagem()" style="background:linear-gradient(135deg,#ffb800,#ff8c00);">
-            <i class="ti ti-wand"></i> <span id="btn-img-txt">Gerar Prompt de Imagem</span>
+            <i class="ti ti-wand"></i> <span id="btn-img-txt">Gerar Prompt</span>
           </button>
 
           <!-- LOADING -->
           <div class="loading-wrap" id="loading-imagem">
             <div class="spinner" style="border-top-color:var(--yellow);"></div>
-            <p>Analisando produto e criando prompt ultra-realista...</p>
+            <p>Identificando produto e criando prompts...</p>
           </div>
 
           <!-- RESULTADO -->
           <div class="resultado-wrap" id="resultado-imagem">
-            <div class="resultado-header">
-              <div class="resultado-title" style="color:var(--yellow);"><i class="ti ti-circle-check" style="font-size:18px;"></i> Prompt gerado!</div>
-              <button class="btn-copiar" onclick="copiarPromptImagem()" style="border-color:rgba(255,184,0,0.25);color:var(--yellow);background:rgba(255,184,0,0.08);"><i class="ti ti-copy" style="font-size:14px;"></i> Copiar prompt</button>
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;font-weight:700;color:var(--yellow);"><i class="ti ti-photo" style="font-size:14px;vertical-align:-2px;margin-right:4px;"></i>Prompt de Imagem</span>
+                <button class="btn-copiar" onclick="copiarTexto('prompt-imagem-conteudo',this)" style="border-color:rgba(255,184,0,0.3);color:var(--yellow);background:rgba(255,184,0,0.08);font-size:11px;padding:5px 10px;"><i class="ti ti-copy" style="font-size:12px;"></i> Copiar</button>
+              </div>
+              <div class="roteiro-box" id="prompt-imagem-conteudo" style="border-color:rgba(255,184,0,0.2);font-family:monospace;font-size:12px;"></div>
+              <div style="margin-top:6px;font-size:10px;color:var(--text3);">Cole no <strong style="color:var(--yellow);">Flow</strong> ou <strong style="color:var(--yellow);">ChatGPT</strong> junto com as fotos do produto</div>
             </div>
-            <div class="roteiro-box" id="prompt-imagem-conteudo" style="border-color:rgba(255,184,0,0.15);font-family:monospace;font-size:12px;line-height:1.7;"></div>
-            <div style="margin-top:10px;padding:12px;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.15);border-radius:10px;font-size:11px;color:var(--text2);line-height:1.6;">
-              💡 <strong style="color:var(--yellow);">Como usar:</strong> Copie o prompt e cole no <strong>Flow</strong> ou no <strong>ChatGPT (DALL-E)</strong> para gerar a imagem.
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;font-weight:700;color:var(--cyan);"><i class="ti ti-video" style="font-size:14px;vertical-align:-2px;margin-right:4px;"></i>Prompt de Vídeo</span>
+                <button class="btn-copiar" onclick="copiarTexto('prompt-video-conteudo',this)" style="font-size:11px;padding:5px 10px;"><i class="ti ti-copy" style="font-size:12px;"></i> Copiar</button>
+              </div>
+              <div class="roteiro-box" id="prompt-video-conteudo" style="font-family:monospace;font-size:12px;"></div>
+              <div style="margin-top:6px;font-size:10px;color:var(--text3);">Use no <strong style="color:var(--cyan);">Runway</strong>, <strong style="color:var(--cyan);">Kling</strong> ou <strong style="color:var(--cyan);">Pika</strong></div>
             </div>
-            <button onclick="gerarPromptImagem()" style="margin-top:12px;width:100%;padding:11px;border-radius:10px;border:1px solid rgba(255,184,0,0.3);color:var(--yellow);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">
-              <i class="ti ti-refresh" style="font-size:14px;vertical-align:-2px;margin-right:6px;"></i>Gerar outro prompt
+            <button onclick="gerarPromptImagem()" style="width:100%;padding:10px;border-radius:9px;border:1px solid rgba(255,184,0,0.3);color:var(--yellow);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">
+              <i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:5px;"></i>Gerar novamente
             </button>
           </div>
 
         </div>
       </div>
 
-    </div>
-  </main>
-</div>
-
-<!-- MODAL ADMIN -->
+      <!-- MODAL ADMIN -->
 <div style="position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:999;display:none;align-items:center;justify-content:center;" id="overlay-admin" onclick="if(event.target===this)fecharAdmin()">
   <div style="background:#0f1320;border:1px solid rgba(255,77,141,0.25);border-radius:14px;padding:28px;width:380px;">
     <div style="font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;"><i class="ti ti-shield-check" style="color:#ff4d8d;"></i> Painel Admin</div>
@@ -419,9 +412,10 @@ function adicionarImagensProduto(input){
 function renderImgsProduto(){
   var el=document.getElementById('imgs-produto-preview');
   el.innerHTML=_imgsProduto.map(function(src,i){
-    return '<div class="img-thumb"><img src="'+src+'"/><button class="img-thumb-del" onclick="removerImgProduto('+i+')">x</button></div>';
+    return '<div class="img-thumb"><img src="'+src+'"/><button class="img-thumb-del" onclick="removerImgProduto('+i+')">×</button></div>';
   }).join('');
-  document.getElementById('upload-produto-zone').style.display=_imgsProduto.length>=3?'none':'block';
+  var zona=document.getElementById('zona-upload-img');
+  if(zona) zona.style.display=_imgsProduto.length>=3?'none':'block';
 }
 
 function removerImgProduto(i){
@@ -430,12 +424,9 @@ function removerImgProduto(i){
 }
 
 function selecionarFormato(el){
-  document.querySelectorAll('#formato-grid .tom-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('#formato-grid .fmt-btn').forEach(function(b){b.classList.remove('active');});
   el.classList.add('active');
   _formatoImg=el.dataset.formato;
-  var nomes={pov:'POV 📱',usando:'Usando 🧍',mostrando:'Mostrando 🎯',broll:'B-Roll 🎬'};
-  var txt=document.getElementById('btn-img-txt');
-  if(txt) txt.textContent='Gerar Prompt — '+(nomes[_formatoImg]||_formatoImg);
 }
 
 async function gerarPromptImagem(){
@@ -545,7 +536,7 @@ function fecharAgente(){
   document.getElementById('loading-roteiro').style.display='none';
   document.getElementById('resultado-imagem').style.display='none';
   document.getElementById('loading-imagem').style.display='none';
-  var pp=document.getElementById('imgs-produto-preview');if(pp)pp.innerHTML='';var upz=document.getElementById('upload-produto-zone');if(upz)upz.style.display='block';
+  var pp=document.getElementById('imgs-produto-preview');if(pp)pp.innerHTML='';var upz=document.getElementById('zona-upload-img');if(upz)upz.style.display='block';
 }
 
 // UPLOAD DE IMAGENS
