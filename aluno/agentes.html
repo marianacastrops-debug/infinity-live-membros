@@ -405,13 +405,11 @@ var _formatoImg = 'pov'; // formato da imagem
 // AUTH
 // Buscar chave API por agente
 async function getApiKey(agente){
-  var chave='api_key_'+agente;
   try{
-    var r=await _sb.from('configuracoes').select('valor').eq('chave',chave).single();
+    var r=await _sb.from('configuracoes').select('valor').eq('chave','api_key_'+agente).single();
     if(r.data&&r.data.valor) return r.data.valor;
   }catch(e){}
-  // Fallback localStorage
-  return localStorage.getItem('ag_key_'+agente)||localStorage.getItem('ag_key')||'';
+  return '';
 }
 
 (async function(){
