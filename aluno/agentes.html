@@ -228,7 +228,7 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
 
           <!-- BOTÃO GERAR -->
           <button class="btn-gerar" id="btn-gerar" onclick="gerarRoteiro()">
-            <i class="ti ti-wand"></i> Gerar Roteiro de Live
+            <i class="ti ti-wand"></i> <span id="btn-gerar-txt">Gerar Roteiro de Live</span>
           </button>
 
           <!-- LOADING -->
@@ -291,6 +291,8 @@ function selecionarTom(el){
   document.querySelectorAll('.tom-btn').forEach(function(b){b.classList.remove('active');});
   el.classList.add('active');
   _tom = el.dataset.tom;
+  var txt = document.getElementById('btn-gerar-txt');
+  if(txt) txt.textContent = 'Gerar Roteiro — '+el.querySelector('div:nth-child(2)').textContent;
 }
 
 // AGENTES
@@ -404,13 +406,15 @@ Gere APENAS o roteiro, sem explicações adicionais antes ou depois.`;
     });
   });
 
-  var textoUsuario = 'Crie um roteiro de live para este produto. Tom: '+_tom+'.';
+  var textoUsuario = 'Crie um roteiro de live para este produto. Use EXCLUSIVAMENTE o tom: '+_tom+'. O roteiro inteiro deve refletir esse tom do começo ao fim.';
   if(detalhes) textoUsuario += '\n\nDetalhes adicionais:\n' + detalhes;
   msgContent.push({type:'text',text:textoUsuario});
 
   try{
     // Buscar chave e prompt do Supabase
     var apiKey = '', promptSistema = PROMPT_SISTEMA;
+    // Injetar tom no prompt
+    promptSistema += '\n\nTOM OBRIGATÓRIO PARA ESTE ROTEIRO: ' + _tom + '\nAdapte TODO o roteiro — linguagem, ritmo, intensidade e escolha de palavras — conforme este tom. Não misture tons.';
     try{
       var confRes = await _sb.from('configuracoes').select('*').in('chave',['anthropic_api_key','agente_roteiro_prompt']);
       if(confRes.data){
