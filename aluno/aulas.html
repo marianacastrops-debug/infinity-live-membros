@@ -313,7 +313,7 @@ var _aulas = [];
       var dA=await rA.json();
       if(Array.isArray(dM)&&dM.length>0){
         var novosMods=dM.filter(function(m){return m.status!=='hidden';}).map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1};});
-        var novasAulas=Array.isArray(dA)?dA.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};}):[]; 
+        var novasAulas=Array.isArray(dA)?dA.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||'',pdf:a.pdf||''};}):[]; 
         // Salvar no cache
         localStorage.setItem(CACHE_KEY_MODS,JSON.stringify(novosMods));
         localStorage.setItem(CACHE_KEY_AULAS,JSON.stringify(novasAulas));
