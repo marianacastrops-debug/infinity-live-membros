@@ -447,7 +447,13 @@ async function gerarPromptImagem(){
     mostrando:'Presenting style: person facing camera directly, holding product up at chest level with both hands, direct eye contact, engaging expression, clean simple background.'
   };
 
-  var SYSTEM_IMG = 'You are an expert AI image prompt engineer for ultra-realistic e-commerce TikTok Shop photography. Create ONE prompt in English for Flow AI and ChatGPT DALL-E. Rules: Start with hyperrealistic lifestyle photography 8K shot on Canon EOS R5 85mm. Focus on SCENE ACTION COMPOSITION not product description since reference image is provided. Always include: The product must be 100 percent faithful to the reference image same colors textures materials design and details do not alter or reimagine the product. Specify lighting and atmosphere briefly. End with photorealistic sharp focus high detail no artifacts commercial photography quality. 60 to 100 words total. Return ONLY the prompt no explanations no titles.';
+  var videoDesc={
+    pov:'A hand gently picks up the product from a surface, turns it slowly showing all angles, then holds it up close to the camera. Movement is slow, confident and natural. Camera stays still.',
+    usando:'Person naturally walks into frame wearing the product, pauses, looks down at it, then looks up at camera with a satisfied smile. Movement is fluid and candid, like a real person.',
+    mostrando:'Person walks into frame holding the product with both hands, lifts it slightly toward camera, rotates it gently to show front and back, then smiles directly at camera. Natural and engaging.'
+  };
+
+  var SYSTEM_IMG = 'You are an expert AI prompt engineer for ultra-realistic e-commerce content for TikTok Shop. Generate TWO prompts in English. FIRST: an image prompt for Flow AI and ChatGPT DALL-E. SECOND: a video/motion prompt for Runway, Kling or Pika AI to animate that image. Rules for IMAGE prompt: Start with hyperrealistic lifestyle photography 8K shot on Canon EOS R5 85mm f1.8. Focus on SCENE ACTION COMPOSITION not product description. Always include: product must be 100 percent faithful to reference image same colors textures materials details. Specify lighting. End with photorealistic sharp focus high detail commercial quality. 60 to 100 words. Rules for VIDEO prompt: Describe the natural human movement that should happen. Be very specific about body movement speed direction. Make it ultra-realistic and natural like a real human. No sudden movements. 40 to 70 words. Format your response EXACTLY like this: [image prompt here] ---VIDEO--- [video prompt here]';
 
   var msgContent=[];
   _imgsProduto.forEach(function(img){
@@ -457,7 +463,7 @@ async function gerarPromptImagem(){
     });
   });
 
-  var userMsg='Create ultra-realistic image prompt. Format: '+formatoDesc[_formatoImg];
+  var userMsg='Create image and video prompts. Image format: '+formatoDesc[_formatoImg]+' Video movement: '+videoDesc[_formatoImg];
   if(desc) userMsg+=' Extra context: '+desc;
   msgContent.push({type:'text',text:userMsg});
 
@@ -476,7 +482,14 @@ async function gerarPromptImagem(){
     var data=await res.json();
     var texto=data.content&&data.content[0]?data.content[0].text:'';
     if(!texto){alert('Erro ao gerar prompt. Tente novamente.');return;}
-    document.getElementById('prompt-imagem-conteudo').textContent=texto;
+    
+    // Separar prompt de imagem e prompt de vídeo
+    var partes = texto.split('---VIDEO---');
+    var promptImg = partes[0].trim();
+    var promptVideo = partes.length > 1 ? partes[1].trim() : '';
+    
+    document.getElementById('prompt-imagem-conteudo').textContent=promptImg;
+    document.getElementById('prompt-video-conteudo').textContent=promptVideo||'Gerando prompt de vídeo...';
     document.getElementById('resultado-imagem').style.display='block';
     document.getElementById('resultado-imagem').scrollIntoView({behavior:'smooth'});
   }catch(e){
@@ -487,11 +500,17 @@ async function gerarPromptImagem(){
   }
 }
 function copiarPromptImagem(){
-  var texto=document.getElementById('prompt-imagem-conteudo').textContent;
+  copiarTexto('prompt-imagem-conteudo',null);
+}
+
+function copiarTexto(elId, btn){
+  var texto=document.getElementById(elId).textContent;
   navigator.clipboard.writeText(texto).then(function(){
-    var btn=document.querySelector('[onclick="copiarPromptImagem()"]');
-    btn.innerHTML='<i class="ti ti-check" style="font-size:14px;"></i> Copiado!';
-    setTimeout(function(){btn.innerHTML='<i class="ti ti-copy" style="font-size:14px;"></i> Copiar prompt';},2000);
+    if(btn){
+      var orig=btn.innerHTML;
+      btn.innerHTML='<i class="ti ti-check" style="font-size:12px;"></i> Copiado!';
+      setTimeout(function(){btn.innerHTML=orig;},2000);
+    }
   });
 }
 
