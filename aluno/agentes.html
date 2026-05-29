@@ -335,6 +335,45 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
         </div>
       </div>
 
+      <!-- PAINEL ANALISTA DE MÉTRICAS -->
+      <div class="agente-painel" id="painel-metricas" style="display:none;border-color:rgba(0,229,160,0.2);">
+        <div class="agente-header" style="background:linear-gradient(135deg,rgba(0,229,160,0.1),rgba(0,200,255,0.05));border-bottom:1px solid rgba(0,229,160,0.15);">
+          <div class="agente-header-ico" style="background:rgba(0,229,160,0.15);border-color:rgba(0,229,160,0.3);color:var(--green);"><i class="ti ti-chart-bar"></i></div>
+          <div>
+            <div class="agente-header-title">Analista de Métricas</div>
+            <div class="agente-header-sub">Análise simples e direta com dicas práticas para sua próxima live</div>
+          </div>
+          <button onclick="fecharAgente()" style="margin-left:auto;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px;"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="agente-body">
+          <div class="input-label"><i class="ti ti-photo-up" style="color:var(--green);"></i> Prints do painel de análise (até 4)</div>
+          <input type="file" id="input-imgs-metricas" accept="image/*" multiple style="display:none;" onchange="adicionarImgsMetricas(this)"/>
+          <div id="zona-upload-metricas" style="border:2px dashed rgba(0,229,160,0.25);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;background:rgba(0,229,160,0.02);">
+            <i class="ti ti-chart-dots" style="font-size:28px;color:var(--green);opacity:.5;display:block;margin-bottom:8px;"></i>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">Envie prints do painel de análise da sua live no TikTok</div>
+            <label for="input-imgs-metricas" style="display:inline-flex;align-items:center;gap:7px;background:rgba(0,229,160,0.12);border:1px solid rgba(0,229,160,0.35);color:var(--green);padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="ti ti-upload" style="font-size:14px;"></i> Escolher imagens</label>
+          </div>
+          <div id="imgs-metricas-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;"></div>
+          <div class="input-label"><i class="ti ti-pencil" style="color:var(--green);"></i> Contexto extra (opcional)</div>
+          <textarea class="textarea-input" id="input-contexto-metricas" style="border-color:rgba(0,229,160,0.15);min-height:80px;" placeholder="Ex: duração da live foi 2h, produto principal era tênis R$29,99, segunda-feira às 20h..."></textarea>
+          <button class="btn-gerar" id="btn-gerar-metricas" onclick="gerarAnaliseMetricas()" style="background:linear-gradient(135deg,#00e5a0,#00c8ff);color:#000;">
+            <i class="ti ti-chart-dots-3"></i> Analisar minha live
+          </button>
+          <div class="loading-wrap" id="loading-metricas">
+            <div class="spinner" style="border-top-color:var(--green);"></div>
+            <p>Analisando suas métricas...</p>
+          </div>
+          <div class="resultado-wrap" id="resultado-metricas">
+            <div class="resultado-header">
+              <div class="resultado-title" style="color:var(--green);"><i class="ti ti-circle-check" style="font-size:18px;"></i> Análise pronta!</div>
+              <button class="btn-copiar" onclick="copiarTexto('analise-conteudo',this)" style="border-color:rgba(0,229,160,0.3);"><i class="ti ti-copy" style="font-size:14px;"></i> Copiar</button>
+            </div>
+            <div class="roteiro-box" id="analise-conteudo" style="border-color:rgba(0,229,160,0.15);"></div>
+            <button onclick="gerarAnaliseMetricas()" style="margin-top:12px;width:100%;padding:10px;border-radius:9px;border:1px solid rgba(0,229,160,0.3);color:var(--green);background:transparent;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;"><i class="ti ti-refresh" style="font-size:13px;vertical-align:-2px;margin-right:5px;"></i>Analisar novamente</button>
+          </div>
+        </div>
+      </div>
+
       <!-- MODAL ADMIN -->
 <div style="position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:999;display:none;align-items:center;justify-content:center;" id="overlay-admin" onclick="if(event.target===this)fecharAdmin()">
   <div style="background:#0f1320;border:1px solid rgba(255,77,141,0.25);border-radius:14px;padding:28px;width:380px;">
@@ -536,7 +575,12 @@ function fecharAgente(){
   document.getElementById('loading-roteiro').style.display='none';
   document.getElementById('resultado-imagem').style.display='none';
   document.getElementById('loading-imagem').style.display='none';
-  var pp=document.getElementById('imgs-produto-preview');if(pp)pp.innerHTML='';var upz=document.getElementById('zona-upload-img');if(upz)upz.style.display='block';
+  var pp=document.getElementById('imgs-produto-preview');if(pp)pp.innerHTML='';
+  var pm=document.getElementById('imgs-metricas-preview');if(pm)pm.innerHTML='';
+  var zm=document.getElementById('zona-upload-metricas');if(zm)zm.style.display='block';
+  var cm=document.getElementById('input-contexto-metricas');if(cm)cm.value='';
+  var rm=document.getElementById('resultado-metricas');if(rm)rm.style.display='none';
+  _imgsMetricas=[];var upz=document.getElementById('zona-upload-img');if(upz)upz.style.display='block';
 }
 
 // UPLOAD DE IMAGENS
@@ -697,6 +741,137 @@ function formatarRoteiro(texto){
   return texto
     .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
     .replace(/\n/g,'<br/>');
+}
+
+// ================================================
+// AGENTE DE MÉTRICAS
+// ================================================
+var _imgsMetricas = [];
+
+function adicionarImgsMetricas(input){
+  var files=Array.from(input.files);
+  files.slice(0,4-_imgsMetricas.length).forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        var cv=document.createElement('canvas');
+        var maxW=1000,w=img.width,h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        _imgsMetricas.push(cv.toDataURL('image/jpeg',0.85));
+        renderImgsMetricas();
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function renderImgsMetricas(){
+  var el=document.getElementById('imgs-metricas-preview');
+  el.innerHTML=_imgsMetricas.map(function(src,i){
+    return '<div class="img-thumb"><img src="'+src+'"/><button class="img-thumb-del" onclick="removerImgMetrica('+i+')">×</button></div>';
+  }).join('');
+  var zona=document.getElementById('zona-upload-metricas');
+  if(zona) zona.style.display=_imgsMetricas.length>=4?'none':'block';
+}
+
+function removerImgMetrica(i){
+  _imgsMetricas.splice(i,1);
+  renderImgsMetricas();
+}
+
+async function gerarAnaliseMetricas(){
+  var contexto=document.getElementById('input-contexto-metricas').value.trim();
+  if(!_imgsMetricas.length){alert('Envie pelo menos um print do painel de análise!');return;}
+
+  document.getElementById('btn-gerar-metricas').disabled=true;
+  document.getElementById('resultado-metricas').style.display='none';
+  document.getElementById('loading-metricas').style.display='block';
+
+  var apiKey='';
+  try{
+    var confRes=await _sb.from('configuracoes').select('*').eq('chave','anthropic_api_key').single();
+    if(confRes.data) apiKey=confRes.data.valor;
+  }catch(e){}
+  if(!apiKey) apiKey=localStorage.getItem('ag_key')||'';
+  if(!apiKey){alert('Chave API não configurada! Configure no painel admin.');return;}
+
+  var SYSTEM_METRICAS = `Você é um especialista em análise de lives no TikTok Shop com foco em vendas ao vivo. Você entende profundamente as métricas do TikTok e sabe o que cada número significa na prática.
+
+Sua missão é analisar as métricas da live e entregar uma análise SIMPLES, DIRETA e EM PORTUGUÊS, como se estivesse explicando para uma amiga que está aprendendo.
+
+ESTRUTURA OBRIGATÓRIA DA ANÁLISE:
+
+📊 RESUMO GERAL
+Em 2-3 frases, como foi a live no geral? Foi boa, média ou precisa melhorar muito?
+
+✅ O QUE FOI BEM
+Liste de 3 a 5 pontos positivos explicando POR QUE aquilo é bom. Use linguagem simples — ex: "Sua taxa de conversão foi X%, isso significa que a cada 100 pessoas que assistiram, X compraram. Isso é acima da média!"
+
+⚠️ O QUE PODE MELHORAR
+Liste de 3 a 5 pontos fracos explicando O QUE significa aquele número ruim e POR QUE ele acontece.
+
+🎯 DICAS PRÁTICAS PARA A PRÓXIMA LIVE
+Pelo menos 5 dicas específicas e acionáveis. NÃO seja genérico. Diga exatamente o que fazer.
+
+🪝 GANCHOS PARA TESTAR
+Sugira 3 ganchos de abertura específicos para testar na próxima live baseado no produto e público identificado.
+
+📣 CTAs PARA TESTAR
+Sugira 3 CTAs diferentes para testar durante a live.
+
+🔁 UMA COISA SÓ PARA FAZER DIFERENTE AMANHÃ
+Uma única ação prioritária que vai ter mais impacto imediato.
+
+REGRAS:
+- Linguagem simples, sem jargões técnicos
+- Se usar termos técnicos, explique o que significa
+- Seja específico com os números das métricas
+- Seja encorajador mas honesto
+- Foque em ações práticas`;
+
+  var msgContent=[];
+  _imgsMetricas.forEach(function(img){
+    msgContent.push({
+      type:'image',
+      source:{type:'base64',media_type:'image/jpeg',data:img.replace('data:image/jpeg;base64,','').replace('data:image/png;base64,','')}
+    });
+  });
+
+  var userMsg='Analise as métricas desta live do TikTok Shop e me dê um feedback completo.';
+  if(contexto) userMsg+='
+
+Contexto adicional: '+contexto;
+  msgContent.push({type:'text',text:userMsg});
+
+  try{
+    var res=await fetch('/api/roteiro',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:2000,
+        system:SYSTEM_METRICAS,
+        messages:[{role:'user',content:msgContent}],
+        apiKey:apiKey
+      })
+    });
+    var data=await res.json();
+    var texto=data.content&&data.content[0]?data.content[0].text:'';
+    if(!texto){alert('Erro ao gerar análise. Tente novamente.');return;}
+    document.getElementById('analise-conteudo').innerHTML=formatarRoteiro(texto);
+    document.getElementById('resultado-metricas').style.display='block';
+    document.getElementById('resultado-metricas').scrollIntoView({behavior:'smooth'});
+  }catch(e){
+    alert('Erro: '+e.message);
+  }finally{
+    document.getElementById('loading-metricas').style.display='none';
+    document.getElementById('btn-gerar-metricas').disabled=false;
+  }
 }
 
 function copiarRoteiro(){
