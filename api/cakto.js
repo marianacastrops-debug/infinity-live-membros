@@ -1,5 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
@@ -11,82 +9,88 @@ export default async function handler(req, res) {
 
   try {
     const body = req.body;
-    
-    // Log para debug
-    console.log('Payload recebido:', JSON.stringify(body));
+    const event = body.event || '';
+    const data = body.data || {};
 
-    const event = body.event || body.type || body.status || '';
-    const data = body.data || body.purchase || body || {};
-
-    // Aceitar eventos de compra aprovada
-    const isApproved = event === 'purchase_approved' 
-      || event === 'order.approved'
-      || event === 'payment.approved'
-      || String(event).includes('approv')
-      || String(event).includes('paid')
-      || String(event).includes('complet');
-
-    if (!isApproved) {
-      console.log('Evento ignorado:', event);
+    if (event !== 'purchase_approved') {
       return res.status(200).json({ ok: true, msg: 'Evento ignorado: ' + event });
     }
 
-    // Tentar extrair email de vários formatos
-    const nome = data?.customer?.name || data?.buyer?.name || data?.name || 'Aluno';
-    const email = data?.customer?.email || data?.buyer?.email || data?.email || data?.customer_email;
+    const nome = data?.customer?.name || 'Aluno';
+    const email = data?.customer?.email;
 
-    if (!email) {
-      console.log('Email não encontrado. Body:', JSON.stringify(body));
-      return res.status(200).json({ ok: true, msg: 'Email não encontrado no payload' });
-    }
+    if (!email) return res.status(200).json({ ok: true, msg: 'Email nao encontrado' });
 
     const SB_URL = 'https://fbjxampsauqfngdennpi.supabase.co';
     const SB_SECRET = 'sb_secret_UIykqcvYhYwNWjf8Afrgdg_4jur-OWD';
     const SB_KEY = 'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
-
-    const supabaseAdmin = createClient(SB_URL, SB_SECRET, {
-      auth: { autoRefreshToken: false, persistSession: false }
-    });
 
     // Gerar senha
     const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#';
     let senha = '';
     for (let i = 0; i < 10; i++) senha += chars[Math.floor(Math.random() * chars.length)];
 
-    // Criar usuário
-    const { data: userData, error: createError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password: senha,
-      email_confirm: true,
-      user_metadata: { nome }
+    // Criar usuário via REST API admin
+    const createRes = await fetch(`${SB_URL}/auth/v1/admin/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_SECRET,
+        'Authorization': `Bearer ${SB_SECRET}`
+      },
+      body: JSON.stringify({
+        email,
+        password: senha,
+        email_confirm: true,
+        user_metadata: { nome }
+      })
     });
 
-    if (createError) {
-      if (createError.message?.includes('already') || createError.code === 'email_exists') {
-        const { data: listData } = await supabaseAdmin.auth.admin.listUsers();
-        const user = listData?.users?.find(u => u.email === email);
-        if (user) {
-          await supabaseAdmin.auth.admin.updateUserById(user.id, { password: senha });
+    const createData = await createRes.json();
+    console.log('Create response:', JSON.stringify(createData));
+
+    // Se já existe, buscar e atualizar senha
+    if (createData.code === 'email_exists' || createData.msg?.includes('already')) {
+      const listRes = await fetch(`${SB_URL}/auth/v1/admin/users?page=1&per_page=1000`, {
+        headers: {
+          'apikey': SB_SECRET,
+          'Authorization': `Bearer ${SB_SECRET}`
         }
-      } else {
-        console.error('Erro criar usuário:', createError);
-        return res.status(200).json({ ok: true, error: createError.message });
+      });
+      const listData = await listRes.json();
+      const user = (listData.users || []).find(u => u.email === email);
+      if (user) {
+        await fetch(`${SB_URL}/auth/v1/admin/users/${user.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SB_SECRET,
+            'Authorization': `Bearer ${SB_SECRET}`
+          },
+          body: JSON.stringify({ password: senha })
+        });
       }
     }
 
-    // Enviar e-mail
-    const supabase = createClient(SB_URL, SB_KEY);
-    await supabase.rpc('enviar_email_resend', {
-      p_nome: nome,
-      p_email: email,
-      p_senha: senha
+    // Enviar e-mail via RPC
+    const emailRes = await fetch(`${SB_URL}/rest/v1/rpc/enviar_email_resend`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${SB_KEY}`
+      },
+      body: JSON.stringify({ p_nome: nome, p_email: email, p_senha: senha })
     });
 
-    console.log('✅ Aluno criado:', nome, email);
+    const emailData = await emailRes.json();
+    console.log('Email response:', JSON.stringify(emailData));
+    console.log('Aluno criado:', nome, email);
+
     return res.status(200).json({ ok: true, email });
 
   } catch (e) {
-    console.error('Erro:', e);
+    console.error('Erro:', e.message);
     return res.status(200).json({ ok: true, error: e.message });
   }
 }
