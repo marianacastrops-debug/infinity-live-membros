@@ -244,18 +244,7 @@
     requestAnimationFrame(draw);
   }
 
-  // Atualizar nome no hero
-  var heroNome = document.getElementById('hero-nome');
-  var nomeEl = document.getElementById('user-nome');
-  if(heroNome && nomeEl){
-    var observer = new MutationObserver(function(){
-      heroNome.textContent = nomeEl.textContent.split(' ')[0];
-    });
-    observer.observe(nomeEl, {childList:true,characterData:true,subtree:true});
-    if(nomeEl.textContent && nomeEl.textContent !== 'Carregando...'){
-      heroNome.textContent = nomeEl.textContent.split(' ')[0];
-    }
-  }
+  // Nome atualizado diretamente no init
 
   window.addEventListener('resize', function(){ resize(); createParticles(); });
   resize();
@@ -447,6 +436,9 @@
     const h2 = new Date().getHours();
     const s2 = h2<12?'Bom dia':h2<18?'Boa tarde':'Boa noite';
     document.getElementById('saudacao').textContent = s2 + ', ' + nome.split(' ')[0] + ' 👋';
+    // Atualizar nome no hero banner
+    var heroNomeEl = document.getElementById('hero-nome');
+    if(heroNomeEl) heroNomeEl.textContent = nome.split(' ')[0];
     const initials = nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
     var avEl = document.querySelector('.avatar');
     var nomeEl = document.querySelector('.user-name');
