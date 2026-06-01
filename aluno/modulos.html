@@ -176,7 +176,7 @@ var _sb=supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, st
   // 3. Buscar módulos e aulas via REST direto
   try{
     var [rM,rA]=await Promise.all([
-      fetch(SB_URL+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:HDRS}),
+      fetch(SB_URL+'/rest/v1/modulos?select=id,nome,descricao,imagem,status,cor,ordem,bloqueio_7dias&order=ordem.asc',{headers:HDRS}),
       fetch(SB_URL+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:HDRS})
     ]);
     var mods=await rM.json();
@@ -299,7 +299,7 @@ async function fazerLogout(){await _sb.auth.signOut();window.location.href='../l
   if(!cacheValido||mods.length===0){
     try{
       var [rM,rA]=await Promise.all([
-        fetch(SB_URL+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:HDRS}),
+        fetch(SB_URL+'/rest/v1/modulos?select=id,nome,descricao,imagem,status,cor,ordem,bloqueio_7dias&order=ordem.asc',{headers:HDRS}),
         fetch(SB_URL+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:HDRS})
       ]);
       var dm=await rM.json();var da=await rA.json();
@@ -315,7 +315,7 @@ async function fazerLogout(){await _sb.auth.signOut();window.location.href='../l
     (async function(){
       try{
         var [rM,rA]=await Promise.all([
-          fetch(SB_URL+'/rest/v1/modulos?select=*&order=ordem.asc',{headers:HDRS}),
+          fetch(SB_URL+'/rest/v1/modulos?select=id,nome,descricao,imagem,status,cor,ordem,bloqueio_7dias&order=ordem.asc',{headers:HDRS}),
           fetch(SB_URL+'/rest/v1/aulas?select=*&order=ordem.asc',{headers:HDRS})
         ]);
         var dm=await rM.json();var da=await rA.json();
