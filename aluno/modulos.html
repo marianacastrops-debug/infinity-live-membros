@@ -187,19 +187,34 @@ var _sb=supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, st
     var prog=await rP.json();
     var concluidasIds=(Array.isArray(prog)?prog:[]).map(function(p){return p.aula_id;});
 
-    // Buscar módulos bloqueados
-    var bloqData=[];
+    // Calcular bloqueio baseado no campo bloqueio_7dias do módulo + data de criação do aluno
     var modsBloqDatas={};
     try{
-      var rB=await fetch(SB_URL+'/rest/v1/modulos_bloqueados?user_id=eq.'+session.user.id+'&liberado_manualmente=eq.false&select=modulo_id,desbloqueio_em',{
-        headers:Object.assign({'Authorization':'Bearer '+session.access_token},HDRS)
-      });
-      bloqData=await rB.json();
-      if(!Array.isArray(bloqData)) bloqData=[];
-      bloqData.forEach(function(b){
-        if(new Date(b.desbloqueio_em)>new Date()) modsBloqDatas[b.modulo_id]=b.desbloqueio_em;
-      });
-    }catch(e){ bloqData=[]; }
+      // Pegar data de criação do aluno (= data da compra)
+      var dataCriacao=new Date(session.user.created_at||Date.now());
+      var dataDesbloqueio=new Date(dataCriacao);
+      dataDesbloqueio.setDate(dataDesbloqueio.getDate()+7);
+      var agora=new Date();
+
+      // Verificar módulos liberados manualmente
+      var modsLiberados=[];
+      try{
+        var rLib=await fetch(SB_URL+'/rest/v1/modulos_bloqueados?user_id=eq.'+session.user.id+'&liberado_manualmente=eq.true&select=modulo_id',{
+          headers:Object.assign({'Authorization':'Bearer '+session.access_token},HDRS)
+        });
+        var libData=await rLib.json();
+        modsLiberados=(Array.isArray(libData)?libData:[]).map(function(l){return l.modulo_id;});
+      }catch(e2){}
+
+      // Se ainda dentro dos 7 dias, bloquear módulos com bloqueio_7dias=true
+      if(dataDesbloqueio>agora && Array.isArray(mods)){
+        mods.forEach(function(m){
+          if(m.bloqueio_7dias===true && modsLiberados.indexOf(m.id)===-1){
+            modsBloqDatas[m.id]=dataDesbloqueio.toISOString();
+          }
+        });
+      }
+    }catch(e){ console.warn('Erro bloqueio:',e); }
     var modsBloqIds=Object.keys(modsBloqDatas);
     renderModulos(mods,aulas,concluidasIds,modsBloqIds,modsBloqDatas);
   }catch(e){
