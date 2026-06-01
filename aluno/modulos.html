@@ -263,18 +263,44 @@ function renderModulos(mods,aulas,concluidasIds,modsBloqIds,modsBloqDatas){
     var bloqueado7dias=modsBloqIds.indexOf(m.id)>-1;
     var bloqueadoFinal=locked||bloqueado7dias;
 
+    // Data de liberação formatada
+    var dataLiberacaoTxt='';
+    if(bloqueado7dias && modsBloqDatas && modsBloqDatas[m.id]){
+      var dLib=new Date(modsBloqDatas[m.id]);
+      var diasSem=['dom','seg','ter','qua','qui','sex','sab'];
+      var mesesArr=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      dataLiberacaoTxt=diasSem[dLib.getDay()]+', '+dLib.getDate()+' de '+mesesArr[dLib.getMonth()];
+    }
+
     var capaHtml=m.imagem&&m.imagem.length>5
-      ?'<img src="'+m.imagem+'" alt="'+m.nome+'"'+(bloqueadoFinal?' style="filter:grayscale(1)"':'')+'>'
-      :'<div class="mod-capa-ph" style="background:'+c.bg+'"><i class="ti ti-photo-off" style="font-size:48px;color:'+c.cor+';opacity:.5;"></i></div>';
+      ?'<img src="'+m.imagem+'" alt="'+m.nome+'"'+(bloqueadoFinal?' style="filter:grayscale(100%) brightness(0.6)"':'')+'>'      :'<div class="mod-capa-ph" style="background:'+c.bg+'"><i class="ti ti-photo-off" style="font-size:48px;color:'+c.cor+';opacity:.5;"></i></div>';
 
-    var btnTxt=bloqueadoFinal?(bloqueado7dias?'🔒 Disponível em breve':'🔒 Bloqueado'):(pctM===100?'↺ Revisar':(pctM>0?'▶ Continuar':'▶ Começar'));
-    var btnStyle=bloqueadoFinal?'background:rgba(255,255,255,0.05);color:var(--text3);cursor:not-allowed;':'background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';';
+    var btnTxt=bloqueadoFinal
+      ?(bloqueado7dias?'🔒 Disponível em '+(dataLiberacaoTxt||'breve'):'🔒 Bloqueado')
+      :(pctM===100?'↺ Revisar':(pctM>0?'▶ Continuar':'▶ Começar'));
+    var btnStyle=bloqueadoFinal
+      ?'background:rgba(255,255,255,0.05);color:var(--text3);cursor:not-allowed;font-size:11px;'
+      :'background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';';
 
-    return '<a class="mod-card'+(bloqueadoFinal?' bloqueado':'')+'" href="'+(bloqueadoFinal?'#':'aulas.html?modulo='+m.id)+'" '+(bloqueadoFinal?'onclick="return false"':'')+' style="text-decoration:none;">'
+    var overlayBloq=bloqueadoFinal
+      ?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.75);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:4;gap:10px;text-align:center;padding:16px;">'
+        +'<div style="width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;">'
+        +'<i class="ti ti-lock" style="font-size:24px;color:rgba(255,255,255,0.5);"></i>'
+        +'</div>'
+        +(bloqueado7dias&&dataLiberacaoTxt
+          ?'<div>'
+            +'<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px;">Disponível em</div>'
+            +'<div style="font-size:15px;font-weight:800;color:rgba(255,255,255,0.75);">'+dataLiberacaoTxt+'</div>'
+            +'</div>'
+          :'<div style="font-size:11px;color:rgba(255,255,255,0.35);">Bloqueado</div>')
+        +'</div>'
+      :'';
+
+return '<a class="mod-card'+(bloqueadoFinal?' bloqueado':'')+'" href="'+(bloqueadoFinal?'#':'aulas.html?modulo='+m.id)+'" '+(bloqueadoFinal?'onclick="return false"':'')+' style="text-decoration:none;">'
       +'<div class="mod-capa">'
       +capaHtml
       +'<div class="mod-grad"></div>'
-      +(locked?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:5;"><i class="ti ti-lock" style="font-size:28px;color:#4a5270;"></i></div>':'')
+      +overlayBloq
       +'<div class="mod-badge" style="background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+am.length+' aula'+(am.length!==1?'s':'')+'</div>'
       +'<div class="mod-info"><div class="mod-num">Módulo '+m.ordem+'</div><div class="mod-nome">'+m.nome+'</div></div>'
       +'</div>'
