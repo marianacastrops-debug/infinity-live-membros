@@ -187,10 +187,20 @@ var _sb=supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, st
     var prog=await rP.json();
     var concluidasIds=(Array.isArray(prog)?prog:[]).map(function(p){return p.aula_id;});
 
+    // Buscar módulos bloqueados
+    var bloqData=[];
     var modsBloqDatas={};
-    (Array.isArray(bloqData)?bloqData:[]).forEach(function(b){
-      if(new Date(b.desbloqueio_em)>new Date()) modsBloqDatas[b.modulo_id]=b.desbloqueio_em;
-    });
+    try{
+      var rB=await fetch(SB_URL+'/rest/v1/modulos_bloqueados?user_id=eq.'+session.user.id+'&liberado_manualmente=eq.false&select=modulo_id,desbloqueio_em',{
+        headers:Object.assign({'Authorization':'Bearer '+session.access_token},HDRS)
+      });
+      bloqData=await rB.json();
+      if(!Array.isArray(bloqData)) bloqData=[];
+      bloqData.forEach(function(b){
+        if(new Date(b.desbloqueio_em)>new Date()) modsBloqDatas[b.modulo_id]=b.desbloqueio_em;
+      });
+    }catch(e){ bloqData=[]; }
+    var modsBloqIds=Object.keys(modsBloqDatas);
     renderModulos(mods,aulas,concluidasIds,modsBloqIds,modsBloqDatas);
   }catch(e){
     console.error('Erro:',e);
