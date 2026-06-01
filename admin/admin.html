@@ -479,21 +479,54 @@ REGRAS:
 </div>
 
 <div class="overlay" id="modal-perfil">
-  <div class="modal">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);">
-      <div id="perf-av" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;background:var(--g1);">?</div>
-      <div style="flex:1;"><div id="perf-nome" style="font-size:14px;font-weight:700;"></div><div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:1px;"></div><span id="perf-status" class="sp sp-ok" style="display:inline-block;margin-top:4px;">Ativo</span></div>
-      <div style="display:flex;gap:6px;">
+  <div class="modal" style="width:500px;">
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+      <div id="perf-av" style="width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;background:var(--g1);">?</div>
+      <div style="flex:1;min-width:0;">
+        <div id="perf-nome" style="font-size:15px;font-weight:700;"></div>
+        <div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:2px;"></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+          <span id="perf-status" class="sp sp-ok">Ativo</span>
+          <span id="perf-origem" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(124,92,255,0.1);color:var(--purple);border:1px solid rgba(124,92,255,0.2);"></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
         <button class="btn btn-d btn-sm" id="btn-bloquear" onclick="alternarBloqueio()">Bloquear</button>
         <button class="btn btn-sm" style="background:rgba(255,59,92,0.1);color:var(--red);border:1px solid rgba(255,59,92,0.2);" onclick="excluirAlunoModal()"><i class="ti ti-trash" style="font-size:12px;"></i></button>
         <button class="btn btn-o btn-sm" onclick="fecharModal('modal-perfil')">Fechar</button>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;">
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-aulas" style="font-size:18px;font-weight:800;">0</div><div style="font-size:10px;color:var(--text3);">Aulas</div></div>
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;">0%</div><div style="font-size:10px;color:var(--text3);">Progresso</div></div>
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-status-dt" style="font-size:12px;font-weight:700;color:var(--text2);">—</div><div style="font-size:10px;color:var(--text3);">Membro desde</div></div>
+
+    <!-- STATS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px;">
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;">
+        <div id="perf-aulas" style="font-size:18px;font-weight:800;">0</div>
+        <div style="font-size:10px;color:var(--text3);">Aulas</div>
+      </div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;">
+        <div style="font-size:18px;font-weight:800;">0%</div>
+        <div style="font-size:10px;color:var(--text3);">Progresso</div>
+      </div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;">
+        <div id="perf-entrada" style="font-size:12px;font-weight:700;color:var(--text2);">—</div>
+        <div style="font-size:10px;color:var(--text3);">Entrou em</div>
+      </div>
     </div>
+
+    <!-- MÓDULOS BLOQUEADOS -->
+    <div id="perf-bloqueios-wrap" style="display:none;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:10px;padding:14px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--yellow);display:flex;align-items:center;gap:7px;">
+          <i class="ti ti-lock" style="font-size:14px;"></i> Módulos com acesso bloqueado
+        </div>
+        <button onclick="liberarTodosModulos()" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);padding:5px 11px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+          <i class="ti ti-lock-open" style="font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Liberar todos
+        </button>
+      </div>
+      <div id="perf-bloqueios-lista" style="display:flex;flex-direction:column;gap:7px;"></div>
+    </div>
+
   </div>
 </div>
 
@@ -871,11 +904,12 @@ function salvarAluno(){
   renderAlunos(a);atualizarStats();toast('Aluno adicionado!');
 }
 
-function verPerfil(id){
+async function verPerfil(id){
   var a=gAlunos().find(function(x){return x.id===id;});
   if(!a)return;
   var inits=a.nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
   document.getElementById('perf-av').textContent=inits;
+  document.getElementById('perf-av').style.background=a.cor||'var(--g1)';
   document.getElementById('perf-av').dataset.id=id;
   document.getElementById('perf-nome').textContent=a.nome;
   document.getElementById('perf-email').textContent=a.email;
@@ -883,7 +917,76 @@ function verPerfil(id){
   var sp=document.getElementById('perf-status');
   sp.textContent=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
   sp.className='sp '+(a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new');
+
+  // Origem
+  var origemEl=document.getElementById('perf-origem');
+  if(origemEl){
+    origemEl.textContent=a.origem==='link_compra'?'🔗 Link de compra':'✏️ Cadastro manual';
+  }
+
+  // Data de entrada
+  var entradaEl=document.getElementById('perf-entrada');
+  if(entradaEl&&a.created_at){
+    var d=new Date(a.created_at);
+    var meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    entradaEl.textContent=d.getDate()+' '+meses[d.getMonth()]+' '+d.getFullYear();
+  } else if(entradaEl){
+    entradaEl.textContent='—';
+  }
+
   abrirModal('modal-perfil');
+
+  // Buscar módulos bloqueados deste aluno
+  try{
+    var mods=gMods();
+    var res=await _sb.from('modulos_bloqueados')
+      .select('modulo_id,desbloqueio_em,liberado_manualmente')
+      .eq('user_id',id)
+      .eq('liberado_manualmente',false);
+    
+    var agora=new Date();
+    var bloqueados=(res.data||[]).filter(function(b){return new Date(b.desbloqueio_em)>agora;});
+    
+    var wrap=document.getElementById('perf-bloqueios-wrap');
+    var lista=document.getElementById('perf-bloqueios-lista');
+    
+    if(bloqueados.length>0){
+      wrap.style.display='block';
+      var mesesArr=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      lista.innerHTML=bloqueados.map(function(b){
+        var mod=mods.find(function(m){return m.id===b.modulo_id;});
+        var nomeM=mod?mod.nome:'Módulo';
+        var dLib=new Date(b.desbloqueio_em);
+        var dataLib=dLib.getDate()+' '+mesesArr[dLib.getMonth()];
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--card);border-radius:8px;border:1px solid var(--border);">'
+          +'<div><div style="font-size:12px;font-weight:600;">'+nomeM+'</div>'
+          +'<div style="font-size:10px;color:var(--text3);">Libera em '+dataLib+'</div></div>'
+          +'<button onclick="liberarModulo(''+id+'',''+b.modulo_id+'')" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);color:var(--green);padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">'
+          +'<i class="ti ti-lock-open" style="font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Liberar</button>'
+          +'</div>';
+      }).join('');
+    } else {
+      wrap.style.display='none';
+    }
+  }catch(e){ console.warn(e); }
+}
+
+async function liberarModulo(userId, moduloId){
+  await _sb.from('modulos_bloqueados')
+    .update({liberado_manualmente:true})
+    .eq('user_id',userId)
+    .eq('modulo_id',moduloId);
+  toast('Módulo liberado!');
+  verPerfil(userId);
+}
+
+async function liberarTodosModulos(){
+  var id=document.getElementById('perf-av').dataset.id;
+  await _sb.from('modulos_bloqueados')
+    .update({liberado_manualmente:true})
+    .eq('user_id',id);
+  toast('Todos os módulos liberados!');
+  verPerfil(id);
 }
 
 function alternarBloqueio(){
