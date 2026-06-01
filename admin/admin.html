@@ -213,7 +213,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <button class="nav-btn" id="nav-preview" onclick="irPara('preview',this)"><i class="ti ti-eye"></i> Ver como aluno</button>
     <button class="nav-btn" id="nav-materiais" onclick="irPara('materiais',this)"><i class="ti ti-file-upload"></i> Materiais</button>
     <div class="nav-lbl">Sistema</div>
-    <button class="nav-btn" id="nav-agentes" onclick="irPara('agentes',this)"><i class="ti ti-robot"></i> Agentes de IA</button>
     <button class="nav-btn" id="nav-config" onclick="irPara('config',this)"><i class="ti ti-settings"></i> Configurações</button>
   </div>
   <div class="sidebar-bottom">
@@ -225,7 +224,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div><div class="tb-title" id="pg-titulo">Dashboard</div><div class="tb-sub" id="pg-sub">Visão geral da plataforma</div></div>
     <div class="tb-right">
       <div class="live-pill"><div class="live-dot"></div> Online</div>
-      <a href="../aluno/dashboard.html" target="_blank" class="btn btn-o" style="border-color:rgba(0,200,255,0.3);color:var(--cyan);text-decoration:none;"><i class="ti ti-external-link" style="font-size:14px;"></i> Ver área do aluno</a>
       <a href="../aluno/dashboard.html" target="_blank" class="btn btn-o" style="border-color:rgba(0,200,255,0.3);color:var(--cyan);text-decoration:none;"><i class="ti ti-external-link" style="font-size:14px;"></i> Ver área do aluno</a>
       <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Novo aluno</button>
     </div>
@@ -249,8 +247,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div class="search-bar">
         <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Buscar aluno..." oninput="filtrarAlunos(this.value)"/></div>
         <select class="fsel" onchange="filtrarStatusAluno(this.value)"><option value="">Todos</option><option value="ativo">Ativos</option><option value="bloqueado">Bloqueados</option><option value="novo">Novos</option></select>
-        <a href="../aluno/dashboard.html" target="_blank" class="btn btn-o" style="border-color:rgba(0,200,255,0.3);color:var(--cyan);text-decoration:none;"><i class="ti ti-external-link" style="font-size:14px;"></i> Ver área do aluno</a>
-      <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Adicionar</button>
+        <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Adicionar</button>
       </div>
       <div class="card" style="padding:0;"><table><thead><tr><th>Aluno</th><th>E-mail</th><th>Progresso</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tbody-alunos"></tbody></table></div>
       <div class="empty" id="empty-alunos" style="display:none;"><i class="ti ti-users"></i><p>Nenhum aluno. Clique em Adicionar.</p></div>
@@ -290,31 +287,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
         <button class="btn btn-p" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
       </div>
       <div id="mats-lista"><div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado.</p></div></div>
-    </div>
-
-    <div class="pg" id="pg-agentes">
-      <div class="grid2">
-        <div>
-          <div class="card">
-            <div class="card-hd"><span class="card-title"><i class="ti ti-key" style="color:var(--cyan);"></i> Chaves API por Agente</span></div>
-            <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Cada agente usa sua própria chave para controle de custos separado.</div>
-            <div class="mf"><label class="ml">🎬 Gerador de Roteiro</label><input class="mi" id="ag-key-roteiro" type="password" placeholder="sk-ant-api03-..."/></div>
-            <div class="mf"><label class="ml">📸 Gerador de Imagem</label><input class="mi" id="ag-key-imagem" type="password" placeholder="sk-ant-api03-..."/></div>
-            <div class="mf"><label class="ml">📊 Analista de Métricas</label><input class="mi" id="ag-key-metricas" type="password" placeholder="sk-ant-api03-..."/><div style="font-size:10px;color:var(--text3);margin-top:6px;">🔒 Salvas com segurança no Supabase.</div></div>
-            <button class="btn btn-p" onclick="salvarConfAgentes()"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar chaves</button>
-          </div>
-        </div>
-        <div>
-          <div class="card">
-            <div class="card-hd"><span class="card-title"><i class="ti ti-brain" style="color:var(--purple);"></i> Prompt do Agente de Roteiro</span></div>
-            <div class="mf"><label class="ml">Prompt de treinamento</label><textarea class="mta" id="ag-prompt" style="min-height:280px;font-size:11px;line-height:1.6;"></textarea></div>
-            <div style="display:flex;gap:8px;">
-              <button class="btn btn-p" onclick="salvarConfAgentes()" style="flex:1;"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar</button>
-              <button class="btn btn-o" onclick="resetarPrompt()"><i class="ti ti-refresh" style="font-size:13px;"></i> Padrão</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="pg" id="pg-config">
@@ -361,7 +333,6 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div class="mf"><label class="ml">Cor</label><select class="msel" id="mod-cor"><option value="cyan">Ciano</option><option value="green">Verde</option><option value="pink">Rosa</option><option value="purple">Roxo</option><option value="yellow">Amarelo</option></select></div>
     </div>
     <div class="mf"><label class="ml">Ordem</label><input class="mi" id="mod-ordem" type="number" min="1" placeholder="1"/></div>
-    <div class="mf"><label style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:9px;cursor:pointer;"><input type="checkbox" id="mod-bloqueio7" style="width:16px;height:16px;accent-color:var(--yellow);cursor:pointer;"/><div><div style="font-size:12px;font-weight:700;color:var(--yellow);">🔒 Bloquear por 7 dias para novos alunos</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Novos alunos só terão acesso após 7 dias da compra</div></div></label></div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarMod()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar módulo</button>
       <button class="btn btn-d btn-sm" id="btn-del-mod" style="display:none;" onclick="excluirModAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
@@ -407,37 +378,28 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 </div>
 
 <div class="overlay" id="modal-perfil">
-  <div class="modal" style="width:500px;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);">
-      <div id="perf-av" style="width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;background:var(--g1);">?</div>
-      <div style="flex:1;min-width:0;">
-        <div id="perf-nome" style="font-size:15px;font-weight:700;"></div>
-        <div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:2px;"></div>
-        <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
-          <span id="perf-status" class="sp sp-ok">Ativo</span>
-          <span id="perf-origem" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(124,92,255,0.1);color:var(--purple);border:1px solid rgba(124,92,255,0.2);"></span>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+  <div class="modal">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+      <div id="perf-av" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;background:var(--g1);">?</div>
+      <div style="flex:1;"><div id="perf-nome" style="font-size:14px;font-weight:700;"></div><div id="perf-email" style="font-size:12px;color:var(--text2);margin-top:1px;"></div><span id="perf-status" class="sp sp-ok" style="display:inline-block;margin-top:4px;">Ativo</span></div>
+      <div style="display:flex;gap:6px;">
         <button class="btn btn-d btn-sm" id="btn-bloquear" onclick="alternarBloqueio()">Bloquear</button>
         <button class="btn btn-sm" style="background:rgba(255,59,92,0.1);color:var(--red);border:1px solid rgba(255,59,92,0.2);" onclick="excluirAlunoModal()"><i class="ti ti-trash" style="font-size:12px;"></i></button>
         <button class="btn btn-o btn-sm" onclick="fecharModal('modal-perfil')">Fechar</button>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px;">
       <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-aulas" style="font-size:18px;font-weight:800;">0</div><div style="font-size:10px;color:var(--text3);">Aulas</div></div>
       <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;">0%</div><div style="font-size:10px;color:var(--text3);">Progresso</div></div>
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-entrada" style="font-size:12px;font-weight:700;color:var(--text2);">—</div><div style="font-size:10px;color:var(--text3);">Entrou em</div></div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-status-dt" style="font-size:12px;font-weight:700;color:var(--text2);">—</div><div style="font-size:10px;color:var(--text3);">Entrou em</div></div>
     </div>
-    <!-- CONTROLE DE ACESSO 7 DIAS -->
-    <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Controle de acesso</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--card);border-radius:9px;border:1px solid var(--border);">
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
         <div>
-          <div style="font-size:13px;font-weight:600;" id="bloq-label">🔒 Bloqueio 7 dias</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="bloq-sub">Carregando...</div>
+          <div style="font-size:12px;font-weight:700;">Bloqueio 7 dias</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;" id="bloq-sub">Verificando...</div>
         </div>
-        <button id="btn-toggle-bloq" onclick="toggleBloqueio7dias()" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;">...</button>
+        <button id="btn-toggle-bloq" onclick="toggleBloqueio7dias()" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;background:var(--green);color:#000;">...</button>
       </div>
     </div>
   </div>
@@ -503,7 +465,7 @@ function irPara(pg,el){
   var alvo=document.getElementById('pg-'+pg);
   if(alvo){alvo.style.display='block';alvo.classList.add('ativa');}
   if(el)el.classList.add('ativo');
-  var titulos={dashboard:['Dashboard','Visão geral da plataforma'],alunos:['Alunos','Gerencie os membros'],tickets:['Tickets','Central de atendimento'],modulos:['Módulos & Aulas','Crie e organize o conteúdo'],agentes:['Agentes de IA','Configure os agentes e chave API'],preview:['Ver como aluno','Prévia da área de membros'],materiais:['Materiais','Arquivos para download'],config:['Configurações','Personalize a plataforma']};
+  var titulos={dashboard:['Dashboard','Visão geral da plataforma'],alunos:['Alunos','Gerencie os membros'],tickets:['Tickets','Central de atendimento'],modulos:['Módulos & Aulas','Crie e organize o conteúdo'],preview:['Ver como aluno','Prévia da área de membros'],materiais:['Materiais','Arquivos para download'],config:['Configurações','Personalize a plataforma']};
   var t=titulos[pg]||[pg,''];
   document.getElementById('pg-titulo').textContent=t[0];
   document.getElementById('pg-sub').textContent=t[1];
@@ -512,7 +474,6 @@ function irPara(pg,el){
   if(pg==='alunos')renderAlunos(gAlunos());
   if(pg==='preview')renderPreview();
   if(pg==='materiais')renderMats();
-  if(pg==='agentes')carregarConfAgentes();
   if(pg==='dashboard')atualizarStats();
 }
 
@@ -631,7 +592,7 @@ function salvarMod(){
 }
 
 function _fazerSalvarMod(editId,nome,img){
-  var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||gMods().length+1,bloqueio7dias:document.getElementById('mod-bloqueio7').checked};
+  var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||gMods().length+1};
   var mods=gMods();
   if(editId){var i=mods.findIndex(function(m){return m.id===editId;});if(i!==-1)mods[i]=dados;}
   else mods.push(dados);
@@ -756,35 +717,35 @@ async function salvarAluno(){
   var nome=document.getElementById('aluno-nome').value.trim();
   var email=document.getElementById('aluno-email').value.trim();
   var senha=document.getElementById('aluno-senha').value.trim();
-  if(!nome||!email){alert('Nome e e-mail são obrigatórios.');return;}
+  if(!nome||!email){alert('Nome e e-mail sao obrigatorios.');return;}
   var btn=document.querySelector('#modal-aluno .btn-p');
   if(btn){btn.textContent='Criando...';btn.disabled=true;}
   try{
-    var senhaFinal=senha||gerarSenha();
-    var res=await _sb.auth.signUp({email:email,password:senhaFinal,options:{data:{nome:nome,origem:'manual'},emailRedirectTo:'https://mentoriainfinitylive.shop/login.html'}});
+    var sf=senha||gerarSenha();
+    var res=await _sb.auth.signUp({email:email,password:sf,options:{data:{nome:nome,origem:'manual'},emailRedirectTo:'https://mentoriainfinitylive.shop/login.html'}});
     if(res.error){alert('Erro: '+res.error.message);}
     else{
       var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff'];
       var a=gAlunos();
       a.push({id:res.data.user?res.data.user.id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:cores[Math.floor(Math.random()*cores.length)],aulas:0,origem:'manual',created_at:new Date().toISOString()});
-      sAlunos(a);
-      fecharModal('modal-aluno');
-      document.getElementById('aluno-nome').value='';
-      document.getElementById('aluno-email').value='';
-      document.getElementById('aluno-senha').value='';
+      sAlunos(a);fecharModal('modal-aluno');
+      document.getElementById('aluno-nome').value='';document.getElementById('aluno-email').value='';document.getElementById('aluno-senha').value='';
       renderAlunos(a);atualizarStats();
-      var emailOk=await enviarEmailBoasVindas(nome,email,senhaFinal);
-      if(emailOk){toast('Aluno criado! E-mail enviado para '+email);}
-      else{toast('Aluno criado!');alert('Aluno: '+nome+'\nE-mail: '+email+'\nSenha: '+senhaFinal);}
+      var ok=await enviarEmailBoasVindas(nome,email,sf);
+      if(ok)toast('Aluno criado! E-mail enviado!');else{toast('Aluno criado!');alert('Senha: '+sf);}
     }
   }catch(e){alert('Erro: '+e.message);}
   if(btn){btn.textContent='Adicionar aluno';btn.disabled=false;}
 }
-
-function gerarSenha(){
-  var chars='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#';
-  var s='';for(var i=0;i<10;i++)s+=chars[Math.floor(Math.random()*chars.length)];
-  return s;
+function gerarSenha(){var ch='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#';var s='';for(var i=0;i<10;i++)s+=ch[Math.floor(Math.random()*ch.length)];return s;}
+function _OLD_salvarAluno(){
+  var a=gAlunos();
+  a.push({id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:'#00c8ff',aulas:0});
+  sAlunos(a);fecharModal('modal-aluno');
+  document.getElementById('aluno-nome').value='';
+  document.getElementById('aluno-email').value='';
+  document.getElementById('aluno-senha').value='';
+  renderAlunos(a);atualizarStats();toast('Aluno adicionado!');
 }
 
 async function verPerfil(id){
@@ -799,160 +760,255 @@ async function verPerfil(id){
   var sp=document.getElementById('perf-status');
   sp.textContent=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
   sp.className='sp '+(a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new');
-  var origemEl=document.getElementById('perf-origem');
-  if(origemEl) origemEl.textContent=a.origem==='link_compra'?'🔗 Link de compra':'✏️ Cadastro manual';
-  var entradaEl=document.getElementById('perf-entrada');
-  if(entradaEl){
-    if(a.created_at){
-      var d=new Date(a.created_at);
-      var ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-      entradaEl.textContent=d.getDate()+' '+ms[d.getMonth()]+' '+d.getFullYear();
-    } else {
-      // Buscar do Supabase
-      _sb.from('profiles').select('created_at').eq('id',id).single().then(function(r){
-        if(r.data&&r.data.created_at){
-          var d2=new Date(r.data.created_at);
-          var ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-          entradaEl.textContent=d2.getDate()+' '+ms2[d2.getMonth()]+' '+d2.getFullYear();
-          // Salvar no localStorage para próxima vez
-          var alns=gAlunos();
-          var idx=alns.findIndex(function(x){return x.id===id;});
-          if(idx>-1){alns[idx].created_at=r.data.created_at;sAlunos(alns);}
-        }
-      });
-    }
-  }
+  // Data entrada
+  var dtEl=document.getElementById('perf-status-dt');
+  if(dtEl&&a.created_at){var d=new Date(a.created_at);var ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];dtEl.textContent=d.getDate()+' '+ms[d.getMonth()]+' '+d.getFullYear();}
   abrirModal('modal-perfil');
-  // Calcular se aluno tem menos de 7 dias
+  // Verificar bloqueio
   var btn=document.getElementById('btn-toggle-bloq');
   var sub=document.getElementById('bloq-sub');
-  var label=document.getElementById('bloq-label');
-  if(btn&&sub){
-    var dataCriacao=new Date(a.created_at||Date.now());
-    var agora2=new Date();
-    var diasDesdeCriacao=Math.floor((agora2-dataCriacao)/(1000*60*60*24));
-    var dataDesbloq=new Date(dataCriacao);
-    dataDesbloq.setDate(dataDesbloq.getDate()+7);
-    var ms3=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-    var dataDesbloqTxt=dataDesbloq.getDate()+' '+ms3[dataDesbloq.getMonth()]+' '+dataDesbloq.getFullYear();
-
-    // Verificar se foi liberado manualmente
-    var resLib=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',id).limit(1);
-    var foiLiberado=resLib.data&&resLib.data.length>0&&resLib.data[0].liberado_manualmente===true;
-    var temBloqueio=gMods().some(function(m){return m.bloqueio7dias;});
-    
-    if(!temBloqueio){
-      // Nenhum módulo configurado com bloqueio
-      label.textContent='✅ Sem módulos bloqueados';
-      sub.textContent='Nenhum módulo configurado com bloqueio de 7 dias';
-      btn.style.display='none';
-    } else if(foiLiberado){
-      label.textContent='🔓 Acesso liberado';
-      sub.textContent='Liberado manualmente pelo admin';
-      btn.textContent='🔒 Reativar bloqueio';
-      btn.dataset.estado='liberado';
-      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:1px solid rgba(255,184,0,0.3);background:rgba(255,184,0,0.08);color:var(--yellow);';
-      btn.style.display='';
-    } else if(diasDesdeCriacao<7){
-      label.textContent='🔒 Bloqueio ativo ('+diasDesdeCriacao+' de 7 dias)';
-      sub.textContent='Libera automaticamente em '+dataDesbloqTxt;
-      btn.textContent='🔓 Liberar acesso agora';
-      btn.dataset.estado='ativo';
-      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;background:var(--g1);color:#fff;';
-      btn.style.display='';
-    } else {
-      label.textContent='✅ Acesso liberado ('+diasDesdeCriacao+' dias)';
-      sub.textContent='Passou dos 7 dias — acesso total';
-      btn.style.display='none';
-    }
-  }
-
+  if(!btn)return;
+  btn.textContent='...';btn.disabled=true;
   try{
-    var mods=gMods();
-    var res=await _sb.from('modulos_bloqueados').select('modulo_id,desbloqueio_em').eq('user_id',id).eq('liberado_manualmente',false);
-    var agora=new Date();
-    var bloqueados=(res.data||[]).filter(function(b){return new Date(b.desbloqueio_em)>agora;});
-    var wrap=document.getElementById('perf-bloqueios-wrap');
-    var lista=document.getElementById('perf-bloqueios-lista');
-    if(bloqueados.length>0){
-      wrap.style.display='block';
+    var criacao=new Date(a.created_at||Date.now());
+    var desblq=new Date(criacao);desblq.setDate(desblq.getDate()+7);
+    var dentro7dias=desblq>new Date();
+    var mods=gMods().filter(function(m){return m.bloqueio7dias;});
+    if(!dentro7dias||!mods.length){
+      btn.textContent='Sem bloqueio';btn.disabled=true;btn.style.background='rgba(255,255,255,0.05)';btn.style.color='var(--text3)';
+      sub.textContent='Aluno sem modulos bloqueados';
+      return;
+    }
+    // Verificar se foi liberado manualmente
+    var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',id).limit(1);
+    var liberado=(res.data&&res.data.length>0&&res.data[0].liberado_manualmente===true);
+    if(liberado){
+      btn.dataset.estado='liberado';btn.textContent='Reativar bloqueio';
+      btn.style.background='rgba(255,184,0,0.15)';btn.style.color='var(--yellow)';btn.style.border='1px solid rgba(255,184,0,0.3)';
+      sub.textContent='Acesso liberado manualmente';
+    } else {
+      btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
+      btn.style.background='var(--green)';btn.style.color='#000';btn.style.border='none';
       var ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-      lista.innerHTML=bloqueados.map(function(b){
-        var mod=mods.find(function(m){return m.id===b.modulo_id;});
-        var nomeM=mod?mod.nome:'Módulo';
-        var dLib=new Date(b.desbloqueio_em);
-        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--card);border-radius:8px;border:1px solid var(--border);">'
-          +'<div><div style="font-size:12px;font-weight:600;">'+nomeM+'</div><div style="font-size:10px;color:var(--text3);">Libera em '+dLib.getDate()+' '+ms2[dLib.getMonth()]+'</div></div>'
-          +'<button onclick="liberarModulo(\''+id+'\',\''+b.modulo_id+'\')" style="background:rgba(0,229,160,0.1);color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Liberar</button>'
-          +'</div>';
-      }).join('');
-    } else { wrap.style.display='none'; }
-  }catch(e){ console.warn(e); }
+      sub.textContent='Bloqueado ate '+desblq.getDate()+' de '+ms2[desblq.getMonth()];
+    }
+    btn.disabled=false;
+  }catch(e){btn.textContent='Erro';console.warn(e);}
 }
 
-async function liberarModulo(userId,moduloId){
-  await _sb.from('modulos_bloqueados').update({liberado_manualmente:true}).eq('user_id',userId).eq('modulo_id',moduloId);
-  toast('Módulo liberado!');
-  verPerfil(userId);
-}
-
-async function liberarTodosModulos(){
+function alternarBloqueio(){
   var id=document.getElementById('perf-av').dataset.id;
-  await _sb.from('modulos_bloqueados').update({liberado_manualmente:true}).eq('user_id',id);
-  toast('Todos os módulos liberados!');
-  verPerfil(id);
+  var alunos=gAlunos();
+  var a=alunos.find(function(x){return x.id===id;});
+  if(!a)return;
+  a.status=a.status==='bloqueado'?'ativo':'bloqueado';
+  sAlunos(alunos);verPerfil(id);renderAlunos(alunos);
+  toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
+}
+
+function excluirAluno(id){
+  sAlunos(gAlunos().filter(function(a){return a.id!==id;}));
+  renderAlunos(gAlunos());atualizarStats();toast('Aluno excluído.');
+}
+
+function excluirAlunoModal(){
+  var id=document.getElementById('perf-av').dataset.id;
+  var nome=document.getElementById('perf-nome').textContent;
+  fecharModal('modal-perfil');
+  confirmar('Excluir aluno','Excluir "'+nome+'"?',function(){excluirAluno(id);});
+}
+
+function renderTickets(lista){
+  var el=document.getElementById('tickets-lista');
+  var empty=document.getElementById('empty-tkt');
+  if(!el)return;
+  if(!lista)lista=gTickets();
+  if(!lista.length){el.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  var stC={aberto:'background:rgba(255,59,92,0.12);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2)',pendente:'background:rgba(255,184,0,0.12);color:#ffb800;border:1px solid rgba(255,184,0,0.2)',respondido:'background:rgba(0,229,160,0.12);color:#00e5a0;border:1px solid rgba(0,229,160,0.2)',resolvido:'background:rgba(255,255,255,0.06);color:#4a5270'};
+  var stL={aberto:'Aberto',pendente:'Pendente',respondido:'Respondido',resolvido:'Resolvido'};
+  el.innerHTML=lista.map(function(t,i){
+    var st=t.status||'aberto';
+    return '<div class="tkt"><span class="tkt-num">#'+String(i+1).padStart(3,'0')+'</span><div class="tkt-info"><div class="tkt-title">'+t.titulo+'</div><div class="tkt-user">'+t.aluno+'</div></div><span class="sp" style="'+stC[st]+'">'+stL[st]+'</span><span class="tkt-time" style="margin-left:10px;">'+t.data+'</span><button class="btn btn-p btn-sm" style="margin-left:10px;" onclick="abrirTicket(\''+t.id+'\')">'+(st==='resolvido'?'Ver':'Responder')+'</button><button class="btn btn-sm" style="margin-left:5px;background:rgba(255,59,92,0.08);color:var(--red);border:1px solid rgba(255,59,92,0.15);" onclick="confirmar(\'Excluir ticket\',\'Excluir este ticket?\',function(){delTicket(\''+t.id+'\')})"><i class="ti ti-trash" style="font-size:12px;"></i></button></div>';
+  }).join('');
+}
+
+function filtrarTickets(q){
+  var fv=document.getElementById('fil-tkt').value;
+  renderTickets(gTickets().filter(function(t){return(!q||t.titulo.toLowerCase().includes(q.toLowerCase())||t.aluno.toLowerCase().includes(q.toLowerCase()))&&(!fv||t.status===fv);}));
+}
+
+function novoTicket(){
+  var titulo=prompt('Título do ticket:');if(!titulo)return;
+  var aluno=prompt('Nome do aluno:');if(!aluno)return;
+  var t=gTickets();
+  t.unshift({id:uid(),titulo:titulo,aluno:aluno,status:'aberto',data:'Agora',msgs:[]});
+  sTickets(t);renderTickets();atualizarStats();toast('Ticket criado!');
+}
+
+function abrirTicket(id){
+  var t=gTickets().find(function(x){return x.id===id;});
+  if(!t)return;
+  var msgs=(t.msgs||[]).map(function(m){return '<div style="margin-bottom:10px;"><div style="font-size:10px;color:var(--text3);margin-bottom:3px;">'+m.autor+' &middot; '+m.data+'</div><div style="background:var(--card2);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--text2);">'+m.texto+'</div></div>';}).join('')||'<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma mensagem ainda.</div>';
+  var stOpts=['aberto','pendente','respondido','resolvido'].map(function(s){return '<option value="'+s+'"'+(t.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';}).join('');
+  document.getElementById('modal-ticket-body').innerHTML='<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);"><div style="font-size:14px;font-weight:700;margin-bottom:3px;">'+t.titulo+'</div><div style="font-size:12px;color:var(--text2);">'+t.aluno+' &middot; '+t.data+'</div></div><div style="max-height:180px;overflow-y:auto;margin-bottom:12px;">'+msgs+'</div><textarea id="tk-resp" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:75px;line-height:1.6;" placeholder="Escreva sua resposta..."></textarea><div style="display:flex;gap:8px;margin-top:11px;"><button class="btn btn-p" style="flex:1;" onclick="enviarResposta(\''+id+'\')" ><i class="ti ti-send" style="font-size:13px;"></i> Enviar</button><select id="tk-status" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:inherit;font-size:12px;outline:none;">'+stOpts+'</select><button class="btn btn-o" onclick="fecharModal(\'modal-ticket\')">Fechar</button></div>';
+  abrirModal('modal-ticket');
+}
+
+function enviarResposta(id){
+  var texto=document.getElementById('tk-resp').value.trim();
+  var novoStatus=document.getElementById('tk-status').value;
+  var tickets=gTickets();
+  var t=tickets.find(function(x){return x.id===id;});
+  if(!t)return;
+  if(texto){if(!t.msgs)t.msgs=[];t.msgs.push({autor:'Mentor',texto:texto,data:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});}
+  t.status=novoStatus;
+  sTickets(tickets);fecharModal('modal-ticket');renderTickets();toast('Resposta enviada!');
+}
+
+function delTicket(id){
+  sTickets(gTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
+}
+
+function renderMats(){
+  var el=document.getElementById('mats-lista');
+  var mats=gMats();
+  if(!mats.length){el.innerHTML='<div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado.</p></div>';return;}
+  el.innerHTML=mats.map(function(m){
+    return '<div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:7px;border:1px solid var(--border);"><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;">'+m.nome+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">'+m.tipo+' · '+m.mod+'</div></div><button class="ab ab-d" onclick="confirmar(\'Excluir material\',\'Excluir &quot;'+m.nome.replace(/"/g,'')+'&quot;?\',function(){delMat(\''+m.id+'\')})"><i class="ti ti-trash"></i></button></div>';
+  }).join('');
+}
+
+function salvarMaterial(){
+  var nome=document.getElementById('mat-nome').value.trim();
+  if(!nome){alert('Nome obrigatório.');return;}
+  var mats=gMats();
+  mats.unshift({id:uid(),nome:nome,url:document.getElementById('mat-url').value.trim(),tipo:document.getElementById('mat-tipo').value,mod:document.getElementById('mat-mod').value});
+  sMats(mats);fecharModal('modal-material');
+  document.getElementById('mat-nome').value='';
+  document.getElementById('mat-url').value='';
+  renderMats();toast('Material publicado!');
+}
+
+function delMat(id){
+  sMats(gMats().filter(function(m){return m.id!==id;}));renderMats();toast('Material removido.');
+}
+
+function renderPreview(){
+  var mods=gMods().filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
+  var aulas=gAulas();
+  var el=document.getElementById('preview-cards');
+  var empty=document.getElementById('empty-preview');
+  if(!mods.length){el.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  el.innerHTML=mods.map(function(m){
+    var c=CORES[m.cor||'cyan'];
+    var qtd=aulas.filter(function(a){return a.moduloId===m.id&&a.status!=='draft';}).length;
+    var locked=m.status==='locked';
+    var capa=m.imagem&&m.imagem.length>5?'<img src="'+m.imagem+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:'+c.bg+'"><i class="ti ti-photo-off" style="font-size:32px;color:'+c.cor+';opacity:.5;"></i></div>';
+    return '<div style="background:#0f1320;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;opacity:'+(locked?'.55':'1')+'"><div style="width:100%;height:320px;position:relative;overflow:hidden;">'+capa+'<div style="position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(to top,rgba(0,0,0,0.92),transparent);z-index:2;"></div><div style="position:absolute;top:10px;left:10px;z-index:3;font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+qtd+' aula'+(qtd!==1?'s':'')+'</div><div style="position:absolute;bottom:12px;left:14px;right:14px;z-index:3;"><div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Módulo '+m.ordem+'</div><div style="font-size:14px;font-weight:800;color:#fff;line-height:1.3;">'+m.nome+'</div></div>'+(locked?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:4;"><i class="ti ti-lock" style="font-size:22px;color:#4a5270;"></i></div>':'')+'</div><div style="padding:12px 14px 14px;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="color:var(--text3);">Progresso</span><span style="font-weight:700;color:'+c.cor+';">0%</span></div><div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-bottom:10px;"></div><div style="width:100%;padding:8px;border-radius:9px;font-size:12px;font-weight:700;text-align:center;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+(locked?'🔒 Bloqueado':'▶ Acessar módulo')+'</div></div></div>';
+  }).join('');
+}
+
+async function publicarNoSite(){
+  var btn=document.getElementById('btn-sync');
+  btn.textContent='Publicando...';
+  btn.disabled=true;
+  var mods=gMods();
+  var aulas=gAulas();
+  try{
+    await _sb.from('aulas').delete().neq('id','_noop_');
+    await _sb.from('modulos').delete().neq('id','_noop_');
+    for(var i=0;i<mods.length;i++){
+      var m=mods[i];
+      var img=m.imagem||'';
+      if(img.startsWith('data:image')){
+        img=await new Promise(function(ok){
+          var im=new Image();
+          im.onload=function(){
+            var cv=document.createElement('canvas');
+            var mW=400,mH=600,w=im.width,h=im.height;
+            if(w>mW){h=Math.round(h*mW/w);w=mW;}
+            if(h>mH){w=Math.round(w*mH/h);h=mH;}
+            cv.width=w;cv.height=h;
+            cv.getContext('2d').drawImage(im,0,0,w,h);
+            ok(cv.toDataURL('image/jpeg',0.65));
+          };
+          im.onerror=function(){ok('');};
+          im.src=img;
+        });
+      }
+      var r=await _sb.from('modulos').insert({id:m.id,nome:m.nome,descricao:m.desc||'',imagem:img,status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||i+1});
+      if(r.error){console.error('Erro módulo:',r.error);}
+    }
+    for(var j=0;j<aulas.length;j++){
+      var a=aulas[j];
+      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',ordem:j+1});
+      if(ra.error){console.error('Erro aula:',ra.error);}
+    }
+    toast('✅ '+mods.length+' módulo(s) publicados! Alunos já podem ver.');
+  }catch(e){
+    toast('Erro: '+e.message,true);
+  }
+  btn.innerHTML='<i class="ti ti-cloud-upload" style="font-size:14px;"></i> Publicar no site';
+  btn.disabled=false;
+}
+
+async function enviarEmailBoasVindas(nome,email,senha){
+  try{
+    var r=await _sb.rpc('enviar_email_resend',{p_nome:nome,p_email:email,p_senha:senha});
+    return !r.error;
+  }catch(e){return false;}
 }
 
 async function toggleBloqueio7dias(){
   var id=document.getElementById('perf-av').dataset.id;
   var btn=document.getElementById('btn-toggle-bloq');
+  if(!btn)return;
   var ativado=btn.dataset.estado==='ativo';
-
   if(ativado){
-    // Liberar antes dos 7 dias
-    // 1. Verificar se já existem registros na tabela
     var res=await _sb.from('modulos_bloqueados').select('modulo_id').eq('user_id',id).eq('liberado_manualmente',false);
-    var registros=res.data||[];
-
-    if(registros.length>0){
-      // Marcar todos como liberados
+    var regs=res.data||[];
+    if(regs.length>0){
       await _sb.from('modulos_bloqueados').update({liberado_manualmente:true,desbloqueio_em:new Date().toISOString()}).eq('user_id',id);
     } else {
-      // Não tem registros — inserir todos os módulos com bloqueio_7dias como liberados
       var mods=gMods().filter(function(m){return m.bloqueio7dias;});
       if(mods.length>0){
-        var registrosNovos=mods.map(function(m){
-          return {user_id:id,modulo_id:m.id,desbloqueio_em:new Date().toISOString(),liberado_manualmente:true};
-        });
-        await _sb.from('modulos_bloqueados').insert(registrosNovos);
+        await _sb.from('modulos_bloqueados').insert(mods.map(function(m){return{user_id:id,modulo_id:m.id,desbloqueio_em:new Date().toISOString(),liberado_manualmente:true};}));
       }
     }
-
     btn.dataset.estado='liberado';
-    btn.textContent='🔒 Reativar bloqueio';
-    btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:1px solid rgba(255,184,0,0.3);background:rgba(255,184,0,0.08);color:var(--yellow);';
-    document.getElementById('bloq-sub').textContent='Acesso liberado manualmente pelo admin';
+    btn.textContent='Reativar bloqueio';
+    btn.style.background='rgba(255,184,0,0.15)';btn.style.color='var(--yellow)';
+    document.getElementById('bloq-sub').textContent='Acesso liberado pelo admin';
     toast('Acesso liberado!');
-
   } else {
-    // Reativar bloqueio — remover registros liberados manualmente
-    await _sb.from('modulos_bloqueados').delete().eq('user_id',id).eq('liberado_manualmente',true);
-    // Recriar bloqueios por 7 dias a partir de hoje
+    await _sb.from('modulos_bloqueados').delete().eq('user_id',id);
     var mods2=gMods().filter(function(m){return m.bloqueio7dias;});
     if(mods2.length>0){
-      var dataDesbloq=new Date();
-      dataDesbloq.setDate(dataDesbloq.getDate()+7);
-      var novos=mods2.map(function(m){
-        return {user_id:id,modulo_id:m.id,desbloqueio_em:dataDesbloq.toISOString(),liberado_manualmente:false};
-      });
-      await _sb.from('modulos_bloqueados').insert(novos);
+      var d=new Date();d.setDate(d.getDate()+7);
+      await _sb.from('modulos_bloqueados').insert(mods2.map(function(m){return{user_id:id,modulo_id:m.id,desbloqueio_em:d.toISOString(),liberado_manualmente:false};}));
     }
     btn.dataset.estado='ativo';
-    btn.textContent='✅ Liberar acesso agora';
-    btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;background:var(--green);color:#000;';
-    document.getElementById('bloq-sub').textContent='Módulos bloqueados por 7 dias da compra';
+    btn.textContent='Liberar acesso agora';
+    btn.style.background='var(--green)';btn.style.color='#000';
+    document.getElementById('bloq-sub').textContent='Modulos bloqueados por 7 dias';
     toast('Bloqueio reativado!');
   }
 }
 
->
+(async function(){
+  document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
+  document.getElementById('pg-dashboard').style.display='block';
+  document.getElementById('pg-dashboard').classList.add('ativa');
+  try{
+    var rM=await _sb.from('modulos').select('*').order('ordem',{ascending:true});
+    if(rM.data&&rM.data.length) sMods(rM.data.map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1,bloqueio7dias:m.bloqueio_7dias||false};}));
+    var rA=await _sb.from('aulas').select('*').order('ordem',{ascending:true});
+    if(rA.data&&rA.data.length) sAulas(rA.data.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};}));
+  }catch(e){console.warn(e);}
+  atualizarStats();
+})();
+</script>
+</body>
+</html>
