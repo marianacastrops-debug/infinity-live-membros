@@ -429,12 +429,16 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;">0%</div><div style="font-size:10px;color:var(--text3);">Progresso</div></div>
       <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-entrada" style="font-size:12px;font-weight:700;color:var(--text2);">—</div><div style="font-size:10px;color:var(--text3);">Entrou em</div></div>
     </div>
-    <div id="perf-bloqueios-wrap" style="display:none;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:10px;padding:14px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div style="font-size:12px;font-weight:700;color:var(--yellow);display:flex;align-items:center;gap:7px;"><i class="ti ti-lock" style="font-size:14px;"></i> Módulos bloqueados</div>
-        <button onclick="liberarTodosModulos()" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);padding:5px 11px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="ti ti-lock-open" style="font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Liberar todos</button>
+    <!-- CONTROLE DE ACESSO 7 DIAS -->
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Controle de acesso</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--card);border-radius:9px;border:1px solid var(--border);">
+        <div>
+          <div style="font-size:13px;font-weight:600;" id="bloq-label">🔒 Bloqueio 7 dias</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="bloq-sub">Carregando...</div>
+        </div>
+        <button id="btn-toggle-bloq" onclick="toggleBloqueio7dias()" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;">...</button>
       </div>
-      <div id="perf-bloqueios-lista" style="display:flex;flex-direction:column;gap:7px;"></div>
     </div>
   </div>
 </div>
@@ -819,6 +823,50 @@ async function verPerfil(id){
     }
   }
   abrirModal('modal-perfil');
+  // Calcular se aluno tem menos de 7 dias
+  var btn=document.getElementById('btn-toggle-bloq');
+  var sub=document.getElementById('bloq-sub');
+  var label=document.getElementById('bloq-label');
+  if(btn&&sub){
+    var dataCriacao=new Date(a.created_at||Date.now());
+    var agora2=new Date();
+    var diasDesdeCriacao=Math.floor((agora2-dataCriacao)/(1000*60*60*24));
+    var dataDesbloq=new Date(dataCriacao);
+    dataDesbloq.setDate(dataDesbloq.getDate()+7);
+    var ms3=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    var dataDesbloqTxt=dataDesbloq.getDate()+' '+ms3[dataDesbloq.getMonth()]+' '+dataDesbloq.getFullYear();
+
+    // Verificar se foi liberado manualmente
+    var resLib=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',id).limit(1);
+    var foiLiberado=resLib.data&&resLib.data.length>0&&resLib.data[0].liberado_manualmente===true;
+    var temBloqueio=gMods().some(function(m){return m.bloqueio7dias;});
+    
+    if(!temBloqueio){
+      // Nenhum módulo configurado com bloqueio
+      label.textContent='✅ Sem módulos bloqueados';
+      sub.textContent='Nenhum módulo configurado com bloqueio de 7 dias';
+      btn.style.display='none';
+    } else if(foiLiberado){
+      label.textContent='🔓 Acesso liberado';
+      sub.textContent='Liberado manualmente pelo admin';
+      btn.textContent='🔒 Reativar bloqueio';
+      btn.dataset.estado='liberado';
+      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:1px solid rgba(255,184,0,0.3);background:rgba(255,184,0,0.08);color:var(--yellow);';
+      btn.style.display='';
+    } else if(diasDesdeCriacao<7){
+      label.textContent='🔒 Bloqueio ativo ('+diasDesdeCriacao+' de 7 dias)';
+      sub.textContent='Libera automaticamente em '+dataDesbloqTxt;
+      btn.textContent='🔓 Liberar acesso agora';
+      btn.dataset.estado='ativo';
+      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;background:var(--g1);color:#fff;';
+      btn.style.display='';
+    } else {
+      label.textContent='✅ Acesso liberado ('+diasDesdeCriacao+' dias)';
+      sub.textContent='Passou dos 7 dias — acesso total';
+      btn.style.display='none';
+    }
+  }
+
   try{
     var mods=gMods();
     var res=await _sb.from('modulos_bloqueados').select('modulo_id,desbloqueio_em').eq('user_id',id).eq('liberado_manualmente',false);
@@ -853,6 +901,42 @@ async function liberarTodosModulos(){
   await _sb.from('modulos_bloqueados').update({liberado_manualmente:true}).eq('user_id',id);
   toast('Todos os módulos liberados!');
   verPerfil(id);
+}
+
+async function toggleBloqueio7dias(){
+  var id=document.getElementById('perf-av').dataset.id;
+  var btn=document.getElementById('btn-toggle-bloq');
+  var sub=document.getElementById('bloq-sub');
+  var ativado=btn.dataset.estado==='ativo';
+  
+  if(ativado){
+    // Liberar — marcar como liberado manualmente
+    await _sb.from('modulos_bloqueados').update({liberado_manualmente:true}).eq('user_id',id);
+    btn.dataset.estado='liberado';
+    btn.textContent='🔒 Reativar bloqueio';
+    btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:1px solid rgba(255,184,0,0.3);background:rgba(255,184,0,0.08);color:var(--yellow);';
+    sub.textContent='Acesso liberado manualmente pelo admin';
+    toast('Acesso liberado para este aluno!');
+  } else {
+    // Reativar bloqueio — deletar registros de liberação manual e recriar
+    await _sb.from('modulos_bloqueados').delete().eq('user_id',id);
+    // Recriar bloqueios para os módulos marcados
+    var mods=gMods().filter(function(m){return m.bloqueio7dias;});
+    if(mods.length>0){
+      var alunos=gAlunos();
+      var aluno=alunos.find(function(a){return a.id===id;});
+      var dataCriacao=new Date(aluno&&aluno.created_at?aluno.created_at:Date.now());
+      var dataDesbloqueio=new Date(dataCriacao);
+      dataDesbloqueio.setDate(dataDesbloqueio.getDate()+7);
+      var registros=mods.map(function(m){return{user_id:id,modulo_id:m.id,desbloqueio_em:dataDesbloqueio.toISOString(),liberado_manualmente:false};});
+      await _sb.from('modulos_bloqueados').insert(registros);
+    }
+    btn.dataset.estado='ativo';
+    btn.textContent='🔓 Liberar acesso agora';
+    btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;background:var(--g1);color:#fff;';
+    sub.textContent='Bloqueio reativado — aguardando 7 dias';
+    toast('Bloqueio reativado!');
+  }
 }
 
 function alternarBloqueio(){
