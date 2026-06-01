@@ -50,6 +50,9 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .prog-stat-lbl{font-size:10px;color:var(--text3);margin-top:2px;}
 .mods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
 .mod-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .22s;display:block;text-decoration:none;}
+.mod-card.bloqueado{cursor:not-allowed;opacity:.85;}
+.mod-card.bloqueado .mod-capa img{filter:grayscale(100%);transition:none;}
+.mod-card.bloqueado:hover{transform:none;box-shadow:none;}
 .mod-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.15);box-shadow:0 16px 48px rgba(0,0,0,0.35);}
 .mod-capa{width:100%;height:320px;position:relative;overflow:hidden;background:#050d20;}
 .mod-capa img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
@@ -184,14 +187,27 @@ var _sb=supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, st
     var prog=await rP.json();
     var concluidasIds=(Array.isArray(prog)?prog:[]).map(function(p){return p.aula_id;});
 
-    renderModulos(mods,aulas,concluidasIds);
+    var modsBloqDatas={};
+    (Array.isArray(bloqData)?bloqData:[]).forEach(function(b){
+      if(new Date(b.desbloqueio_em)>new Date()) modsBloqDatas[b.modulo_id]=b.desbloqueio_em;
+    });
+    renderModulos(mods,aulas,concluidasIds,modsBloqIds,modsBloqDatas);
   }catch(e){
     console.error('Erro:',e);
     document.getElementById('loading').innerHTML='<p style="color:#ff3b5c;">Erro ao carregar. Tente recarregar a página.</p>';
   }
 })();
 
-function renderModulos(mods,aulas,concluidasIds){
+function formatarDataLib(dataStr){
+  var d=new Date(dataStr);
+  var dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  var meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  return dias[d.getDay()]+', '+d.getDate()+' de '+meses[d.getMonth()];
+}
+
+function renderModulos(mods,aulas,concluidasIds,modsBloqIds,modsBloqDatas){
+  modsBloqIds=modsBloqIds||[];
+  modsBloqDatas=modsBloqDatas||{};
   var grid=document.getElementById('mods-grid');
   var loading=document.getElementById('loading');
   var empty=document.getElementById('empty-state');
@@ -219,15 +235,17 @@ function renderModulos(mods,aulas,concluidasIds){
     var concM=am.filter(function(a){return concluidasIds.indexOf(a.id)>-1;}).length;
     var pctM=am.length>0?Math.round(concM/am.length*100):0;
     var locked=m.status==='locked';
+    var bloqueado7dias=modsBloqIds.indexOf(m.id)>-1;
+    var bloqueadoFinal=locked||bloqueado7dias;
 
     var capaHtml=m.imagem&&m.imagem.length>5
-      ?'<img src="'+m.imagem+'" alt="'+m.nome+'">'
+      ?'<img src="'+m.imagem+'" alt="'+m.nome+'"'+(bloqueadoFinal?' style="filter:grayscale(1)"':'')+'>'
       :'<div class="mod-capa-ph" style="background:'+c.bg+'"><i class="ti ti-photo-off" style="font-size:48px;color:'+c.cor+';opacity:.5;"></i></div>';
 
     var btnTxt=bloqueadoFinal?(bloqueado7dias?'🔒 Disponível em breve':'🔒 Bloqueado'):(pctM===100?'↺ Revisar':(pctM>0?'▶ Continuar':'▶ Começar'));
     var btnStyle=bloqueadoFinal?'background:rgba(255,255,255,0.05);color:var(--text3);cursor:not-allowed;':'background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';';
 
-    return '<a class="mod-card" href="'+(bloqueadoFinal?'#':'aulas.html?modulo='+m.id)+'" '+(bloqueadoFinal?'onclick="return false"':'')+' style="text-decoration:none;">'
+    return '<a class="mod-card'+(bloqueadoFinal?' bloqueado':'')+'" href="'+(bloqueadoFinal?'#':'aulas.html?modulo='+m.id)+'" '+(bloqueadoFinal?'onclick="return false"':'')+' style="text-decoration:none;">'
       +'<div class="mod-capa">'
       +capaHtml
       +'<div class="mod-grad"></div>'
