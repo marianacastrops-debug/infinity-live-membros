@@ -820,7 +820,7 @@ async function verPerfil(id){
         var dLib=new Date(b.desbloqueio_em);
         return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--card);border-radius:8px;border:1px solid var(--border);">'
           +'<div><div style="font-size:12px;font-weight:600;">'+nomeM+'</div><div style="font-size:10px;color:var(--text3);">Libera em '+dLib.getDate()+' '+ms2[dLib.getMonth()]+'</div></div>'
-          +'<button onclick="liberarModulo(''+id+'',''+b.modulo_id+'')" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);color:var(--green);padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="ti ti-lock-open" style="font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Liberar</button>'
+          +'<button onclick="liberarModulo(\''+id+'\',\''+b.modulo_id+'\')" style="background:rgba(0,229,160,0.1);color:var(--green);border:1px solid rgba(0,229,160,0.2);padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Liberar</button>'
           +'</div>';
       }).join('');
     } else { wrap.style.display='none'; }
@@ -914,7 +914,7 @@ function delTicket(id){
   sTickets(gTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
 }
 
-var PROMPT_PADRAO_AG='Você é um especialista em vendas ao vivo no TikTok Shop. Crie roteiros de 30-40s para loop na live. ESTRUTURA: 🎯 GANCHO COM A DOR (0-5s) | 💎 PRODUTO+BENEFÍCIOS+TRANSFORMAÇÃO (5-25s) | ⚡ GATILHOS sem % desconto (25-33s) | 📣 CTA com clica no link aqui embaixo (33-40s). Linguagem natural, sem % desconto, CTA sempre com clica no link aqui embaixo.';
+var PROMPT_PADRAO_AG="Voce e um especialista em vendas ao vivo no TikTok Shop. Crie roteiros de 30-40s para loop na live. ESTRUTURA: GANCHO COM A DOR (0-5s) | PRODUTO+BENEFICIOS+TRANSFORMACAO (5-25s) | GATILHOS sem desconto em % (25-33s) | CTA com: clica no link aqui embaixo (33-40s). Linguagem natural. NUNCA mencione % de desconto. CTA SEMPRE com clica no link aqui embaixo.";
 
 async function salvarConfAgentes(){
   var kr=document.getElementById('ag-key-roteiro').value.trim();
