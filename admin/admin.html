@@ -798,10 +798,25 @@ async function verPerfil(id){
   var origemEl=document.getElementById('perf-origem');
   if(origemEl) origemEl.textContent=a.origem==='link_compra'?'🔗 Link de compra':'✏️ Cadastro manual';
   var entradaEl=document.getElementById('perf-entrada');
-  if(entradaEl&&a.created_at){
-    var d=new Date(a.created_at);
-    var ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-    entradaEl.textContent=d.getDate()+' '+ms[d.getMonth()]+' '+d.getFullYear();
+  if(entradaEl){
+    if(a.created_at){
+      var d=new Date(a.created_at);
+      var ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      entradaEl.textContent=d.getDate()+' '+ms[d.getMonth()]+' '+d.getFullYear();
+    } else {
+      // Buscar do Supabase
+      _sb.from('profiles').select('created_at').eq('id',id).single().then(function(r){
+        if(r.data&&r.data.created_at){
+          var d2=new Date(r.data.created_at);
+          var ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+          entradaEl.textContent=d2.getDate()+' '+ms2[d2.getMonth()]+' '+d2.getFullYear();
+          // Salvar no localStorage para próxima vez
+          var alns=gAlunos();
+          var idx=alns.findIndex(function(x){return x.id===id;});
+          if(idx>-1){alns[idx].created_at=r.data.created_at;sAlunos(alns);}
+        }
+      });
+    }
   }
   abrirModal('modal-perfil');
   try{
