@@ -224,10 +224,10 @@ function renderModulos(mods,aulas,concluidasIds){
       ?'<img src="'+m.imagem+'" alt="'+m.nome+'">'
       :'<div class="mod-capa-ph" style="background:'+c.bg+'"><i class="ti ti-photo-off" style="font-size:48px;color:'+c.cor+';opacity:.5;"></i></div>';
 
-    var btnTxt=locked?'🔒 Bloqueado':(pctM===100?'↺ Revisar':(pctM>0?'▶ Continuar':'▶ Começar'));
-    var btnStyle=locked?'background:rgba(255,255,255,0.05);color:var(--text3);cursor:not-allowed;':'background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';';
+    var btnTxt=bloqueadoFinal?(bloqueado7dias?'🔒 Disponível em breve':'🔒 Bloqueado'):(pctM===100?'↺ Revisar':(pctM>0?'▶ Continuar':'▶ Começar'));
+    var btnStyle=bloqueadoFinal?'background:rgba(255,255,255,0.05);color:var(--text3);cursor:not-allowed;':'background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';';
 
-    return '<a class="mod-card" href="'+(locked?'#':'aulas.html?modulo='+m.id)+'" '+(locked?'onclick="return false"':'')+' style="text-decoration:none;">'
+    return '<a class="mod-card" href="'+(bloqueadoFinal?'#':'aulas.html?modulo='+m.id)+'" '+(bloqueadoFinal?'onclick="return false"':'')+' style="text-decoration:none;">'
       +'<div class="mod-capa">'
       +capaHtml
       +'<div class="mod-grad"></div>'
