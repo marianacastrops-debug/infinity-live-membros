@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     const createRes = await fetch(`${SB_URL}/auth/v1/admin/users`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ email, password: senha, email_confirm: true, user_metadata: { nome } })
+      body: JSON.stringify({ email, password: senha, email_confirm: true, user_metadata: { nome, origem: 'link_compra' } })
     });
     const createData = await createRes.json();
     console.log('Create:', JSON.stringify(createData));
