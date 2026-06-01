@@ -226,6 +226,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="tb-right">
       <div class="live-pill"><div class="live-dot"></div> Online</div>
       <a href="../aluno/dashboard.html" target="_blank" class="btn btn-o" style="border-color:rgba(0,200,255,0.3);color:var(--cyan);text-decoration:none;"><i class="ti ti-external-link" style="font-size:14px;"></i> Ver área do aluno</a>
+      <a href="../aluno/dashboard.html" target="_blank" class="btn btn-o" style="border-color:rgba(0,200,255,0.3);color:var(--cyan);text-decoration:none;"><i class="ti ti-external-link" style="font-size:14px;"></i> Ver área do aluno</a>
       <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Novo aluno</button>
     </div>
   </div>
@@ -248,7 +249,8 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div class="search-bar">
         <div class="srch"><i class="ti ti-search"></i><input type="text" placeholder="Buscar aluno..." oninput="filtrarAlunos(this.value)"/></div>
         <select class="fsel" onchange="filtrarStatusAluno(this.value)"><option value="">Todos</option><option value="ativo">Ativos</option><option value="bloqueado">Bloqueados</option><option value="novo">Novos</option></select>
-        <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Adicionar</button>
+        <a href="../aluno/dashboard.html" target="_blank" class="btn btn-o" style="border-color:rgba(0,200,255,0.3);color:var(--cyan);text-decoration:none;"><i class="ti ti-external-link" style="font-size:14px;"></i> Ver área do aluno</a>
+      <button class="btn btn-p" onclick="abrirModal('modal-aluno')"><i class="ti ti-user-plus" style="font-size:14px;"></i> Adicionar</button>
       </div>
       <div class="card" style="padding:0;"><table><thead><tr><th>Aluno</th><th>E-mail</th><th>Progresso</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tbody-alunos"></tbody></table></div>
       <div class="empty" id="empty-alunos" style="display:none;"><i class="ti ti-users"></i><p>Nenhum aluno. Clique em Adicionar.</p></div>
@@ -295,73 +297,20 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
         <div>
           <div class="card">
             <div class="card-hd"><span class="card-title"><i class="ti ti-key" style="color:var(--cyan);"></i> Chaves API por Agente</span></div>
-            <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Cada agente usa sua própria chave — assim você controla o custo de cada um separadamente.</div>
-            <div class="mf">
-              <label class="ml">🎬 Gerador de Roteiro</label>
-              <input class="mi" id="ag-key-roteiro" type="password" placeholder="sk-ant-api03-..."/>
-            </div>
-            <div class="mf">
-              <label class="ml">📸 Gerador de Imagem</label>
-              <input class="mi" id="ag-key-imagem" type="password" placeholder="sk-ant-api03-..."/>
-            </div>
-            <div class="mf">
-              <label class="ml">📊 Analista de Métricas</label>
-              <input class="mi" id="ag-key-metricas" type="password" placeholder="sk-ant-api03-..."/>
-              <div style="font-size:10px;color:var(--text3);margin-top:6px;">🔒 Salvas com segurança no Supabase. Só você tem acesso.</div>
-            </div>
-            <button class="btn btn-p" onclick="salvarConfAgentes()"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar todas as chaves</button>
-          </div>
-          <div class="card" style="margin-top:12px;">
-            <div class="card-hd"><span class="card-title"><i class="ti ti-info-circle" style="color:var(--cyan);"></i> Como obter a chave</span></div>
-            <div style="font-size:12px;color:var(--text2);line-height:1.7;">
-              1. Acesse <strong style="color:var(--cyan);">console.anthropic.com</strong><br/>
-              2. Vá em <strong>API Keys</strong><br/>
-              3. Clique em <strong>Create Key</strong><br/>
-              4. Copie e cole aqui
-            </div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Cada agente usa sua própria chave para controle de custos separado.</div>
+            <div class="mf"><label class="ml">🎬 Gerador de Roteiro</label><input class="mi" id="ag-key-roteiro" type="password" placeholder="sk-ant-api03-..."/></div>
+            <div class="mf"><label class="ml">📸 Gerador de Imagem</label><input class="mi" id="ag-key-imagem" type="password" placeholder="sk-ant-api03-..."/></div>
+            <div class="mf"><label class="ml">📊 Analista de Métricas</label><input class="mi" id="ag-key-metricas" type="password" placeholder="sk-ant-api03-..."/><div style="font-size:10px;color:var(--text3);margin-top:6px;">🔒 Salvas com segurança no Supabase.</div></div>
+            <button class="btn btn-p" onclick="salvarConfAgentes()"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar chaves</button>
           </div>
         </div>
         <div>
           <div class="card">
             <div class="card-hd"><span class="card-title"><i class="ti ti-brain" style="color:var(--purple);"></i> Prompt do Agente de Roteiro</span></div>
-            <div class="mf">
-              <label class="ml">Prompt de treinamento</label>
-              <textarea class="mta" id="ag-prompt" style="min-height:320px;font-size:11px;line-height:1.6;">Você é um especialista em vendas ao vivo no TikTok Shop com foco em psicologia do consumidor e copywriting de alta conversão.
-
-Sua missão é criar roteiros naturais de 30 a 40 segundos para serem repetidos em loop durante a live.
-
-ESTRUTURA OBRIGATÓRIA:
-
-🎯 GANCHO COM A DOR (0–5s)
-Comece falando da dor, problema ou desejo do cliente. Algo que ele sente no dia a dia. Seja direto e empático.
-
-💎 PRODUTO + BENEFÍCIOS + TRANSFORMAÇÃO (5–25s)
-Fale bastante do produto de forma sensorial — como ele é, como parece, como faz a pessoa se sentir. Mostre a TRANSFORMAÇÃO: como a vida da pessoa muda depois de ter esse produto. Use linguagem emocional e real. Inclua detalhes concretos. Se tiver prova social (quantidade vendida, avaliações), use aqui.
-
-⚡ GATILHOS (25–33s)
-Crie urgência e escassez real. Fale o preço com impacto — preço antigo vs preço atual. NUNCA mencione porcentagem de desconto. Exemplos: estoque acabando, preço só na live, frete grátis só agora.
-
-📣 CTA (33–40s)
-SEMPRE termine com "clica no link aqui embaixo" — nunca "clica no carrinho". Adicione uma frase de reforço emocional ou urgência depois.
-
-TOM DO ROTEIRO:
-O tom será definido pelo usuário. Adapte toda a linguagem, ritmo e escolha de palavras conforme o tom solicitado:
-- VISCERAL PARA CONVERSÃO: linguagem urgente, direta, quase agressiva. Cada palavra empurra para a ação. Sem enrolação.
-- EMOCIONAL: conecta com sentimentos, sonhos e desejos. Faz a pessoa se imaginar usando o produto. Mais suave e envolvente.
-- INFORMATIVO: foca em dados, características e benefícios concretos. Tom de quem entende do assunto.
-- SÉRIO E DIRETO: sem exageros, sem animação excessiva. Confiante e objetivo. Fala de igual para igual.
-
-REGRAS:
-- Linguagem 100% natural como pessoa real falando
-- NUNCA mencionar porcentagem de desconto
-- CTA SEMPRE com "clica no link aqui embaixo"
-- Foco na TRANSFORMAÇÃO, não no produto em si
-- Gere APENAS o roteiro, sem explicações antes ou depois</textarea>
-              <div style="font-size:10px;color:var(--text3);margin-top:4px;">✏️ Edite para personalizar o comportamento do agente. O prompt padrão já está otimizado.</div>
-            </div>
+            <div class="mf"><label class="ml">Prompt de treinamento</label><textarea class="mta" id="ag-prompt" style="min-height:280px;font-size:11px;line-height:1.6;"></textarea></div>
             <div style="display:flex;gap:8px;">
               <button class="btn btn-p" onclick="salvarConfAgentes()" style="flex:1;"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar</button>
-              <button class="btn btn-o" onclick="resetarPrompt()"><i class="ti ti-refresh" style="font-size:13px;"></i> Restaurar padrão</button>
+              <button class="btn btn-o" onclick="resetarPrompt()"><i class="ti ti-refresh" style="font-size:13px;"></i> Padrão</button>
             </div>
           </div>
         </div>
@@ -388,7 +337,6 @@ REGRAS:
           </div>
         </div>
       </div>
-
     </div>
 
   </div>
@@ -413,15 +361,7 @@ REGRAS:
       <div class="mf"><label class="ml">Cor</label><select class="msel" id="mod-cor"><option value="cyan">Ciano</option><option value="green">Verde</option><option value="pink">Rosa</option><option value="purple">Roxo</option><option value="yellow">Amarelo</option></select></div>
     </div>
     <div class="mf"><label class="ml">Ordem</label><input class="mi" id="mod-ordem" type="number" min="1" placeholder="1"/></div>
-    <div class="mf">
-      <label style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:9px;cursor:pointer;">
-        <input type="checkbox" id="mod-bloqueio7" style="width:16px;height:16px;accent-color:var(--yellow);cursor:pointer;"/>
-        <div>
-          <div style="font-size:12px;font-weight:700;color:var(--yellow);">🔒 Bloquear por 7 dias para novos alunos</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:2px;">Novos alunos só terão acesso após 7 dias da compra</div>
-        </div>
-      </label>
-    </div>
+    <div class="mf"><label style="display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:9px;cursor:pointer;"><input type="checkbox" id="mod-bloqueio7" style="width:16px;height:16px;accent-color:var(--yellow);cursor:pointer;"/><div><div style="font-size:12px;font-weight:700;color:var(--yellow);">🔒 Bloquear por 7 dias para novos alunos</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Novos alunos só terão acesso após 7 dias da compra</div></div></label></div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarMod()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar módulo</button>
       <button class="btn btn-d btn-sm" id="btn-del-mod" style="display:none;" onclick="excluirModAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
@@ -443,19 +383,7 @@ REGRAS:
       <div class="mf"><label class="ml">Duração</label><input class="mi" id="aula-dur" placeholder="Ex: 28min"/></div>
       <div class="mf"><label class="ml">Status</label><select class="msel" id="aula-status"><option value="published">Publicada</option><option value="draft">Rascunho</option></select></div>
     </div>
-    <div class="mf">
-      <label class="ml"><i class="ti ti-photo" style="color:var(--cyan);"></i> Miniatura da aula</label>
-      <input type="file" id="aula-thumb-file" accept="image/*" style="display:none;" onchange="uploadThumb(this)"/>
-      <div class="upload-area" id="aula-thumb-area" onclick="document.getElementById('aula-thumb-file').click()" style="height:80px;">
-        <i class="ti ti-photo-up" style="font-size:20px;"></i><strong>Clique para upload</strong><span>JPG, PNG</span>
-      </div>
-      <div id="aula-thumb-prev-box" style="display:none;position:relative;margin-top:6px;">
-        <img id="aula-thumb-prev" src="" style="width:100%;height:80px;object-fit:cover;border-radius:9px;border:1px solid var(--border);cursor:pointer;" onclick="document.getElementById('aula-thumb-file').click()"/>
-        <button onclick="removerThumb()" style="position:absolute;top:6px;right:6px;background:rgba(255,59,92,0.9);color:#fff;border:none;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;">Remover</button>
-      </div>
-    </div>
     <div class="mf"><label class="ml">Descrição / Conteúdo da aula</label><textarea class="mta" id="aula-desc" style="min-height:100px;" placeholder="Descreva os tópicos, cole links, ou adicione qualquer conteúdo extra...&#10;&#10;Exemplo:&#10;🔗 Material: https://...&#10;📊 Planilha: https://...&#10;📌 Ponto importante da aula"></textarea></div>
-    <div class="mf"><label class="ml"><i class="ti ti-file-type-pdf" style="color:#ff4d8d;"></i> PDF / Material de apoio</label><input class="mi" id="aula-pdf" placeholder="Cole o link do PDF (Google Drive, Dropbox, etc)"/><div style="font-size:10px;color:var(--text3);margin-top:4px;">💡 Use Google Drive: clique em "Compartilhar" → "Qualquer pessoa com o link" → copie o link</div></div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarAula()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar aula</button>
       <button class="btn btn-d btn-sm" id="btn-del-aula" style="display:none;" onclick="excluirAulaAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
@@ -480,7 +408,6 @@ REGRAS:
 
 <div class="overlay" id="modal-perfil">
   <div class="modal" style="width:500px;">
-    <!-- HEADER -->
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);">
       <div id="perf-av" style="width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;background:var(--g1);">?</div>
       <div style="flex:1;min-width:0;">
@@ -497,36 +424,18 @@ REGRAS:
         <button class="btn btn-o btn-sm" onclick="fecharModal('modal-perfil')">Fechar</button>
       </div>
     </div>
-
-    <!-- STATS -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px;">
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;">
-        <div id="perf-aulas" style="font-size:18px;font-weight:800;">0</div>
-        <div style="font-size:10px;color:var(--text3);">Aulas</div>
-      </div>
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;">
-        <div style="font-size:18px;font-weight:800;">0%</div>
-        <div style="font-size:10px;color:var(--text3);">Progresso</div>
-      </div>
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;">
-        <div id="perf-entrada" style="font-size:12px;font-weight:700;color:var(--text2);">—</div>
-        <div style="font-size:10px;color:var(--text3);">Entrou em</div>
-      </div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-aulas" style="font-size:18px;font-weight:800;">0</div><div style="font-size:10px;color:var(--text3);">Aulas</div></div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div style="font-size:18px;font-weight:800;">0%</div><div style="font-size:10px;color:var(--text3);">Progresso</div></div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;"><div id="perf-entrada" style="font-size:12px;font-weight:700;color:var(--text2);">—</div><div style="font-size:10px;color:var(--text3);">Entrou em</div></div>
     </div>
-
-    <!-- MÓDULOS BLOQUEADOS -->
-    <div id="perf-bloqueios-wrap" style="display:none;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:10px;padding:14px;margin-bottom:14px;">
+    <div id="perf-bloqueios-wrap" style="display:none;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:10px;padding:14px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div style="font-size:12px;font-weight:700;color:var(--yellow);display:flex;align-items:center;gap:7px;">
-          <i class="ti ti-lock" style="font-size:14px;"></i> Módulos com acesso bloqueado
-        </div>
-        <button onclick="liberarTodosModulos()" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);padding:5px 11px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
-          <i class="ti ti-lock-open" style="font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Liberar todos
-        </button>
+        <div style="font-size:12px;font-weight:700;color:var(--yellow);display:flex;align-items:center;gap:7px;"><i class="ti ti-lock" style="font-size:14px;"></i> Módulos bloqueados</div>
+        <button onclick="liberarTodosModulos()" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);padding:5px 11px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="ti ti-lock-open" style="font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Liberar todos</button>
       </div>
       <div id="perf-bloqueios-lista" style="display:flex;flex-direction:column;gap:7px;"></div>
     </div>
-
   </div>
 </div>
 
@@ -569,6 +478,7 @@ REGRAS:
 var _SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
 var _SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
 var _sb=supabase.createClient(_SB_URL,_SB_KEY);
+var _sb=supabase.createClient(_SB_URL,_SB_KEY);
 var MK='il_mods',AK='il_aulas',ALK='il_alunos',TK='il_tickets',MTK='il_materiais';
 function gMods(){try{return JSON.parse(localStorage.getItem(MK))||[];}catch(e){return[];}}
 function sMods(d){try{localStorage.setItem(MK,JSON.stringify(d));}catch(e){}}
@@ -589,17 +499,16 @@ function irPara(pg,el){
   var alvo=document.getElementById('pg-'+pg);
   if(alvo){alvo.style.display='block';alvo.classList.add('ativa');}
   if(el)el.classList.add('ativo');
-  var titulos={dashboard:['Dashboard','Visão geral da plataforma'],alunos:['Alunos','Gerencie os membros'],tickets:['Tickets','Central de atendimento'],modulos:['Módulos & Aulas','Crie e organize o conteúdo'],preview:['Ver como aluno','Prévia da área de membros'],materiais:['Materiais','Arquivos para download'],agentes:['Agentes de IA','Configure os agentes e chave API'],config:['Configurações','Personalize a plataforma']};
+  var titulos={dashboard:['Dashboard','Visão geral da plataforma'],alunos:['Alunos','Gerencie os membros'],tickets:['Tickets','Central de atendimento'],modulos:['Módulos & Aulas','Crie e organize o conteúdo'],agentes:['Agentes de IA','Configure os agentes e chave API'],preview:['Ver como aluno','Prévia da área de membros'],materiais:['Materiais','Arquivos para download'],config:['Configurações','Personalize a plataforma']};
   var t=titulos[pg]||[pg,''];
   document.getElementById('pg-titulo').textContent=t[0];
   document.getElementById('pg-sub').textContent=t[1];
   if(pg==='modulos')renderMods();
-  if(pg==='agentes')carregarConfAgentes();
-  if(pg==='config')renderConfigModsBloqueados();
   if(pg==='tickets')renderTickets();
   if(pg==='alunos')renderAlunos(gAlunos());
   if(pg==='preview')renderPreview();
   if(pg==='materiais')renderMats();
+  if(pg==='agentes')carregarConfAgentes();
   if(pg==='dashboard')atualizarStats();
 }
 
@@ -673,7 +582,6 @@ function abrirNovoMod(){
   document.getElementById('mod-cor').value='cyan';
   document.getElementById('mod-ordem').value=gMods().length+1;
   document.getElementById('btn-del-mod').style.display='none';
-  document.getElementById('mod-bloqueio7').checked=false;
   removerImg();
   abrirModal('modal-modulo');
 }
@@ -688,7 +596,6 @@ function editarMod(id){
   document.getElementById('mod-status').value=m.status||'visible';
   document.getElementById('mod-cor').value=m.cor||'cyan';
   document.getElementById('mod-ordem').value=m.ordem||1;
-  document.getElementById('mod-bloqueio7').checked=m.bloqueio7dias||false;
   document.getElementById('btn-del-mod').style.display='flex';
   if(m.imagem&&m.imagem.length>5){document.getElementById('img-prev').src=m.imagem;document.getElementById('img-prev-box').style.display='block';document.getElementById('upload-area').style.display='none';}
   else removerImg();
@@ -746,8 +653,7 @@ function novaAula(modId){
   document.getElementById('aula-modal-titulo').textContent='Adicionar aula';
   document.getElementById('aula-id').value='';
   document.getElementById('aula-mod-id').value=modId;
-  ['aula-nome','aula-url','aula-embed','aula-dur','aula-desc','aula-pdf'].forEach(function(id){document.getElementById(id).value='';});
-  removerThumb();
+  ['aula-nome','aula-url','aula-embed','aula-dur','aula-desc'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('aula-status').value='published';
   document.getElementById('btn-del-aula').style.display='none';
   abrirModal('modal-aula');
@@ -765,32 +671,13 @@ function editarAula(id){
   document.getElementById('aula-dur').value=a.duracao||'';
   document.getElementById('aula-status').value=a.status||'published';
   document.getElementById('aula-desc').value=a.desc||'';
-  document.getElementById('aula-pdf').value=a.pdf||'';
-  if(a.thumb && a.thumb.length>5){
-    document.getElementById('aula-thumb-prev').src=a.thumb;
-    document.getElementById('aula-thumb-prev-box').style.display='block';
-    document.getElementById('aula-thumb-area').style.display='none';
-  } else { removerThumb(); }
   document.getElementById('btn-del-aula').style.display='flex';
   abrirModal('modal-aula');
 }
 
 function gerarEmbed(url){
-  if(!url){document.getElementById('aula-embed').value='';return;}
-  // YouTube
   var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  if(m){document.getElementById('aula-embed').value='https://www.youtube.com/embed/'+m[1];return;}
-  // Panda Video
-  if(url.includes('pandavideo.com')||url.includes('tv.pandavideo')){
-    document.getElementById('aula-embed').value=url;return;
-  }
-  // Bunny
-  if(url.includes('mediadelivery.net')){
-    var embedUrl=url.replace('player.mediadelivery.net/play/','iframe.mediadelivery.net/embed/');
-    if(!embedUrl.includes('?'))embedUrl+='?autoplay=false&preload=false';
-    document.getElementById('aula-embed').value=embedUrl;return;
-  }
-  document.getElementById('aula-embed').value=url;
+  document.getElementById('aula-embed').value=m?'https://www.youtube.com/embed/'+m[1]:'';
 }
 
 function salvarAula(){
@@ -801,9 +688,7 @@ function salvarAula(){
   var editId=document.getElementById('aula-id').value;
   var modId=document.getElementById('aula-mod-id').value;
   var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  var thumbEl=document.getElementById('aula-thumb-prev');
-  var thumb=thumbEl&&thumbEl.src&&thumbEl.src.length>10?thumbEl.src:'';
-  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:m?'https://www.youtube.com/embed/'+m[1]:url,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim(),pdf:document.getElementById('aula-pdf').value.trim(),thumb:thumb};
+  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:m?'https://www.youtube.com/embed/'+m[1]:url,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim()};
   var aulas=gAulas();
   if(editId){var i=aulas.findIndex(function(a){return a.id===editId;});if(i!==-1)aulas[i]=dados;}
   else aulas.push(dados);
@@ -825,34 +710,6 @@ function excluirAulaAtual(){
 
 function delAula(id){
   sAulas(gAulas().filter(function(a){return a.id!==id;}));renderMods();toast('Aula removida.');
-}
-
-function uploadThumb(input){
-  var file=input.files[0];
-  if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    // Comprimir para thumbnail
-    var img=new Image();
-    img.onload=function(){
-      var cv=document.createElement('canvas');
-      cv.width=320;cv.height=180;
-      cv.getContext('2d').drawImage(img,0,0,320,180);
-      var data=cv.toDataURL('image/jpeg',0.75);
-      document.getElementById('aula-thumb-prev').src=data;
-      document.getElementById('aula-thumb-prev-box').style.display='block';
-      document.getElementById('aula-thumb-area').style.display='none';
-    };
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function removerThumb(){
-  document.getElementById('aula-thumb-prev').src='';
-  document.getElementById('aula-thumb-prev-box').style.display='none';
-  document.getElementById('aula-thumb-area').style.display='flex';
-  document.getElementById('aula-thumb-file').value='';
 }
 
 function uploadImg(input){
@@ -891,17 +748,39 @@ function renderAlunos(lista){
 function filtrarAlunos(q){renderAlunos(gAlunos().filter(function(a){return a.nome.toLowerCase().includes(q.toLowerCase())||a.email.toLowerCase().includes(q.toLowerCase());}));}
 function filtrarStatusAluno(s){renderAlunos(s?gAlunos().filter(function(a){return a.status===s;}):gAlunos());}
 
-function salvarAluno(){
+async function salvarAluno(){
   var nome=document.getElementById('aluno-nome').value.trim();
   var email=document.getElementById('aluno-email').value.trim();
+  var senha=document.getElementById('aluno-senha').value.trim();
   if(!nome||!email){alert('Nome e e-mail são obrigatórios.');return;}
-  var a=gAlunos();
-  a.push({id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:'#00c8ff',aulas:0});
-  sAlunos(a);fecharModal('modal-aluno');
-  document.getElementById('aluno-nome').value='';
-  document.getElementById('aluno-email').value='';
-  document.getElementById('aluno-senha').value='';
-  renderAlunos(a);atualizarStats();toast('Aluno adicionado!');
+  var btn=document.querySelector('#modal-aluno .btn-p');
+  if(btn){btn.textContent='Criando...';btn.disabled=true;}
+  try{
+    var senhaFinal=senha||gerarSenha();
+    var res=await _sb.auth.signUp({email:email,password:senhaFinal,options:{data:{nome:nome,origem:'manual'},emailRedirectTo:'https://mentoriainfinitylive.shop/login.html'}});
+    if(res.error){alert('Erro: '+res.error.message);}
+    else{
+      var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff'];
+      var a=gAlunos();
+      a.push({id:res.data.user?res.data.user.id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:cores[Math.floor(Math.random()*cores.length)],aulas:0,origem:'manual',created_at:new Date().toISOString()});
+      sAlunos(a);
+      fecharModal('modal-aluno');
+      document.getElementById('aluno-nome').value='';
+      document.getElementById('aluno-email').value='';
+      document.getElementById('aluno-senha').value='';
+      renderAlunos(a);atualizarStats();
+      var emailOk=await enviarEmailBoasVindas(nome,email,senhaFinal);
+      if(emailOk){toast('Aluno criado! E-mail enviado para '+email);}
+      else{toast('Aluno criado!');alert('Aluno: '+nome+'\nE-mail: '+email+'\nSenha: '+senhaFinal);}
+    }
+  }catch(e){alert('Erro: '+e.message);}
+  if(btn){btn.textContent='Adicionar aluno';btn.disabled=false;}
+}
+
+function gerarSenha(){
+  var chars='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#';
+  var s='';for(var i=0;i<10;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
 }
 
 async function verPerfil(id){
@@ -909,7 +788,6 @@ async function verPerfil(id){
   if(!a)return;
   var inits=a.nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
   document.getElementById('perf-av').textContent=inits;
-  document.getElementById('perf-av').style.background=a.cor||'var(--g1)';
   document.getElementById('perf-av').dataset.id=id;
   document.getElementById('perf-nome').textContent=a.nome;
   document.getElementById('perf-email').textContent=a.email;
@@ -917,74 +795,47 @@ async function verPerfil(id){
   var sp=document.getElementById('perf-status');
   sp.textContent=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
   sp.className='sp '+(a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new');
-
-  // Origem
   var origemEl=document.getElementById('perf-origem');
-  if(origemEl){
-    origemEl.textContent=a.origem==='link_compra'?'🔗 Link de compra':'✏️ Cadastro manual';
-  }
-
-  // Data de entrada
+  if(origemEl) origemEl.textContent=a.origem==='link_compra'?'🔗 Link de compra':'✏️ Cadastro manual';
   var entradaEl=document.getElementById('perf-entrada');
   if(entradaEl&&a.created_at){
     var d=new Date(a.created_at);
-    var meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-    entradaEl.textContent=d.getDate()+' '+meses[d.getMonth()]+' '+d.getFullYear();
-  } else if(entradaEl){
-    entradaEl.textContent='—';
+    var ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    entradaEl.textContent=d.getDate()+' '+ms[d.getMonth()]+' '+d.getFullYear();
   }
-
   abrirModal('modal-perfil');
-
-  // Buscar módulos bloqueados deste aluno
   try{
     var mods=gMods();
-    var res=await _sb.from('modulos_bloqueados')
-      .select('modulo_id,desbloqueio_em,liberado_manualmente')
-      .eq('user_id',id)
-      .eq('liberado_manualmente',false);
-    
+    var res=await _sb.from('modulos_bloqueados').select('modulo_id,desbloqueio_em').eq('user_id',id).eq('liberado_manualmente',false);
     var agora=new Date();
     var bloqueados=(res.data||[]).filter(function(b){return new Date(b.desbloqueio_em)>agora;});
-    
     var wrap=document.getElementById('perf-bloqueios-wrap');
     var lista=document.getElementById('perf-bloqueios-lista');
-    
     if(bloqueados.length>0){
       wrap.style.display='block';
-      var mesesArr=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      var ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
       lista.innerHTML=bloqueados.map(function(b){
         var mod=mods.find(function(m){return m.id===b.modulo_id;});
         var nomeM=mod?mod.nome:'Módulo';
         var dLib=new Date(b.desbloqueio_em);
-        var dataLib=dLib.getDate()+' '+mesesArr[dLib.getMonth()];
         return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--card);border-radius:8px;border:1px solid var(--border);">'
-          +'<div><div style="font-size:12px;font-weight:600;">'+nomeM+'</div>'
-          +'<div style="font-size:10px;color:var(--text3);">Libera em '+dataLib+'</div></div>'
-          +'<button onclick="liberarModulo(''+id+'',''+b.modulo_id+'')" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);color:var(--green);padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">'
-          +'<i class="ti ti-lock-open" style="font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Liberar</button>'
+          +'<div><div style="font-size:12px;font-weight:600;">'+nomeM+'</div><div style="font-size:10px;color:var(--text3);">Libera em '+dLib.getDate()+' '+ms2[dLib.getMonth()]+'</div></div>'
+          +'<button onclick="liberarModulo(''+id+'',''+b.modulo_id+'')" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);color:var(--green);padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="ti ti-lock-open" style="font-size:12px;vertical-align:-1px;margin-right:3px;"></i>Liberar</button>'
           +'</div>';
       }).join('');
-    } else {
-      wrap.style.display='none';
-    }
+    } else { wrap.style.display='none'; }
   }catch(e){ console.warn(e); }
 }
 
-async function liberarModulo(userId, moduloId){
-  await _sb.from('modulos_bloqueados')
-    .update({liberado_manualmente:true})
-    .eq('user_id',userId)
-    .eq('modulo_id',moduloId);
+async function liberarModulo(userId,moduloId){
+  await _sb.from('modulos_bloqueados').update({liberado_manualmente:true}).eq('user_id',userId).eq('modulo_id',moduloId);
   toast('Módulo liberado!');
   verPerfil(userId);
 }
 
 async function liberarTodosModulos(){
   var id=document.getElementById('perf-av').dataset.id;
-  await _sb.from('modulos_bloqueados')
-    .update({liberado_manualmente:true})
-    .eq('user_id',id);
+  await _sb.from('modulos_bloqueados').update({liberado_manualmente:true}).eq('user_id',id);
   toast('Todos os módulos liberados!');
   verPerfil(id);
 }
@@ -1063,160 +914,38 @@ function delTicket(id){
   sTickets(gTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
 }
 
-// ================================================
-// AGENTES DE IA — CONFIGURAÇÕES
-// ================================================
-var PROMPT_PADRAO_AG = `Você é um especialista em vendas ao vivo no TikTok Shop com foco em psicologia do consumidor e copywriting de alta conversão.
-
-Sua missão é criar roteiros naturais de 30 a 40 segundos para serem repetidos em loop durante a live.
-
-ESTRUTURA OBRIGATÓRIA:
-
-🎯 GANCHO COM A DOR (0–5s)
-Comece falando da dor, problema ou desejo do cliente. Algo que ele sente no dia a dia. Seja direto e empático.
-
-💎 PRODUTO + BENEFÍCIOS + TRANSFORMAÇÃO (5–25s)
-Fale bastante do produto de forma sensorial — como ele é, como parece, como faz a pessoa se sentir. Mostre a TRANSFORMAÇÃO: como a vida da pessoa muda depois de ter esse produto. Use linguagem emocional e real. Inclua detalhes concretos. Se tiver prova social (quantidade vendida, avaliações), use aqui.
-
-⚡ GATILHOS (25–33s)
-Crie urgência e escassez real. Fale o preço com impacto — preço antigo vs preço atual. NUNCA mencione porcentagem de desconto. Exemplos: estoque acabando, preço só na live, frete grátis só agora.
-
-📣 CTA (33–40s)
-SEMPRE termine com "clica no link aqui embaixo" — nunca "clica no carrinho". Adicione uma frase de reforço emocional ou urgência depois.
-
-TOM DO ROTEIRO:
-O tom será definido pelo usuário. Adapte toda a linguagem, ritmo e escolha de palavras conforme o tom solicitado:
-- VISCERAL PARA CONVERSÃO: linguagem urgente, direta, quase agressiva. Cada palavra empurra para a ação. Sem enrolação.
-- EMOCIONAL: conecta com sentimentos, sonhos e desejos. Faz a pessoa se imaginar usando o produto. Mais suave e envolvente.
-- INFORMATIVO: foca em dados, características e benefícios concretos. Tom de quem entende do assunto.
-- SÉRIO E DIRETO: sem exageros, sem animação excessiva. Confiante e objetivo. Fala de igual para igual.
-
-REGRAS:
-- Linguagem 100% natural como pessoa real falando
-- NUNCA mencionar porcentagem de desconto
-- CTA SEMPRE com "clica no link aqui embaixo"
-- Foco na TRANSFORMAÇÃO, não no produto em si
-- Gere APENAS o roteiro, sem explicações antes ou depois`;
+var PROMPT_PADRAO_AG='Você é um especialista em vendas ao vivo no TikTok Shop. Crie roteiros de 30-40s para loop na live. ESTRUTURA: 🎯 GANCHO COM A DOR (0-5s) | 💎 PRODUTO+BENEFÍCIOS+TRANSFORMAÇÃO (5-25s) | ⚡ GATILHOS sem % desconto (25-33s) | 📣 CTA com clica no link aqui embaixo (33-40s). Linguagem natural, sem % desconto, CTA sempre com clica no link aqui embaixo.';
 
 async function salvarConfAgentes(){
-  var keyRoteiro = document.getElementById('ag-key-roteiro').value.trim();
-  var keyImagem = document.getElementById('ag-key-imagem').value.trim();
-  var keyMetricas = document.getElementById('ag-key-metricas').value.trim();
-  var prompt = document.getElementById('ag-prompt').value.trim();
-  
+  var kr=document.getElementById('ag-key-roteiro').value.trim();
+  var ki=document.getElementById('ag-key-imagem').value.trim();
+  var km=document.getElementById('ag-key-metricas').value.trim();
+  var p=document.getElementById('ag-prompt').value.trim();
   try{
-    if(keyRoteiro) await _sb.from('configuracoes').upsert({chave:'api_key_roteiro', valor:keyRoteiro});
-    if(keyImagem) await _sb.from('configuracoes').upsert({chave:'api_key_imagem', valor:keyImagem});
-    if(keyMetricas) await _sb.from('configuracoes').upsert({chave:'api_key_metricas', valor:keyMetricas});
-    if(prompt) await _sb.from('configuracoes').upsert({chave:'agente_roteiro_prompt', valor:prompt});
-    if(keyRoteiro) localStorage.setItem('ag_key_roteiro', keyRoteiro);
-    if(keyImagem) localStorage.setItem('ag_key_imagem', keyImagem);
-    if(keyMetricas) localStorage.setItem('ag_key_metricas', keyMetricas);
-    if(prompt) localStorage.setItem('ag_prompt', prompt);
-    toast('Chaves salvas!');
-  }catch(e){
-    if(keyRoteiro) localStorage.setItem('ag_key_roteiro', keyRoteiro);
-    if(keyImagem) localStorage.setItem('ag_key_imagem', keyImagem);
-    if(keyMetricas) localStorage.setItem('ag_key_metricas', keyMetricas);
-    if(prompt) localStorage.setItem('ag_prompt', prompt);
-    toast('Configurações salvas localmente!');
-  }
-}
-
-function resetarPrompt(){
-  document.getElementById('ag-prompt').value = PROMPT_PADRAO_AG;
-  toast('Prompt restaurado para o padrão!');
+    if(kr) await _sb.from('configuracoes').upsert({chave:'api_key_roteiro',valor:kr});
+    if(ki) await _sb.from('configuracoes').upsert({chave:'api_key_imagem',valor:ki});
+    if(km) await _sb.from('configuracoes').upsert({chave:'api_key_metricas',valor:km});
+    if(p) await _sb.from('configuracoes').upsert({chave:'agente_roteiro_prompt',valor:p});
+    toast('Configurações salvas!');
+  }catch(e){ toast('Erro ao salvar: '+e.message, true); }
 }
 
 async function carregarConfAgentes(){
   try{
-    var res = await _sb.from('configuracoes').select('*').in('chave',['api_key_roteiro','api_key_imagem','api_key_metricas','agente_roteiro_prompt']);
-    if(res.data && res.data.length){
+    var res=await _sb.from('configuracoes').select('*').in('chave',['api_key_roteiro','api_key_imagem','api_key_metricas','agente_roteiro_prompt']);
+    if(res.data){
       res.data.forEach(function(row){
-        if(row.chave==='api_key_roteiro') document.getElementById('ag-key-roteiro').value=row.valor;
-        if(row.chave==='api_key_imagem') document.getElementById('ag-key-imagem').value=row.valor;
-        if(row.chave==='api_key_metricas') document.getElementById('ag-key-metricas').value=row.valor;
-        if(row.chave==='agente_roteiro_prompt') document.getElementById('ag-prompt').value=row.valor;
+        if(row.chave==='api_key_roteiro'&&document.getElementById('ag-key-roteiro')) document.getElementById('ag-key-roteiro').value=row.valor;
+        if(row.chave==='api_key_imagem'&&document.getElementById('ag-key-imagem')) document.getElementById('ag-key-imagem').value=row.valor;
+        if(row.chave==='api_key_metricas'&&document.getElementById('ag-key-metricas')) document.getElementById('ag-key-metricas').value=row.valor;
+        if(row.chave==='agente_roteiro_prompt'&&document.getElementById('ag-prompt')) document.getElementById('ag-prompt').value=row.valor;
       });
-      return;
     }
+    if(document.getElementById('ag-prompt')&&!document.getElementById('ag-prompt').value) document.getElementById('ag-prompt').value=PROMPT_PADRAO_AG;
   }catch(e){}
-  var kr=localStorage.getItem('ag_key_roteiro');
-  var ki=localStorage.getItem('ag_key_imagem');
-  var km=localStorage.getItem('ag_key_metricas');
-  var p=localStorage.getItem('ag_prompt');
-  if(kr) document.getElementById('ag-key-roteiro').value=kr;
-  if(ki) document.getElementById('ag-key-imagem').value=ki;
-  if(km) document.getElementById('ag-key-metricas').value=km;
-  if(p) document.getElementById('ag-prompt').value=p;
 }
 
-// ================================================
-// MÓDULOS BLOQUEADOS POR PADRÃO
-// ================================================
-var _MODS_BLOQ_KEY = 'il_mods_bloqueados_padrao';
-
-function renderConfigModsBloqueados(){
-  var mods = gMods();
-  var bloqueados = JSON.parse(localStorage.getItem(_MODS_BLOQ_KEY)||'[]');
-  var el = document.getElementById('config-mods-bloqueados');
-  if(!el) return;
-  if(!mods.length){
-    el.innerHTML='<div style="font-size:12px;color:var(--text3);">Nenhum módulo cadastrado ainda.</div>';
-    return;
-  }
-  el.innerHTML = mods.sort(function(a,b){return (a.ordem||99)-(b.ordem||99);}).map(function(m){
-    var checked = bloqueados.includes(m.id) ? 'checked' : '';
-    return '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:9px;border:1px solid var(--border);cursor:pointer;">'
-      +'<input type="checkbox" id="blq-'+m.id+'" value="'+m.id+'" '+checked+' style="width:16px;height:16px;accent-color:var(--yellow);cursor:pointer;"/>'
-      +'<div style="flex:1;">'
-      +'<div style="font-size:12px;font-weight:700;">'+m.nome+'</div>'
-      +'<div style="font-size:10px;color:var(--text3);">Módulo '+m.ordem+'</div>'
-      +'</div>'
-      +'<i class="ti ti-lock" style="font-size:14px;color:var(--yellow);opacity:0.5;"></i>'
-      +'</label>';
-  }).join('');
-}
-
-function salvarModsBloqueados(){
-  var mods = gMods();
-  var selecionados = mods.filter(function(m){
-    var el = document.getElementById('blq-'+m.id);
-    return el && el.checked;
-  }).map(function(m){ return m.id; });
-  localStorage.setItem(_MODS_BLOQ_KEY, JSON.stringify(selecionados));
-  // Salvar também no Supabase para o webhook da Cakto acessar
-  _sb.from('configuracoes').upsert({chave:'mods_bloqueados_padrao', valor:JSON.stringify(selecionados)});
-  toast('Configuração salva! '+selecionados.length+' módulo(s) serão bloqueados por 7 dias.');
-}
-
-async function bloquearModulosNovoAluno(userId){
-  var bloqueados = JSON.parse(localStorage.getItem(_MODS_BLOQ_KEY)||'[]');
-  if(!bloqueados.length) return;
-  var desbloqueioEm = new Date();
-  desbloqueioEm.setDate(desbloqueioEm.getDate() + 7);
-  var registros = bloqueados.map(function(modId){
-    return {
-      user_id: userId,
-      modulo_id: modId,
-      desbloqueio_em: desbloqueioEm.toISOString()
-    };
-  });
-  await _sb.from('modulos_bloqueados').insert(registros);
-}
-
-async function liberarModulosAluno(userId, nome){
-  confirmar(
-    'Liberar módulos',
-    'Liberar todos os módulos bloqueados de "'+nome+'" agora?',
-    async function(){
-      await _sb.from('modulos_bloqueados')
-        .update({liberado_manualmente: true, desbloqueio_em: new Date().toISOString()})
-        .eq('user_id', userId);
-      toast('Módulos de '+nome+' liberados!');
-    }
-  );
-}
+function resetarPrompt(){ if(document.getElementById('ag-prompt')) document.getElementById('ag-prompt').value=PROMPT_PADRAO_AG; toast('Prompt restaurado!'); }
 
 function renderMats(){
   var el=document.getElementById('mats-lista');
@@ -1291,7 +1020,7 @@ async function publicarNoSite(){
     }
     for(var j=0;j<aulas.length;j++){
       var a=aulas[j];
-      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',pdf:a.pdf||'',thumb:a.thumb||'',ordem:j+1});
+      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',ordem:j+1});
       if(ra.error){console.error('Erro aula:',ra.error);}
     }
     toast('✅ '+mods.length+' módulo(s) publicados! Alunos já podem ver.');
@@ -1302,10 +1031,20 @@ async function publicarNoSite(){
   btn.disabled=false;
 }
 
-(function(){
+(async function(){
   document.querySelectorAll('.pg').forEach(function(p){p.style.display='none';p.classList.remove('ativa');});
   document.getElementById('pg-dashboard').style.display='block';
   document.getElementById('pg-dashboard').classList.add('ativa');
+  try{
+    var rM=await _sb.from('modulos').select('*').order('ordem',{ascending:true});
+    var rA=await _sb.from('aulas').select('*').order('ordem',{ascending:true});
+    if(rM.data&&rM.data.length>0){
+      sMods(rM.data.map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1,bloqueio7dias:m.bloqueio_7dias||false};}));
+    }
+    if(rA.data&&rA.data.length>0){
+      sAulas(rA.data.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};}));
+    }
+  }catch(e){console.warn('Sync falhou:',e);}
   atualizarStats();
 })();
 </script>
