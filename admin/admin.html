@@ -388,6 +388,19 @@ REGRAS:
           </div>
         </div>
       </div>
+
+      <!-- MÓDULOS BLOQUEADOS POR PADRÃO -->
+      <div class="card" style="margin-top:12px;">
+        <div class="card-hd">
+          <span class="card-title"><i class="ti ti-lock" style="color:var(--yellow);"></i> Módulos bloqueados por padrão (7 dias)</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">Selecione os módulos que ficarão bloqueados automaticamente quando um novo aluno entrar. Após 7 dias da compra, são liberados automaticamente.</div>
+        <div id="config-mods-bloqueados" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+          <div style="font-size:12px;color:var(--text3);">Carregando módulos...</div>
+        </div>
+        <button class="btn btn-p" onclick="salvarModsBloqueados()"><i class="ti ti-device-floppy" style="font-size:13px;"></i> Salvar configuração</button>
+      </div>
+
     </div>
 
   </div>
@@ -552,6 +565,7 @@ function irPara(pg,el){
   document.getElementById('pg-sub').textContent=t[1];
   if(pg==='modulos')renderMods();
   if(pg==='agentes')carregarConfAgentes();
+  if(pg==='config')renderConfigModsBloqueados();
   if(pg==='tickets')renderTickets();
   if(pg==='alunos')renderAlunos(gAlunos());
   if(pg==='preview')renderPreview();
@@ -1033,6 +1047,73 @@ async function carregarConfAgentes(){
   if(ki) document.getElementById('ag-key-imagem').value=ki;
   if(km) document.getElementById('ag-key-metricas').value=km;
   if(p) document.getElementById('ag-prompt').value=p;
+}
+
+// ================================================
+// MÓDULOS BLOQUEADOS POR PADRÃO
+// ================================================
+var _MODS_BLOQ_KEY = 'il_mods_bloqueados_padrao';
+
+function renderConfigModsBloqueados(){
+  var mods = gMods();
+  var bloqueados = JSON.parse(localStorage.getItem(_MODS_BLOQ_KEY)||'[]');
+  var el = document.getElementById('config-mods-bloqueados');
+  if(!el) return;
+  if(!mods.length){
+    el.innerHTML='<div style="font-size:12px;color:var(--text3);">Nenhum módulo cadastrado ainda.</div>';
+    return;
+  }
+  el.innerHTML = mods.sort(function(a,b){return (a.ordem||99)-(b.ordem||99);}).map(function(m){
+    var checked = bloqueados.includes(m.id) ? 'checked' : '';
+    return '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:9px;border:1px solid var(--border);cursor:pointer;">'
+      +'<input type="checkbox" id="blq-'+m.id+'" value="'+m.id+'" '+checked+' style="width:16px;height:16px;accent-color:var(--yellow);cursor:pointer;"/>'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:12px;font-weight:700;">'+m.nome+'</div>'
+      +'<div style="font-size:10px;color:var(--text3);">Módulo '+m.ordem+'</div>'
+      +'</div>'
+      +'<i class="ti ti-lock" style="font-size:14px;color:var(--yellow);opacity:0.5;"></i>'
+      +'</label>';
+  }).join('');
+}
+
+function salvarModsBloqueados(){
+  var mods = gMods();
+  var selecionados = mods.filter(function(m){
+    var el = document.getElementById('blq-'+m.id);
+    return el && el.checked;
+  }).map(function(m){ return m.id; });
+  localStorage.setItem(_MODS_BLOQ_KEY, JSON.stringify(selecionados));
+  // Salvar também no Supabase para o webhook da Cakto acessar
+  _sb.from('configuracoes').upsert({chave:'mods_bloqueados_padrao', valor:JSON.stringify(selecionados)});
+  toast('Configuração salva! '+selecionados.length+' módulo(s) serão bloqueados por 7 dias.');
+}
+
+async function bloquearModulosNovoAluno(userId){
+  var bloqueados = JSON.parse(localStorage.getItem(_MODS_BLOQ_KEY)||'[]');
+  if(!bloqueados.length) return;
+  var desbloqueioEm = new Date();
+  desbloqueioEm.setDate(desbloqueioEm.getDate() + 7);
+  var registros = bloqueados.map(function(modId){
+    return {
+      user_id: userId,
+      modulo_id: modId,
+      desbloqueio_em: desbloqueioEm.toISOString()
+    };
+  });
+  await _sb.from('modulos_bloqueados').insert(registros);
+}
+
+async function liberarModulosAluno(userId, nome){
+  confirmar(
+    'Liberar módulos',
+    'Liberar todos os módulos bloqueados de "'+nome+'" agora?',
+    async function(){
+      await _sb.from('modulos_bloqueados')
+        .update({liberado_manualmente: true, desbloqueio_em: new Date().toISOString()})
+        .eq('user_id', userId);
+      toast('Módulos de '+nome+' liberados!');
+    }
+  );
 }
 
 function renderMats(){
