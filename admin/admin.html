@@ -364,6 +364,15 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div class="mf"><label class="ml">Status</label><select class="msel" id="aula-status"><option value="published">Publicada</option><option value="draft">Rascunho</option></select></div>
     </div>
     <div class="mf"><label class="ml">Descrição / Conteúdo da aula</label><textarea class="mta" id="aula-desc" style="min-height:100px;" placeholder="Descreva os tópicos, cole links, ou adicione qualquer conteúdo extra...&#10;&#10;Exemplo:&#10;🔗 Material: https://...&#10;📊 Planilha: https://...&#10;📌 Ponto importante da aula"></textarea></div>
+    <div class="mf">
+      <label class="ml"><i class="ti ti-file-type-pdf" style="color:#ff4d8d;font-size:13px;vertical-align:-2px;margin-right:4px;"></i> Material de apoio (PDF)</label>
+      <input class="mi" id="aula-pdf" placeholder="Cole o link do PDF (Google Drive, Dropbox, etc.)"/>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px;">Link direto para download. Ex: https://drive.google.com/file/d/.../view</div>
+    </div>
+    <div class="mf">
+      <label class="ml"><i class="ti ti-photo" style="color:var(--cyan);font-size:13px;vertical-align:-2px;margin-right:4px;"></i> Miniatura da aula (thumb)</label>
+      <input class="mi" id="aula-thumb" placeholder="URL da imagem miniatura"/>
+    </div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarAula()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar aula</button>
       <button class="btn btn-d btn-sm" id="btn-del-aula" style="display:none;" onclick="excluirAulaAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
@@ -647,6 +656,8 @@ function editarAula(id){
   document.getElementById('aula-dur').value=a.duracao||'';
   document.getElementById('aula-status').value=a.status||'published';
   document.getElementById('aula-desc').value=a.desc||'';
+  if(document.getElementById('aula-pdf')) document.getElementById('aula-pdf').value=a.pdf||'';
+  if(document.getElementById('aula-thumb')) document.getElementById('aula-thumb').value=a.thumb||'';
   document.getElementById('btn-del-aula').style.display='flex';
   abrirModal('modal-aula');
 }
@@ -1277,7 +1288,7 @@ async function toggleBloqueio7dias(){
     var rM=await _sb.from('modulos').select('*').order('ordem',{ascending:true});
     if(rM.data&&rM.data.length) sMods(rM.data.map(function(m){return{id:m.id,nome:m.nome,desc:m.descricao||'',imagem:m.imagem||'',status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||1,bloqueio7dias:m.bloqueio_7dias||false};}));
     var rA=await _sb.from('aulas').select('*').order('ordem',{ascending:true});
-    if(rA.data&&rA.data.length) sAulas(rA.data.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||''};}));
+    if(rA.data&&rA.data.length) sAulas(rA.data.map(function(a){return{id:a.id,moduloId:a.modulo_id,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',desc:a.descricao||'',pdf:a.pdf||'',thumb:a.thumb||''};}));
   }catch(e){console.warn(e);}
   atualizarStats();
 })();
