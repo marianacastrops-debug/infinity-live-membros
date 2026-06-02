@@ -870,9 +870,19 @@ function alternarBloqueio(){
   toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
 }
 
-function excluirAluno(id){
-  sAlunos(gAlunos().filter(function(a){return a.id!==id;}));
-  renderAlunos(gAlunos());atualizarStats();toast('Aluno excluído.');
+async function excluirAluno(id){
+  var alunos=gAlunos();
+  var aluno=alunos.find(function(a){return a.id===id;});
+  if(!aluno) return;
+  try{
+    await fetch('/api/deletar-aluno',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:aluno.email})
+    });
+  }catch(e){console.warn('Erro ao deletar no Supabase:',e);}
+  sAlunos(alunos.filter(function(a){return a.id!==id;}));
+  renderAlunos(gAlunos());atualizarStats();toast('Aluno excluido!');
 }
 
 function excluirAlunoModal(){
@@ -1142,9 +1152,19 @@ function alternarBloqueio(){
   toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
 }
 
-function excluirAluno(id){
-  sAlunos(gAlunos().filter(function(a){return a.id!==id;}));
-  renderAlunos(gAlunos());atualizarStats();toast('Aluno excluído.');
+async function excluirAluno(id){
+  var alunos=gAlunos();
+  var aluno=alunos.find(function(a){return a.id===id;});
+  if(!aluno) return;
+  try{
+    await fetch('/api/deletar-aluno',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:aluno.email})
+    });
+  }catch(e){console.warn('Erro ao deletar no Supabase:',e);}
+  sAlunos(alunos.filter(function(a){return a.id!==id;}));
+  renderAlunos(gAlunos());atualizarStats();toast('Aluno excluido!');
 }
 
 function excluirAlunoModal(){
