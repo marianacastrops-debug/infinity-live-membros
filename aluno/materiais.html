@@ -154,49 +154,51 @@ async function fazerLogout(){ await _sb.auth.signOut(); window.location.href='..
 
 // Carregar materiais do Supabase
 async function carregarMateriais(){
-  var SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
-  var SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+  var loading=document.getElementById('mats-loading');
+  var grid=document.getElementById('mats-grid');
+  var empty=document.getElementById('mats-empty');
+
   try{
-    var res=await fetch(SB_URL+'/rest/v1/materiais?select=*&order=ordem.asc',{
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    var res=await fetch('https://fbjxampsauqfngdennpi.supabase.co/rest/v1/materiais?select=*&order=ordem.asc',{
+      headers:{
+        'apikey':'sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg',
+        'Authorization':'Bearer sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg'
+      }
     });
     var mats=await res.json();
-    if(!Array.isArray(mats)) throw new Error('Resposta inválida');
-    document.getElementById('mats-loading').style.display='none';
+    loading.style.display='none';
+
     if(!Array.isArray(mats)||!mats.length){
-      document.getElementById('mats-empty').style.display='block';
+      empty.style.display='block';
       return;
     }
+
     var icones={pdf:'ti-file-type-pdf',doc:'ti-file-type-doc',xls:'ti-file-type-xls',zip:'ti-file-zip',link:'ti-link',video:'ti-video'};
     var cores={pdf:'#ff4d8d',doc:'#00c8ff',xls:'#00e5a0',zip:'#ffb800',link:'#7c5cff',video:'#ff8c42'};
-    var grid=document.getElementById('mats-grid');
+
     grid.style.display='grid';
     grid.innerHTML=mats.map(function(m){
       var tipo=m.tipo||'pdf';
       var ico=icones[tipo]||'ti-file';
       var cor=cores[tipo]||'#00c8ff';
       return '<a href="'+m.url+'" target="_blank" style="text-decoration:none;">'
-        +'<div style="background:var(--card,#111827);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;display:flex;align-items:center;gap:14px;transition:border-color .2s;cursor:pointer;" onmouseover="this.style.borderColor=''+cor+'40'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">'
+        +'<div style="background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .2s;" onmouseover="this.style.borderColor=''+cor+'50'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">'
         +'<div style="width:46px;height:46px;border-radius:11px;background:'+cor+'18;border:1px solid '+cor+'30;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
         +'<i class="ti '+ico+'" style="font-size:22px;color:'+cor+';"></i></div>'
         +'<div style="flex:1;min-width:0;">'
-        +'<div style="font-size:13px;font-weight:700;color:#f0f4ff;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+m.nome+'</div>'
-        +(m.descricao?'<div style="font-size:11px;color:#6b7a99;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+m.descricao+'</div>':'')
+        +'<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">'+m.nome+'</div>'
+        +(m.descricao?'<div style="font-size:11px;color:var(--text2);">'+m.descricao+'</div>':'')
         +'</div>'
         +'<i class="ti ti-download" style="font-size:18px;color:'+cor+';opacity:.7;flex-shrink:0;"></i>'
         +'</div></a>';
     }).join('');
+
   }catch(e){
-    document.getElementById('mats-loading').style.display='none';
-    document.getElementById('mats-empty').style.display='block';
-    console.warn('Erro ao carregar materiais:',e);
+    if(loading) loading.style.display='none';
+    if(empty) empty.style.display='block';
+    console.error('Erro materiais:',e);
   }
 }
 
-// Chamar após página carregar
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(carregarMateriais, 500);
-});
+document.addEventListener('DOMContentLoaded', carregarMateriais);
 </script>
-</body>
-</html>
