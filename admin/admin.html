@@ -1082,20 +1082,6 @@ function alternarBloqueio(){
   toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
 }
 
-async function excluirAluno(id){
-  var alunos=gAlunos();
-  var aluno=alunos.find(function(a){return a.id===id;});
-  if(!aluno) return;
-  try{
-    await fetch('/api/deletar-aluno',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email:aluno.email})
-    });
-  }catch(e){console.warn('Erro ao deletar no Supabase:',e);}
-  sAlunos(alunos.filter(function(a){return a.id!==id;}));
-  renderAlunos(gAlunos());atualizarStats();toast('Aluno excluido!');
-}
 
 function excluirAlunoModal(){
   var id=document.getElementById('perf-av').dataset.id;
