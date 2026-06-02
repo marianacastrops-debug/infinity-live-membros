@@ -587,6 +587,53 @@ function copiarPromptImagem(){
   copiarTexto('prompt-imagem-conteudo',null);
 }
 
+async function remixarPrompt(tipo){
+  var apiKey = await getApiKey('imagem');
+  if(!apiKey){alert('Chave API do Gerador de Imagem nao configurada!');return;}
+  if(!_imgsProduto.length){alert('Envie as fotos do produto primeiro!');return;}
+
+  var btnEl = event.target.closest('button');
+  if(btnEl){btnEl.disabled=true;btnEl.innerHTML='<i class="ti ti-loader-2" style="font-size:12px;animation:spin 1s linear infinite;"></i> Gerando...';}
+
+  var sugestaoImg = document.getElementById('sugestao-imagem').value.trim();
+  var sugestaoVid = document.getElementById('sugestao-video').value.trim();
+
+  var promptAtualImg = document.getElementById('prompt-imagem-conteudo').textContent;
+  var promptAtualVid = document.getElementById('prompt-video-conteudo').textContent;
+
+  var instrucao = tipo === 'imagem'
+    ? 'Recrie APENAS o prompt de IMAGEM com variacao criativa mantendo o mesmo produto e formato.'
+      +(sugestaoImg?' Sugestao adicional: '+sugestaoImg:'')
+      +' Prompt atual para referencia: '+promptAtualImg
+    : 'Recrie APENAS o prompt de VIDEO/MOVIMENTO com variacao criativa mantendo o mesmo estilo e produto.'
+      +(sugestaoVid?' Movimento desejado: '+sugestaoVid:'')
+      +' Prompt atual para referencia: '+promptAtualVid;
+
+  instrucao += ' Responda APENAS com o novo prompt, sem explicacoes.';
+
+  var msgContent = [];
+  _imgsProduto.slice(0,2).forEach(function(img){
+    msgContent.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:img.replace('data:image/jpeg;base64;','').replace('data:image/png;base64,','').split(',')[1]||img.replace(/^data:image\/\w+;base64,/,'')}});
+  });
+  msgContent.push({type:'text',text:instrucao});
+
+  try{
+    var res = await fetch('/api/roteiro',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:msgContent}],apiKey:apiKey})
+    });
+    var data = await res.json();
+    var novo = data.content&&data.content[0]?data.content[0].text:'';
+    if(novo){
+      if(tipo==='imagem') document.getElementById('prompt-imagem-conteudo').textContent=novo;
+      else document.getElementById('prompt-video-conteudo').textContent=novo;
+    }
+  }catch(e){alert('Erro: '+e.message);}
+
+  if(btnEl){btnEl.disabled=false;btnEl.innerHTML='<i class="ti ti-refresh" style="font-size:12px;"></i> Remixar';}
+}
+
 function copiarTexto(elId, btn){
   var texto=document.getElementById(elId).textContent;
   navigator.clipboard.writeText(texto).then(function(){
@@ -738,331 +785,32 @@ async function gerarRoteiro(){
 }
 
 function formatarRoteiro(texto){
-  return texto
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\n/g,'<br/>');
-}
-
-// ================================================
-// AGENTE DE MÉTRICAS
-// ================================================
-var _imgsMetricas = [];
-
-function adicionarImgsMetricas(input){
-  var files=Array.from(input.files);
-  files.slice(0,4-_imgsMetricas.length).forEach(function(file){
-    var reader=new FileReader();
-    reader.onload=function(e){
-      var img=new Image();
-      img.onload=function(){
-        var cv=document.createElement('canvas');
-        var maxW=1000,w=img.width,h=img.height;
-        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
-        cv.width=w;cv.height=h;
-        cv.getContext('2d').drawImage(img,0,0,w,h);
-        _imgsMetricas.push(cv.toDataURL('image/jpeg',0.85));
-        renderImgsMetricas();
-      };
-      img.src=e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-  input.value='';
-}
-
-function renderImgsMetricas(){
-  var el=document.getElementById('imgs-metricas-preview');
-  el.innerHTML=_imgsMetricas.map(function(src,i){
-    return '<div class="img-thumb"><img src="'+src+'"/><button class="img-thumb-del" onclick="removerImgMetrica('+i+')">×</button></div>';
-  }).join('');
-  var zona=document.getElementById('zona-upload-metricas');
-  if(zona) zona.style.display=_imgsMetricas.length>=4?'none':'block';
-}
-
-function removerImgMetrica(i){
-  _imgsMetricas.splice(i,1);
-  renderImgsMetricas();
-}
-
-async function gerarAnaliseMetricas(){
-  var contexto=document.getElementById('input-contexto-metricas').value.trim();
-  if(!_imgsMetricas.length){alert('Envie pelo menos um print do painel de análise!');return;}
-
-  document.getElementById('btn-gerar-metricas').disabled=true;
-  document.getElementById('resultado-metricas').style.display='none';
-  document.getElementById('loading-metricas').style.display='block';
-
-  var apiKey=await getApiKey('metricas');
-  if(!apiKey){alert('Chave API do Analista de Métricas não configurada! Configure no painel admin.');return;}
-
-  var SYSTEM_METRICAS = 'Voce e um especialista em analise de lives no TikTok Shop.'
-    +' IMPORTANTE: O modelo de live analisado nao tem produto fisico em maos. O apresentador fica na camera falando enquanto um VIDEO DO PRODUTO passa na tela embaixo. Todas as dicas devem ser adaptadas para esse formato.'
-    +' Analise as metricas e entregue uma analise SIMPLES, DIRETA e EM PORTUGUES como se fosse uma mentora experiente explicando para uma aluna.'
-    +'\n\nESTRUTURA OBRIGATORIA:'
-    +'\n\n📊 RESUMO GERAL'
-    +'\nEm 2-3 frases diretas: como foi a live? Use os numeros reais das metricas para embasar.'
-    +'\n\n✅ O QUE FOI BEM'
-    +'\nListe 3-4 pontos positivos com explicacao simples do que significa aquele numero bom.'
-    +'\n\n⚠️ O QUE PODE MELHORAR'
-    +'\nListe 3-4 pontos com o que o numero fraco significa e por que aconteceu.'
-    +'\n\n🎯 DICAS PARA A PROXIMA LIVE'
-    +'\nMinimo 5 dicas especificas e acionaveis. FOCO NO FORMATO: camera ligada + video do produto passando. Exemplos: como melhorar o que voce fala enquanto o video passa, tom de voz, ritmo, como reagir aos comentarios, quanto tempo ficar em cada produto, etc.'
-    +'\n\n🪝 GANCHOS PARA TESTAR'
-    +'\n3 frases de abertura especificas para usar nos primeiros segundos da live. Devem ser falas reais que a pessoa pode usar.'
-    +'\n\n📣 CTAs PARA TESTAR'
-    +'\n3 CTAs diferentes e especificos para usar durante a live. Frases prontas para usar.'
-    +'\n\n🔁 UMA COISA SO PARA FAZER DIFERENTE AMANHA'
-    +'\nA acao mais importante e de maior impacto. Uma frase clara e direta.'
-    +'\n\nREGRAS: Linguagem simples e direta. Explique termos se necessario. Use os numeros reais. Seja encorajador mas honesto. NUNCA sugira segurar produto ou mostrar produto fisicamente.';
-
-  var msgContent=[];
-  _imgsMetricas.forEach(function(img){
-    msgContent.push({
-      type:'image',
-      source:{type:'base64',media_type:'image/jpeg',data:img.replace('data:image/jpeg;base64,','').replace('data:image/png;base64,','')}
+  if(!texto) return '';
+  var html = texto
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/🎯(.*?)(?=💎|⚡|📣|$)/gs, function(m,p1){
+      return '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:800;color:#ff4d8d;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">🎯'+p1.split('\n')[0]+'</div>'
+        +'<div style="font-size:14px;color:#f0f4ff;line-height:1.8;">'+p1.split('\n').slice(1).join('\n').trim()+'</div></div>';
+    })
+    .replace(/💎(.*?)(?=⚡|📣|$)/gs, function(m,p1){
+      return '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:800;color:#a07fff;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">💎'+p1.split('\n')[0]+'</div>'
+        +'<div style="font-size:14px;color:#f0f4ff;line-height:1.8;">'+p1.split('\n').slice(1).join('\n').trim()+'</div></div>';
+    })
+    .replace(/⚡(.*?)(?=📣|$)/gs, function(m,p1){
+      return '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:800;color:#ffb800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">⚡'+p1.split('\n')[0]+'</div>'
+        +'<div style="font-size:14px;color:#f0f4ff;line-height:1.8;">'+p1.split('\n').slice(1).join('\n').trim()+'</div></div>';
+    })
+    .replace(/📣(.*?)$/gs, function(m,p1){
+      return '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:800;color:#00e5a0;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">📣'+p1.split('\n')[0]+'</div>'
+        +'<div style="font-size:14px;color:#f0f4ff;line-height:1.8;">'+p1.split('\n').slice(1).join('\n').trim()+'</div></div>';
     });
-  });
-
-  var userMsg='Analise as métricas desta live do TikTok Shop e me dê um feedback completo.';
-  if(contexto) userMsg+=' Contexto adicional: '+contexto;
-  msgContent.push({type:'text',text:userMsg});
-
-  try{
-    var res=await fetch('/api/roteiro',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:2000,
-        system:SYSTEM_METRICAS,
-        messages:[{role:'user',content:msgContent}],
-        apiKey:apiKey
-      })
-    });
-    var data=await res.json();
-    var texto=data.content&&data.content[0]?data.content[0].text:'';
-    if(!texto){alert('Erro ao gerar análise. Tente novamente.');return;}
-    document.getElementById('analise-conteudo-raw').textContent=texto;
-    renderAnaliseCards(texto);
-    salvarNoHistorico(texto);
-    document.getElementById('resultado-metricas').style.display='block';
-    document.getElementById('resultado-metricas').scrollIntoView({behavior:'smooth'});
-  }catch(e){
-    alert('Erro: '+e.message);
-  }finally{
-    document.getElementById('loading-metricas').style.display='none';
-    document.getElementById('btn-gerar-metricas').disabled=false;
+  // Fallback se não detectou seções
+  if(html===texto.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')){
+    html='<div style="font-size:14px;color:#f0f4ff;line-height:1.9;white-space:pre-wrap;">'+html+'</div>';
   }
+  return html;
 }
 
-function extrairSecao(texto, emoji, proximos){
-  var idx=texto.indexOf(emoji);
-  if(idx===-1) return '';
-  var fim=texto.length;
-  proximos.forEach(function(e){var i=texto.indexOf(e,idx+1);if(i>-1&&i<fim)fim=i;});
-  var bloco=texto.slice(idx,fim).trim();
-  return bloco.split('\n').slice(1).join('\n').trim();
-}
-
-function linhasParaHtml(texto, cor){
-  return texto.split('\n').filter(function(l){return l.trim();}).map(function(l){
-    var txt=l.replace(/^[-•*\d.]+\s*/,'').trim();
-    if(!txt)return '';
-    return '<div class="met-card-item">'
-      +'<span style="color:'+cor+';font-size:14px;flex-shrink:0;line-height:1.6;">◆</span>'
-      +'<span>'+txt+'</span>'
-      +'</div>';
-  }).join('');
-}
-
-function renderAnaliseCards(texto){
-  var todos=['📊','✅','⚠️','🎯','🪝','📣','🔁'];
-
-  var resumo=extrairSecao(texto,'📊',todos.filter(function(e){return e!=='📊';}));
-  var bem=extrairSecao(texto,'✅',todos.filter(function(e){return e!=='✅';}));
-  var melhorar=extrairSecao(texto,'⚠️',todos.filter(function(e){return e!=='⚠️';}));
-  var dicas=extrairSecao(texto,'🎯',todos.filter(function(e){return e!=='🎯';}));
-  var ganchos=extrairSecao(texto,'🪝',todos.filter(function(e){return e!=='🪝';}));
-  var ctas=extrairSecao(texto,'📣',todos.filter(function(e){return e!=='📣';}));
-  var acao=extrairSecao(texto,'🔁',todos.filter(function(e){return e!=='🔁';}));
-
-  var html='';
-
-  // RESUMO GERAL — card largo com destaque
-  if(resumo){
-    html+='<div class="met-destaque">'
-      +'<div class="met-destaque-emoji">📊</div>'
-      +'<div><div style="font-size:11px;font-weight:700;color:#00e5a0;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">Resumo da live</div>'
-      +'<div class="met-destaque-txt">'+resumo.replace(/\n/g,' ')+'</div></div>'
-      +'</div>';
-  }
-
-  // BEM e MELHORAR — lado a lado
-  if(bem||melhorar){
-    html+='<div class="met-grid">';
-    if(bem){
-      html+='<div class="met-card" style="background:rgba(0,229,160,0.08);border:2px solid rgba(0,229,160,0.25);">'
-        +'<div class="met-card-ico" style="background:rgba(0,229,160,0.2);">✅</div>'
-        +'<div class="met-card-title" style="color:#00e5a0;">Foi bem</div>'
-        +linhasParaHtml(bem,'#00e5a0')
-        +'</div>';
-    }
-    if(melhorar){
-      html+='<div class="met-card" style="background:rgba(255,184,0,0.08);border:2px solid rgba(255,184,0,0.25);">'
-        +'<div class="met-card-ico" style="background:rgba(255,184,0,0.2);">⚠️</div>'
-        +'<div class="met-card-title" style="color:#ffb800;">Melhorar</div>'
-        +linhasParaHtml(melhorar,'#ffb800')
-        +'</div>';
-    }
-    html+='</div>';
-  }
-
-  // DICAS — card largo roxo
-  if(dicas){
-    html+='<div class="met-card-full" style="background:rgba(124,92,255,0.08);border:2px solid rgba(124,92,255,0.25);">'
-      +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">'
-      +'<div class="met-card-ico" style="background:rgba(124,92,255,0.2);margin-bottom:0;">🎯</div>'
-      +'<div class="met-card-title" style="color:#a07fff;margin-bottom:0;font-size:15px;">Dicas para a próxima live</div>'
-      +'</div>'
-      +linhasParaHtml(dicas,'#a07fff')
-      +'</div>';
-  }
-
-  // GANCHOS e CTAs — lado a lado
-  if(ganchos||ctas){
-    html+='<div class="met-grid">';
-    if(ganchos){
-      html+='<div class="met-card" style="background:rgba(255,77,141,0.08);border:2px solid rgba(255,77,141,0.25);">'
-        +'<div class="met-card-ico" style="background:rgba(255,77,141,0.2);">🪝</div>'
-        +'<div class="met-card-title" style="color:#ff6ba8;">Ganchos para testar</div>'
-        +linhasParaHtml(ganchos,'#ff6ba8')
-        +'</div>';
-    }
-    if(ctas){
-      html+='<div class="met-card" style="background:rgba(255,140,66,0.08);border:2px solid rgba(255,140,66,0.25);">'
-        +'<div class="met-card-ico" style="background:rgba(255,140,66,0.2);">📣</div>'
-        +'<div class="met-card-title" style="color:#ffaa6b;">CTAs para testar</div>'
-        +linhasParaHtml(ctas,'#ffaa6b')
-        +'</div>';
-    }
-    html+='</div>';
-  }
-
-  // AÇÃO PRIORITÁRIA — card destaque final
-  if(acao){
-    html+='<div style="background:linear-gradient(135deg,rgba(0,229,160,0.18),rgba(0,200,255,0.12));border:2px solid rgba(0,229,160,0.35);border-radius:16px;padding:22px;display:flex;gap:16px;align-items:center;">'
-      +'<div style="font-size:38px;flex-shrink:0;">🔁</div>'
-      +'<div><div style="font-size:11px;font-weight:800;color:#00e5a0;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Foco para amanhã</div>'
-      +'<div style="font-size:15px;font-weight:700;color:#f0f4ff;line-height:1.6;">'+acao.replace(/\n/g,' ')+'</div></div>'
-      +'</div>';
-  }
-
-  document.getElementById('analise-cards').innerHTML=html||'<div class="roteiro-box">'+formatarRoteiro(texto)+'</div>';
-}
-
-// ================================================
-// HISTÓRICO DE ANÁLISES
-// ================================================
-var _HIST_KEY = 'il_analises_hist';
-
-function salvarNoHistorico(texto){
-  try{
-    var hist = JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');
-    var entrada = {
-      id: Date.now(),
-      data: new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}),
-      hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
-      texto: texto
-    };
-    hist.unshift(entrada);
-    if(hist.length>20) hist=hist.slice(0,20); // máx 20 análises
-    localStorage.setItem(_HIST_KEY, JSON.stringify(hist));
-  }catch(e){}
-}
-
-function carregarHistorico(){
-  var hist=[];
-  try{hist=JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');}catch(e){}
-  var el=document.getElementById('historico-lista');
-  if(!hist.length){
-    el.innerHTML='<div class="empty" style="padding:40px 0;"><i class="ti ti-history" style="font-size:32px;display:block;margin-bottom:8px;"></i><p>Nenhuma análise salva ainda.</p></div>';
-    return;
-  }
-  el.innerHTML=hist.map(function(h){
-    return '<div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">'
-      +'<div>'
-      +'<div style="font-size:13px;font-weight:700;color:var(--text);">📊 Análise de Live</div>'
-      +'<div style="font-size:11px;color:var(--text3);margin-top:2px;">'+h.data+' às '+h.hora+'</div>'
-      +'</div>'
-      +'<div style="display:flex;gap:6px;">'
-      +'<button onclick="baixarAnalise('+h.id+')" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-download" style="font-size:13px;"></i>Baixar</button>'
-      +'<button onclick="verAnalise('+h.id+')" style="background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--cyan);padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-eye" style="font-size:13px;"></i>Ver</button>'
-      +'<button onclick="deletarAnalise('+h.id+')" style="background:rgba(255,59,92,0.08);border:1px solid rgba(255,59,92,0.2);color:var(--red);padding:6px 8px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;"><i class="ti ti-trash" style="font-size:13px;"></i></button>'
-      +'</div>'
-      +'</div>'
-      +'<div style="font-size:12px;color:var(--text2);line-height:1.6;max-height:60px;overflow:hidden;position:relative;">'
-      +h.texto.slice(0,200).replace(/\n/g,' ')+'...'
-      +'<div style="position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,var(--card2));"></div>'
-      +'</div>'
-      +'</div>';
-  }).join('');
-}
-
-function verAnalise(id){
-  var hist=[];
-  try{hist=JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');}catch(e){}
-  var h=hist.find(function(x){return x.id===id;});
-  if(!h) return;
-  mudarAbaMetrica('nova');
-  renderAnaliseCards(h.texto);
-  document.getElementById('analise-conteudo-raw').textContent=h.texto;
-  document.getElementById('resultado-metricas').style.display='block';
-  document.getElementById('resultado-metricas').scrollIntoView({behavior:'smooth'});
-}
-
-function baixarAnalise(id){
-  var hist=[];
-  try{hist=JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');}catch(e){}
-  var h=hist.find(function(x){return x.id===id;});
-  if(!h) return;
-  var conteudo='ANÁLISE DE LIVE - Infinity Live\n';
-  conteudo+='Data: '+h.data+' às '+h.hora+'\n';
-  conteudo+='\n'+'='.repeat(50)+'\n\n';
-  conteudo+=h.texto;
-  var blob=new Blob([conteudo],{type:'text/plain;charset=utf-8'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;
-  a.download='analise-live-'+h.data.replace(/\//g,'-')+'.txt';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function deletarAnalise(id){
-  var hist=[];
-  try{hist=JSON.parse(localStorage.getItem(_HIST_KEY)||'[]');}catch(e){}
-  hist=hist.filter(function(x){return x.id!==id;});
-  localStorage.setItem(_HIST_KEY,JSON.stringify(hist));
-  carregarHistorico();
-}
-
-function limparHistorico(){
-  if(!confirm('Apagar todas as análises salvas?')) return;
-  localStorage.removeItem(_HIST_KEY);
-  carregarHistorico();
-}
-
-function mudarAbaMetrica(aba){
-  var novaAtiva = aba==='nova';
-  document.getElementById('body-nova-analise').style.display=novaAtiva?'block':'none';
-  document.getElementById('body-historico').style.display=novaAtiva?'none':'block';
-  document.getElementById('aba-nova').style.color=novaAtiva?'var(--green)':'var(--text3)';
-  document.getElementById('aba-nova').style.borderBottomColor=novaAtiva?'var(--green)':'transparent';
-  document.getElementById('aba-historico').style.color=novaAtiva?'var(--text3)':'var(--cyan)';
-  document.getElementById('aba-historico').style.borderBottomColor=novaAtiva?'transparent':'var(--cyan)';
-  if(!novaAtiva) carregarHistorico();
-}
 
 function copiarRoteiro(){
   var texto = document.getElementById('roteiro-conteudo').innerText;
