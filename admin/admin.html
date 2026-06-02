@@ -333,6 +333,15 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
       <div class="mf"><label class="ml">Cor</label><select class="msel" id="mod-cor"><option value="cyan">Ciano</option><option value="green">Verde</option><option value="pink">Rosa</option><option value="purple">Roxo</option><option value="yellow">Amarelo</option></select></div>
     </div>
     <div class="mf"><label class="ml">Ordem</label><input class="mi" id="mod-ordem" type="number" min="1" placeholder="1"/></div>
+    <div class="mf">
+      <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.2);border-radius:9px;cursor:pointer;">
+        <input type="checkbox" id="mod-bloqueio7" style="width:16px;height:16px;accent-color:var(--yellow);cursor:pointer;"/>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--yellow);">🔒 Bloquear por 7 dias para novos alunos</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;">Novos alunos so terao acesso apos 7 dias da compra</div>
+        </div>
+      </label>
+    </div>
     <div class="mfooter">
       <button class="btn btn-p" style="flex:1;" onclick="salvarMod()"><i class="ti ti-check" style="font-size:13px;"></i> Salvar módulo</button>
       <button class="btn btn-d btn-sm" id="btn-del-mod" style="display:none;" onclick="excluirModAtual()"><i class="ti ti-trash" style="font-size:13px;"></i></button>
@@ -546,6 +555,7 @@ function abrirNovoMod(){
   document.getElementById('mod-status').value='visible';
   document.getElementById('mod-cor').value='cyan';
   document.getElementById('mod-ordem').value=gMods().length+1;
+  var bl0=document.getElementById('mod-bloqueio7');if(bl0)bl0.checked=false;
   document.getElementById('btn-del-mod').style.display='none';
   removerImg();
   abrirModal('modal-modulo');
@@ -561,6 +571,7 @@ function editarMod(id){
   document.getElementById('mod-status').value=m.status||'visible';
   document.getElementById('mod-cor').value=m.cor||'cyan';
   document.getElementById('mod-ordem').value=m.ordem||1;
+  var bl=document.getElementById('mod-bloqueio7');if(bl)bl.checked=m.bloqueio7dias||false;
   document.getElementById('btn-del-mod').style.display='flex';
   if(m.imagem&&m.imagem.length>5){document.getElementById('img-prev').src=m.imagem;document.getElementById('img-prev-box').style.display='block';document.getElementById('upload-area').style.display='none';}
   else removerImg();
@@ -592,7 +603,7 @@ function salvarMod(){
 }
 
 function _fazerSalvarMod(editId,nome,img){
-  var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||gMods().length+1};
+  var bl7=document.getElementById('mod-bloqueio7');var dados={id:editId||uid(),nome:nome,desc:document.getElementById('mod-desc').value.trim(),imagem:img,status:document.getElementById('mod-status').value,cor:document.getElementById('mod-cor').value,ordem:parseInt(document.getElementById('mod-ordem').value)||gMods().length+1,bloqueio7dias:bl7?bl7.checked:false};
   var mods=gMods();
   if(editId){var i=mods.findIndex(function(m){return m.id===editId;});if(i!==-1)mods[i]=dados;}
   else mods.push(dados);
@@ -1012,7 +1023,7 @@ async function publicarNoSite(){
           im.src=img;
         });
       }
-      var r=await _sb.from('modulos').insert({id:m.id,nome:m.nome,descricao:m.desc||'',imagem:img,status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||i+1});
+      var r=await _sb.from('modulos').insert({id:m.id,nome:m.nome,descricao:m.desc||'',imagem:img,status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||i+1,bloqueio_7dias:m.bloqueio7dias||false});
       if(r.error){console.error('Erro módulo:',r.error);}
     }
     for(var j=0;j<aulas.length;j++){
@@ -1294,7 +1305,7 @@ async function publicarNoSite(){
           im.src=img;
         });
       }
-      var r=await _sb.from('modulos').insert({id:m.id,nome:m.nome,descricao:m.desc||'',imagem:img,status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||i+1});
+      var r=await _sb.from('modulos').insert({id:m.id,nome:m.nome,descricao:m.desc||'',imagem:img,status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||i+1,bloqueio_7dias:m.bloqueio7dias||false});
       if(r.error){console.error('Erro módulo:',r.error);}
     }
     for(var j=0;j<aulas.length;j++){
