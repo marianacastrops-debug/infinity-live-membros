@@ -722,264 +722,37 @@ async function salvarAluno(){
   if(btn){btn.textContent='Criando...';btn.disabled=true;}
   try{
     var sf=senha||gerarSenha();
-    var res=await _sb.auth.signUp({email:email,password:sf,options:{data:{nome:nome,origem:'manual'},emailRedirectTo:'https://mentoriainfinitylive.shop/login.html'}});
-    if(res.error){alert('Erro: '+res.error.message);}
-    else{
+    var SB_SECRET='sb_secret_UIykqcvYhYwNWjf8Afrgdg_4jur-OWD';
+    var res=await fetch('https://fbjxampsauqfngdennpi.supabase.co/auth/v1/admin/users',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SB_SECRET,'Authorization':'Bearer '+SB_SECRET},
+      body:JSON.stringify({email:email,password:sf,email_confirm:true,user_metadata:{nome:nome,origem:'manual'}})
+    });
+    var data=await res.json();
+    if(!data.id){
+      alert('Erro: '+(data.msg||data.message||JSON.stringify(data)));
+    } else {
       var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff'];
       var a=gAlunos();
-      a.push({id:res.data.user?res.data.user.id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:cores[Math.floor(Math.random()*cores.length)],aulas:0,origem:'manual',created_at:new Date().toISOString()});
+      a.push({id:data.id,nome:nome,email:email,prog:0,status:'novo',cor:cores[Math.floor(Math.random()*cores.length)],aulas:0,origem:'manual',created_at:new Date().toISOString()});
       sAlunos(a);fecharModal('modal-aluno');
-      document.getElementById('aluno-nome').value='';document.getElementById('aluno-email').value='';document.getElementById('aluno-senha').value='';
+      document.getElementById('aluno-nome').value='';
+      document.getElementById('aluno-email').value='';
+      document.getElementById('aluno-senha').value='';
       renderAlunos(a);atualizarStats();
       var ok=await enviarEmailBoasVindas(nome,email,sf);
-      if(ok)toast('Aluno criado! E-mail enviado!');else{toast('Aluno criado!');alert('Senha: '+sf);}
+      if(ok) toast('Aluno criado! E-mail enviado!');
+      else{toast('Aluno criado! Anote a senha: '+sf);}
     }
   }catch(e){alert('Erro: '+e.message);}
   if(btn){btn.textContent='Adicionar aluno';btn.disabled=false;}
 }
-function gerarSenha(){var ch='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#';var s='';for(var i=0;i<10;i++)s+=ch[Math.floor(Math.random()*ch.length)];return s;}
-function _OLD_salvarAluno(){
-  var a=gAlunos();
-  a.push({id:uid(),nome:nome,email:email,prog:0,status:'novo',cor:'#00c8ff',aulas:0});
-  sAlunos(a);fecharModal('modal-aluno');
-  document.getElementById('aluno-nome').value='';
-  document.getElementById('aluno-email').value='';
-  document.getElementById('aluno-senha').value='';
-  renderAlunos(a);atualizarStats();toast('Aluno adicionado!');
+
+function gerarSenha(){
+  var ch='ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#';
+  var s='';for(var i=0;i<10;i++)s+=ch[Math.floor(Math.random()*ch.length)];return s;
 }
 
-async function verPerfil(id){
-  var a=gAlunos().find(function(x){return x.id===id;});
-  if(!a)return;
-  var inits=a.nome.split(' ').map(function(n){return n[0];}).join('').slice(0,2).toUpperCase();
-  document.getElementById('perf-av').textContent=inits;
-  document.getElementById('perf-av').dataset.id=id;
-  document.getElementById('perf-nome').textContent=a.nome;
-  document.getElementById('perf-email').textContent=a.email;
-  document.getElementById('perf-aulas').textContent=a.aulas||0;
-  var sp=document.getElementById('perf-status');
-  sp.textContent=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
-  sp.className='sp '+(a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new');
-  // Data entrada
-  var dtEl=document.getElementById('perf-status-dt');
-  if(dtEl&&a.created_at){var d=new Date(a.created_at);var ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];dtEl.textContent=d.getDate()+' '+ms[d.getMonth()]+' '+d.getFullYear();}
-  abrirModal('modal-perfil');
-  // Verificar bloqueio
-  var btn=document.getElementById('btn-toggle-bloq');
-  var sub=document.getElementById('bloq-sub');
-  if(!btn)return;
-  btn.textContent='...';btn.disabled=true;
-  try{
-    var email2=document.getElementById('perf-email').textContent.trim();
-    var realId2=await getUUIDporEmail(email2);
-
-    // Verificar módulos com bloqueio configurado
-    var rM=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
-    var temModsBloq=(rM.data||[]).length>0;
-    if(!temModsBloq){
-      btn.textContent='Sem bloqueio';btn.disabled=true;
-      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;font-family:inherit;background:rgba(255,255,255,0.05);color:var(--text3);border:none;cursor:default;';
-      if(sub) sub.textContent='Nenhum modulo com bloqueio configurado';
-      return;
-    }
-
-    // Sem UUID real — mostrar botão ativo por padrão
-    if(!realId2){
-      btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
-      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
-      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
-      btn.disabled=false;return;
-    }
-
-    // Verificar se foi liberado manualmente
-    var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',realId2).eq('liberado_manualmente',true).limit(1);
-    var liberado=res.data&&res.data.length>0;
-
-    if(liberado){
-      btn.dataset.estado='liberado';btn.textContent='Reativar bloqueio';
-      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(255,184,0,0.15);color:var(--yellow);border:1px solid rgba(255,184,0,0.3);';
-      if(sub) sub.textContent='Acesso liberado manualmente';
-    } else {
-      btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
-      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
-      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
-    }
-    btn.disabled=false;
-  }catch(e){btn.textContent='Erro';console.warn(e);}
-}
-
-function alternarBloqueio(){
-  var id=document.getElementById('perf-av').dataset.id;
-  var alunos=gAlunos();
-  var a=alunos.find(function(x){return x.id===id;});
-  if(!a)return;
-  a.status=a.status==='bloqueado'?'ativo':'bloqueado';
-  sAlunos(alunos);verPerfil(id);renderAlunos(alunos);
-  toast(a.status==='bloqueado'?'Acesso bloqueado.':'Acesso reativado.');
-}
-
-function excluirAluno(id){
-  sAlunos(gAlunos().filter(function(a){return a.id!==id;}));
-  renderAlunos(gAlunos());atualizarStats();toast('Aluno excluído.');
-}
-
-function excluirAlunoModal(){
-  var id=document.getElementById('perf-av').dataset.id;
-  var nome=document.getElementById('perf-nome').textContent;
-  fecharModal('modal-perfil');
-  confirmar('Excluir aluno','Excluir "'+nome+'"?',function(){excluirAluno(id);});
-}
-
-function renderTickets(lista){
-  var el=document.getElementById('tickets-lista');
-  var empty=document.getElementById('empty-tkt');
-  if(!el)return;
-  if(!lista)lista=gTickets();
-  if(!lista.length){el.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  var stC={aberto:'background:rgba(255,59,92,0.12);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2)',pendente:'background:rgba(255,184,0,0.12);color:#ffb800;border:1px solid rgba(255,184,0,0.2)',respondido:'background:rgba(0,229,160,0.12);color:#00e5a0;border:1px solid rgba(0,229,160,0.2)',resolvido:'background:rgba(255,255,255,0.06);color:#4a5270'};
-  var stL={aberto:'Aberto',pendente:'Pendente',respondido:'Respondido',resolvido:'Resolvido'};
-  el.innerHTML=lista.map(function(t,i){
-    var st=t.status||'aberto';
-    return '<div class="tkt"><span class="tkt-num">#'+String(i+1).padStart(3,'0')+'</span><div class="tkt-info"><div class="tkt-title">'+t.titulo+'</div><div class="tkt-user">'+t.aluno+'</div></div><span class="sp" style="'+stC[st]+'">'+stL[st]+'</span><span class="tkt-time" style="margin-left:10px;">'+t.data+'</span><button class="btn btn-p btn-sm" style="margin-left:10px;" onclick="abrirTicket(\''+t.id+'\')">'+(st==='resolvido'?'Ver':'Responder')+'</button><button class="btn btn-sm" style="margin-left:5px;background:rgba(255,59,92,0.08);color:var(--red);border:1px solid rgba(255,59,92,0.15);" onclick="confirmar(\'Excluir ticket\',\'Excluir este ticket?\',function(){delTicket(\''+t.id+'\')})"><i class="ti ti-trash" style="font-size:12px;"></i></button></div>';
-  }).join('');
-}
-
-function filtrarTickets(q){
-  var fv=document.getElementById('fil-tkt').value;
-  renderTickets(gTickets().filter(function(t){return(!q||t.titulo.toLowerCase().includes(q.toLowerCase())||t.aluno.toLowerCase().includes(q.toLowerCase()))&&(!fv||t.status===fv);}));
-}
-
-function novoTicket(){
-  var titulo=prompt('Título do ticket:');if(!titulo)return;
-  var aluno=prompt('Nome do aluno:');if(!aluno)return;
-  var t=gTickets();
-  t.unshift({id:uid(),titulo:titulo,aluno:aluno,status:'aberto',data:'Agora',msgs:[]});
-  sTickets(t);renderTickets();atualizarStats();toast('Ticket criado!');
-}
-
-function abrirTicket(id){
-  var t=gTickets().find(function(x){return x.id===id;});
-  if(!t)return;
-  var msgs=(t.msgs||[]).map(function(m){return '<div style="margin-bottom:10px;"><div style="font-size:10px;color:var(--text3);margin-bottom:3px;">'+m.autor+' &middot; '+m.data+'</div><div style="background:var(--card2);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--text2);">'+m.texto+'</div></div>';}).join('')||'<div style="font-size:12px;color:var(--text3);padding:8px 0;">Nenhuma mensagem ainda.</div>';
-  var stOpts=['aberto','pendente','respondido','resolvido'].map(function(s){return '<option value="'+s+'"'+(t.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';}).join('');
-  document.getElementById('modal-ticket-body').innerHTML='<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);"><div style="font-size:14px;font-weight:700;margin-bottom:3px;">'+t.titulo+'</div><div style="font-size:12px;color:var(--text2);">'+t.aluno+' &middot; '+t.data+'</div></div><div style="max-height:180px;overflow-y:auto;margin-bottom:12px;">'+msgs+'</div><textarea id="tk-resp" style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:75px;line-height:1.6;" placeholder="Escreva sua resposta..."></textarea><div style="display:flex;gap:8px;margin-top:11px;"><button class="btn btn-p" style="flex:1;" onclick="enviarResposta(\''+id+'\')" ><i class="ti ti-send" style="font-size:13px;"></i> Enviar</button><select id="tk-status" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:inherit;font-size:12px;outline:none;">'+stOpts+'</select><button class="btn btn-o" onclick="fecharModal(\'modal-ticket\')">Fechar</button></div>';
-  abrirModal('modal-ticket');
-}
-
-function enviarResposta(id){
-  var texto=document.getElementById('tk-resp').value.trim();
-  var novoStatus=document.getElementById('tk-status').value;
-  var tickets=gTickets();
-  var t=tickets.find(function(x){return x.id===id;});
-  if(!t)return;
-  if(texto){if(!t.msgs)t.msgs=[];t.msgs.push({autor:'Mentor',texto:texto,data:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});}
-  t.status=novoStatus;
-  sTickets(tickets);fecharModal('modal-ticket');renderTickets();toast('Resposta enviada!');
-}
-
-function delTicket(id){
-  sTickets(gTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
-}
-
-function renderMats(){
-  var el=document.getElementById('mats-lista');
-  var mats=gMats();
-  if(!mats.length){el.innerHTML='<div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado.</p></div>';return;}
-  el.innerHTML=mats.map(function(m){
-    return '<div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--card2);border-radius:9px;margin-bottom:7px;border:1px solid var(--border);"><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;">'+m.nome+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">'+m.tipo+' · '+m.mod+'</div></div><button class="ab ab-d" onclick="confirmar(\'Excluir material\',\'Excluir &quot;'+m.nome.replace(/"/g,'')+'&quot;?\',function(){delMat(\''+m.id+'\')})"><i class="ti ti-trash"></i></button></div>';
-  }).join('');
-}
-
-function salvarMaterial(){
-  var nome=document.getElementById('mat-nome').value.trim();
-  if(!nome){alert('Nome obrigatório.');return;}
-  var mats=gMats();
-  mats.unshift({id:uid(),nome:nome,url:document.getElementById('mat-url').value.trim(),tipo:document.getElementById('mat-tipo').value,mod:document.getElementById('mat-mod').value});
-  sMats(mats);fecharModal('modal-material');
-  document.getElementById('mat-nome').value='';
-  document.getElementById('mat-url').value='';
-  renderMats();toast('Material publicado!');
-}
-
-function delMat(id){
-  sMats(gMats().filter(function(m){return m.id!==id;}));renderMats();toast('Material removido.');
-}
-
-function renderPreview(){
-  var mods=gMods().filter(function(m){return m.status!=='hidden';}).sort(function(a,b){return (a.ordem||99)-(b.ordem||99);});
-  var aulas=gAulas();
-  var el=document.getElementById('preview-cards');
-  var empty=document.getElementById('empty-preview');
-  if(!mods.length){el.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  el.innerHTML=mods.map(function(m){
-    var c=CORES[m.cor||'cyan'];
-    var qtd=aulas.filter(function(a){return a.moduloId===m.id&&a.status!=='draft';}).length;
-    var locked=m.status==='locked';
-    var capa=m.imagem&&m.imagem.length>5?'<img src="'+m.imagem+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:'+c.bg+'"><i class="ti ti-photo-off" style="font-size:32px;color:'+c.cor+';opacity:.5;"></i></div>';
-    return '<div style="background:#0f1320;border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;opacity:'+(locked?'.55':'1')+'"><div style="width:100%;height:320px;position:relative;overflow:hidden;">'+capa+'<div style="position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(to top,rgba(0,0,0,0.92),transparent);z-index:2;"></div><div style="position:absolute;top:10px;left:10px;z-index:3;font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+qtd+' aula'+(qtd!==1?'s':'')+'</div><div style="position:absolute;bottom:12px;left:14px;right:14px;z-index:3;"><div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Módulo '+m.ordem+'</div><div style="font-size:14px;font-weight:800;color:#fff;line-height:1.3;">'+m.nome+'</div></div>'+(locked?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:4;"><i class="ti ti-lock" style="font-size:22px;color:#4a5270;"></i></div>':'')+'</div><div style="padding:12px 14px 14px;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="color:var(--text3);">Progresso</span><span style="font-weight:700;color:'+c.cor+';">0%</span></div><div style="height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-bottom:10px;"></div><div style="width:100%;padding:8px;border-radius:9px;font-size:12px;font-weight:700;text-align:center;background:'+c.bg+';color:'+c.cor+';border:1px solid '+c.brd+';">'+(locked?'🔒 Bloqueado':'▶ Acessar módulo')+'</div></div></div>';
-  }).join('');
-}
-
-async function publicarNoSite(){
-  var btn=document.getElementById('btn-sync');
-  btn.textContent='Publicando...';
-  btn.disabled=true;
-  var mods=gMods();
-  var aulas=gAulas();
-  try{
-    await _sb.from('aulas').delete().neq('id','_noop_');
-    await _sb.from('modulos').delete().neq('id','_noop_');
-    for(var i=0;i<mods.length;i++){
-      var m=mods[i];
-      var img=m.imagem||'';
-      if(img.startsWith('data:image')){
-        img=await new Promise(function(ok){
-          var im=new Image();
-          im.onload=function(){
-            var cv=document.createElement('canvas');
-            var mW=400,mH=600,w=im.width,h=im.height;
-            if(w>mW){h=Math.round(h*mW/w);w=mW;}
-            if(h>mH){w=Math.round(w*mH/h);h=mH;}
-            cv.width=w;cv.height=h;
-            cv.getContext('2d').drawImage(im,0,0,w,h);
-            ok(cv.toDataURL('image/jpeg',0.65));
-          };
-          im.onerror=function(){ok('');};
-          im.src=img;
-        });
-      }
-      var r=await _sb.from('modulos').insert({id:m.id,nome:m.nome,descricao:m.desc||'',imagem:img,status:m.status||'visible',cor:m.cor||'cyan',ordem:m.ordem||i+1});
-      if(r.error){console.error('Erro módulo:',r.error);}
-    }
-    for(var j=0;j<aulas.length;j++){
-      var a=aulas[j];
-      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',ordem:j+1});
-      if(ra.error){console.error('Erro aula:',ra.error);}
-    }
-    toast('✅ '+mods.length+' módulo(s) publicados! Alunos já podem ver.');
-  }catch(e){
-    toast('Erro: '+e.message,true);
-  }
-  btn.innerHTML='<i class="ti ti-cloud-upload" style="font-size:14px;"></i> Publicar no site';
-  btn.disabled=false;
-}
-
-async function enviarEmailBoasVindas(nome,email,senha){
-  try{
-    var r=await _sb.rpc('enviar_email_resend',{p_nome:nome,p_email:email,p_senha:senha});
-    return !r.error;
-  }catch(e){return false;}
-}
-
-async function getUUIDporEmail(email){
-  try{
-    var r=await _sb.rpc('get_user_id_by_email',{p_email:email});
-    if(r.data) return r.data;
-  }catch(e){}
-  return null;
-}
 
 async function toggleBloqueio7dias(){
   var btn=document.getElementById('btn-toggle-bloq');
