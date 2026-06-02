@@ -153,14 +153,15 @@ function verificarSenhaAdmin(){ var s=document.getElementById('admin-senha-input
 async function fazerLogout(){ await _sb.auth.signOut(); window.location.href='../login.html'; }
 
 // Carregar materiais do Supabase
-(async function(){
+async function carregarMateriais(){
   var SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
   var SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
   try{
-    // Usar _sb direto que já tem sessão autenticada
-    var r=await _sb.from('materiais').select('*').order('ordem',{ascending:true});
-    var mats=r.data||[];
-    if(r.error) throw new Error(r.error.message);
+    var res=await fetch(SB_URL+'/rest/v1/materiais?select=*&order=ordem.asc',{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    var mats=await res.json();
+    if(!Array.isArray(mats)) throw new Error('Resposta inválida');
     document.getElementById('mats-loading').style.display='none';
     if(!Array.isArray(mats)||!mats.length){
       document.getElementById('mats-empty').style.display='block';
@@ -190,7 +191,12 @@ async function fazerLogout(){ await _sb.auth.signOut(); window.location.href='..
     document.getElementById('mats-empty').style.display='block';
     console.warn('Erro ao carregar materiais:',e);
   }
-})();
+}
+
+// Chamar após página carregar
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(carregarMateriais, 500);
+});
 </script>
 </body>
 </html>
