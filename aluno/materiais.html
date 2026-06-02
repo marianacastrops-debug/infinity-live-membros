@@ -179,11 +179,13 @@ async function carregarMateriais(){
     grid.style.display='grid';
     grid.innerHTML=mats.map(function(m){
       var tipo=m.tipo||'pdf';
+      var icones={pdf:'ti-file-type-pdf',doc:'ti-file-type-doc',xls:'ti-file-type-xls',zip:'ti-file-zip',link:'ti-link',video:'ti-video'};
+      var cores={pdf:'#ff4d8d',doc:'#00c8ff',xls:'#00e5a0',zip:'#ffb800',link:'#7c5cff',video:'#ff8c42'};
       var ico=icones[tipo]||'ti-file';
       var cor=cores[tipo]||'#00c8ff';
-      return '<a href="'+m.url+'" target="_blank" style="text-decoration:none;">'
-        +'<div style="background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .2s;" onmouseover="this.style.borderColor=''+cor+'50'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">'
-        +'<div style="width:46px;height:46px;border-radius:11px;background:'+cor+'18;border:1px solid '+cor+'30;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+      return '<a href="'+m.url+'" target="_blank" style="text-decoration:none;display:block;margin-bottom:12px;">'
+        +'<div style="background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:14px;">'
+        +'<div style="width:44px;height:44px;border-radius:10px;background:'+cor+'20;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
         +'<i class="ti '+ico+'" style="font-size:22px;color:'+cor+';"></i></div>'
         +'<div style="flex:1;min-width:0;">'
         +'<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">'+m.nome+'</div>'
