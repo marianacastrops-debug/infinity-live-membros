@@ -766,48 +766,30 @@ async function toggleBloqueio7dias(){
   var btn=document.getElementById('btn-toggle-bloq');
   var sub=document.getElementById('bloq-sub');
   if(!btn)return;
+  var email=document.getElementById('perf-email').textContent.trim();
   var ativado=btn.dataset.estado==='ativo';
   btn.disabled=true;btn.textContent='Aguarde...';
-
-  var email=document.getElementById('perf-email').textContent.trim();
-  var realId=await getUUIDporEmail(email);
-
-  if(!realId){
-    toast('Aluno nao encontrado!',true);
-    btn.disabled=false;btn.textContent='Liberar acesso agora';
-    return;
-  }
-
-  if(ativado){
-    var rM=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
-    var mods=rM.data||[];
-    if(!mods.length){toast('Nenhum modulo bloqueado configurado!',true);btn.disabled=false;btn.textContent='Liberar acesso agora';return;}
-    await _sb.from('modulos_bloqueados').delete().eq('user_id',realId);
-    var ins=await _sb.from('modulos_bloqueados').insert(mods.map(function(m){
-      return{user_id:realId,modulo_id:m.id,desbloqueio_em:new Date().toISOString(),liberado_manualmente:true};
-    }));
-    console.log('Inseriu liberacao:', ins);
-    btn.dataset.estado='liberado';
-    btn.textContent='Reativar bloqueio';
-    btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(255,184,0,0.15);color:var(--yellow);border:1px solid rgba(255,184,0,0.3);';
-    if(sub) sub.textContent='Acesso liberado pelo admin';
-    btn.disabled=false;toast('Acesso liberado!');
-  } else {
-    await _sb.from('modulos_bloqueados').delete().eq('user_id',realId);
-    var rM2=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
-    var mods2=rM2.data||[];
-    if(mods2.length){
-      var d=new Date();d.setDate(d.getDate()+7);
-      await _sb.from('modulos_bloqueados').insert(mods2.map(function(m){
-        return{user_id:realId,modulo_id:m.id,desbloqueio_em:d.toISOString(),liberado_manualmente:false};
-      }));
+  try{
+    var r=await fetch('/api/liberar-modulos',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email,acao:ativado?'liberar':'bloquear'})
+    });
+    var d=await r.json();
+    if(!d.ok){btn.disabled=false;btn.textContent='Erro: '+(d.error||'');return;}
+    if(ativado){
+      btn.dataset.estado='liberado';btn.textContent='Reativar bloqueio';
+      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(255,184,0,0.15);color:var(--yellow);border:1px solid rgba(255,184,0,0.3);';
+      if(sub)sub.textContent='Acesso liberado pelo admin';
+      toast('Acesso liberado!');
+    }else{
+      btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
+      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
+      if(sub)sub.textContent='Modulos bloqueados por 7 dias';
+      toast('Bloqueio reativado!');
     }
-    btn.dataset.estado='ativo';
-    btn.textContent='Liberar acesso agora';
-    btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
-    if(sub) sub.textContent='Bloqueio reativado por 7 dias';
-    btn.disabled=false;toast('Bloqueio reativado!');
-  }
+  }catch(e){toast('Erro: '+e.message,true);}
+  btn.disabled=false;
 }
 
 
