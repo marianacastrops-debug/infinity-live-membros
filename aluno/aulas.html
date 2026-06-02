@@ -314,6 +314,16 @@ var _aulas = [];
   var CACHE_KEY_AULAS='il_cache_aulas';
   var CACHE_TS='il_cache_ts';
 
+  // Invalidar cache antigo sem campo pdf
+  var cachedAulasRaw=localStorage.getItem(CACHE_KEY_AULAS);
+  if(cachedAulasRaw){
+    var primeiraAula=JSON.parse(cachedAulasRaw)[0];
+    if(primeiraAula&&primeiraAula.pdf===undefined){
+      localStorage.removeItem(CACHE_KEY_AULAS);
+      localStorage.removeItem(CACHE_KEY_MODS);
+      localStorage.removeItem(CACHE_TS);
+    }
+  }
   // Usar cache se tiver menos de 5 minutos
   var agora=Date.now();
   var cacheTs=parseInt(localStorage.getItem(CACHE_TS)||'0');
