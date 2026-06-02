@@ -805,53 +805,49 @@ async function verPerfil(id){
   var sp=document.getElementById('perf-status');
   sp.textContent=a.status==='ativo'?'Ativo':a.status==='bloqueado'?'Bloqueado':'Novo';
   sp.className='sp '+(a.status==='ativo'?'sp-ok':a.status==='bloqueado'?'sp-blk':'sp-new');
-  // Data entrada
   var dtEl=document.getElementById('perf-status-dt');
   if(dtEl&&a.created_at){var d=new Date(a.created_at);var ms=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];dtEl.textContent=d.getDate()+' '+ms[d.getMonth()]+' '+d.getFullYear();}
   abrirModal('modal-perfil');
-  // Verificar bloqueio
+  // Carregar estado do toggle
   var btn=document.getElementById('btn-toggle-bloq');
   var sub=document.getElementById('bloq-sub');
   if(!btn)return;
-  btn.textContent='...';btn.disabled=true;
+  btn.disabled=true;btn.textContent='...';
   try{
-    var email2=document.getElementById('perf-email').textContent.trim();
-    var realId2=await getUUIDporEmail(email2);
-
-    // Verificar módulos com bloqueio configurado
+    // Verificar se tem módulos com bloqueio configurado
     var rM=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
-    var temModsBloq=(rM.data||[]).length>0;
-    if(!temModsBloq){
+    if(!rM.data||!rM.data.length){
       btn.textContent='Sem bloqueio';btn.disabled=true;
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;font-family:inherit;background:rgba(255,255,255,0.05);color:var(--text3);border:none;cursor:default;';
-      if(sub) sub.textContent='Nenhum modulo com bloqueio configurado';
+      if(sub)sub.textContent='Nenhum modulo com bloqueio configurado';
       return;
     }
-
-    // Sem UUID real — mostrar botão ativo por padrão
-    if(!realId2){
-      btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
-      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
-      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
-      btn.disabled=false;return;
-    }
-
-    // Verificar se foi liberado manualmente
-    var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',realId2).eq('liberado_manualmente',true).limit(1);
-    var liberado=res.data&&res.data.length>0;
-
+    // Verificar estado via endpoint
+    var rLib=await fetch('/api/liberar-modulos',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:a.email,acao:'verificar'})
+    });
+    var libData=await rLib.json();
+    var liberado=libData.liberado===true;
     if(liberado){
       btn.dataset.estado='liberado';btn.textContent='Reativar bloqueio';
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(255,184,0,0.15);color:var(--yellow);border:1px solid rgba(255,184,0,0.3);';
-      if(sub) sub.textContent='Acesso liberado manualmente';
-    } else {
+      if(sub)sub.textContent='Acesso liberado manualmente';
+    }else{
       btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
-      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
+      if(sub)sub.textContent='Modulos bloqueados por 7 dias';
     }
     btn.disabled=false;
-  }catch(e){btn.textContent='Erro';console.warn(e);}
+  }catch(e){
+    btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
+    btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
+    if(sub)sub.textContent='Modulos bloqueados por 7 dias';
+    btn.disabled=false;
+  }
 }
+
 
 function alternarBloqueio(){
   var id=document.getElementById('perf-av').dataset.id;
