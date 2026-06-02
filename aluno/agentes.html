@@ -347,6 +347,18 @@ Pode incluir: preço original, preço de oferta, desconto, frete, prazo de entre
           </div>
 
         </div>
+
+        <!-- HISTÓRICO ROTEIROS -->
+        <div class="agente-body" id="body-historico-roteiro" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="font-size:14px;font-weight:700;">Roteiros salvos</div>
+            <button onclick="limparHistoricoRoteiro()" style="background:transparent;border:1px solid rgba(255,59,92,0.2);color:var(--red);padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+              <i class="ti ti-trash" style="font-size:12px;vertical-align:-1px;margin-right:4px;"></i>Limpar tudo
+            </button>
+          </div>
+          <div id="historico-roteiro-lista"></div>
+        </div>
+
       </div>
 
       <!-- PAINEL ANALISTA DE MÉTRICAS -->
@@ -585,6 +597,451 @@ async function gerarPromptImagem(){
 }
 function copiarPromptImagem(){
   copiarTexto('prompt-imagem-conteudo',null);
+}
+
+// ================================================
+// HISTÓRICO DE ROTEIROS
+// ================================================
+var _HIST_ROT_KEY = 'il_roteiros_hist';
+
+function salvarRoteiroNoHistorico(texto, produto, tom){
+  try{
+    var hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');
+    hist.unshift({
+      id:Date.now(),
+      data:new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}),
+      hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+      produto:produto||'Produto',
+      tom:tom||'',
+      texto:texto
+    });
+    if(hist.length>30) hist=hist.slice(0,30);
+    localStorage.setItem(_HIST_ROT_KEY,JSON.stringify(hist));
+  }catch(e){}
+}
+
+function carregarHistoricoRoteiro(){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');}catch(e){}
+  var el=document.getElementById('historico-roteiro-lista');
+  if(!hist.length){
+    el.innerHTML='<div class="empty" style="padding:40px 0;"><i class="ti ti-history" style="font-size:32px;display:block;margin-bottom:8px;"></i><p>Nenhum roteiro salvo ainda.</p></div>';
+    return;
+  }
+  el.innerHTML=hist.map(function(h){
+    return '<div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+      +'<div>'
+      +'<div style="font-size:13px;font-weight:700;">'+h.produto+'</div>'
+      +'<div style="font-size:11px;color:var(--text3);margin-top:2px;">'+h.data+' às '+h.hora+(h.tom?' · '+h.tom:'')+'</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<button onclick="baixarRoteiro('+h.id+')" style="background:rgba(124,92,255,0.1);border:1px solid rgba(124,92,255,0.25);color:var(--purple);padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-download" style="font-size:13px;"></i>Baixar</button>'
+      +'<button onclick="verRoteiro('+h.id+')" style="background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--cyan);padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-eye" style="font-size:13px;"></i>Ver</button>'
+      +'<button onclick="deletarRoteiro('+h.id+')" style="background:rgba(255,59,92,0.08);border:1px solid rgba(255,59,92,0.2);color:var(--red);padding:6px 8px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;"><i class="ti ti-trash" style="font-size:13px;"></i></button>'
+      +'</div></div>'
+      +'<div style="font-size:12px;color:var(--text2);line-height:1.6;max-height:55px;overflow:hidden;position:relative;">'
+      +h.texto.slice(0,180).replace(/\n/g,' ')+'...'
+      +'<div style="position:absolute;bottom:0;left:0;right:0;height:25px;background:linear-gradient(transparent,var(--card2));"></div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function verRoteiro(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');}catch(e){}
+  var h=hist.find(function(x){return x.id===id;});
+  if(!h) return;
+  mudarAbaRoteiro('novo');
+  document.getElementById('roteiro-conteudo').innerHTML=formatarRoteiro(h.texto);
+  document.getElementById('roteiro-raw').textContent=h.texto;
+  document.getElementById('resultado-roteiro').style.display='block';
+  document.getElementById('resultado-roteiro').scrollIntoView({behavior:'smooth'});
+}
+
+function baixarRoteiro(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');}catch(e){}
+  var h=hist.find(function(x){return x.id===id;});
+  if(!h) return;
+  var conteudo='ROTEIRO — Infinity Live\n';
+  conteudo+='Produto: '+h.produto+'\n';
+  conteudo+='Data: '+h.data+' às '+h.hora+'\n';
+  if(h.tom) conteudo+='Tom: '+h.tom+'\n';
+  conteudo+='\n'+'='.repeat(40)+'\n\n'+h.texto;
+  var blob=new Blob([conteudo],{type:'text/plain;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='roteiro-'+h.data.replace(/\//g,'-')+'.txt';
+  a.click();URL.revokeObjectURL(url);
+}
+
+function deletarRoteiro(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');}catch(e){}
+  hist=hist.filter(function(x){return x.id!==id;});
+  localStorage.setItem(_HIST_ROT_KEY,JSON.stringify(hist));
+  carregarHistoricoRoteiro();
+}
+
+function limparHistoricoRoteiro(){
+  if(!confirm('Apagar todos os roteiros salvos?')) return;
+  localStorage.removeItem(_HIST_ROT_KEY);
+  carregarHistoricoRoteiro();
+}
+
+function mudarAbaRoteiro(aba){
+  var novo=aba==='novo';
+  document.getElementById('body-roteiro').style.display=novo?'block':'none';
+  document.getElementById('body-historico-roteiro').style.display=novo?'none':'block';
+  document.getElementById('aba-rot-novo').style.color=novo?'var(--purple)':'var(--text3)';
+  document.getElementById('aba-rot-novo').style.borderBottomColor=novo?'var(--purple)':'transparent';
+  document.getElementById('aba-rot-hist').style.color=novo?'var(--text3)':'var(--cyan)';
+  document.getElementById('aba-rot-hist').style.borderBottomColor=novo?'transparent':'var(--cyan)';
+  if(!novo) carregarHistoricoRoteiro();
+}
+
+async function remixarPrompt(tipo){
+  var apiKey = await getApiKey('imagem');
+  if(!apiKey){alert('Chave API do Gerador de Imagem nao configurada!');return;}
+  if(!_imgsProduto.length){alert('Envie as fotos do produto primeiro!');return;}
+
+  var btnEl = event.target.closest('button');
+  if(btnEl){btnEl.disabled=true;btnEl.innerHTML='<i class="ti ti-loader-2" style="font-size:12px;animation:spin 1s linear infinite;"></i> Gerando...';}
+
+  var sugestaoImg = document.getElementById('sugestao-imagem').value.trim();
+  var sugestaoVid = document.getElementById('sugestao-video').value.trim();
+
+  var promptAtualImg = document.getElementById('prompt-imagem-conteudo').textContent;
+  var promptAtualVid = document.getElementById('prompt-video-conteudo').textContent;
+
+  var instrucao = tipo === 'imagem'
+    ? 'Recrie APENAS o prompt de IMAGEM com variacao criativa mantendo o mesmo produto e formato.'
+      +(sugestaoImg?' Sugestao adicional: '+sugestaoImg:'')
+      +' Prompt atual para referencia: '+promptAtualImg
+    : 'Recrie APENAS o prompt de VIDEO/MOVIMENTO com variacao criativa mantendo o mesmo estilo e produto.'
+      +(sugestaoVid?' Movimento desejado: '+sugestaoVid:'')
+      +' Prompt atual para referencia: '+promptAtualVid;
+
+  instrucao += ' Responda APENAS com o novo prompt, sem explicacoes.';
+
+  var msgContent = [];
+  _imgsProduto.slice(0,2).forEach(function(img){
+    msgContent.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:img.replace('data:image/jpeg;base64;','').replace('data:image/png;base64,','').split(',')[1]||img.replace(/^data:image\/\w+;base64,/,'')}});
+  });
+  msgContent.push({type:'text',text:instrucao});
+
+  try{
+    var res = await fetch('/api/roteiro',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:msgContent}],apiKey:apiKey})
+    });
+    var data = await res.json();
+    var novo = data.content&&data.content[0]?data.content[0].text:'';
+    if(novo){
+      if(tipo==='imagem') document.getElementById('prompt-imagem-conteudo').textContent=novo;
+      else document.getElementById('prompt-video-conteudo').textContent=novo;
+    }
+  }catch(e){alert('Erro: '+e.message);}
+
+  if(btnEl){btnEl.disabled=false;btnEl.innerHTML='<i class="ti ti-refresh" style="font-size:12px;"></i> Remixar';}
+}
+
+function copiarTexto(elId, btn){
+  var texto=document.getElementById(elId).textContent;
+  navigator.clipboard.writeText(texto).then(function(){
+    if(btn){
+      var orig=btn.innerHTML;
+      btn.innerHTML='<i class="ti ti-check" style="font-size:12px;"></i> Copiado!';
+      setTimeout(function(){btn.innerHTML=orig;},2000);
+    }
+  });
+}
+
+// AGENTES
+function abrirAgente(tipo){
+  document.getElementById('agentes-grid').style.display='none';
+  document.getElementById('painel-'+tipo).style.display='block';
+  window.scrollTo(0,0);
+}
+function fecharAgente(){
+  document.getElementById('agentes-grid').style.display='grid';
+  document.querySelectorAll('.agente-painel').forEach(function(p){p.style.display='none';});
+  _imagens=[];_imgsProduto=[];
+  document.getElementById('imgs-preview').innerHTML='';
+  document.getElementById('input-detalhes').value='';
+  document.getElementById('resultado-roteiro').style.display='none';
+  document.getElementById('loading-roteiro').style.display='none';
+  document.getElementById('resultado-imagem').style.display='none';
+  document.getElementById('loading-imagem').style.display='none';
+  var pp=document.getElementById('imgs-produto-preview');if(pp)pp.innerHTML='';
+  var pm=document.getElementById('imgs-metricas-preview');if(pm)pm.innerHTML='';
+  var zm=document.getElementById('zona-upload-metricas');if(zm)zm.style.display='block';
+  var cm=document.getElementById('input-contexto-metricas');if(cm)cm.value='';
+  var rm=document.getElementById('resultado-metricas');if(rm)rm.style.display='none';
+  _imgsMetricas=[];var upz=document.getElementById('zona-upload-img');if(upz)upz.style.display='block';
+}
+
+// UPLOAD DE IMAGENS
+function adicionarImagens(input){
+  var files=Array.from(input.files);
+  var max=3;
+  files.slice(0,max-_imagens.length).forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      // Comprimir
+      var img=new Image();
+      img.onload=function(){
+        var cv=document.createElement('canvas');
+        var maxW=800,w=img.width,h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        var data=cv.toDataURL('image/jpeg',0.8);
+        _imagens.push(data);
+        renderImagens();
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function renderImagens(){
+  var el=document.getElementById('imgs-preview');
+  el.innerHTML=_imagens.map(function(src,i){
+    return '<div class="img-thumb"><img src="'+src+'"/><button class="img-thumb-del" onclick="removerImagem('+i+')">×</button></div>';
+  }).join('');
+  document.querySelector('.upload-zone').style.display=_imagens.length>=3?'none':'block';
+}
+
+function removerImagem(i){
+  _imagens.splice(i,1);
+  renderImagens();
+}
+
+// GERAR ROTEIRO
+async function gerarRoteiro(){
+  var detalhes=document.getElementById('input-detalhes').value.trim();
+  if(!_imagens.length&&!detalhes){
+    alert('Envie pelo menos um print do produto ou descreva os detalhes!');
+    return;
+  }
+
+  document.getElementById('btn-gerar').disabled=true;
+  document.getElementById('resultado-roteiro').style.display='none';
+  document.getElementById('loading-roteiro').style.display='block';
+
+  var PROMPT_SISTEMA = 'Você é um especialista em vendas ao vivo no TikTok Shop e um mestre em criar roteiros de live que convertem muito.\n\nSua missão é criar roteiros de 30 a 40 segundos para serem repetidos em loop durante a live.\n\nESTRUTURA OBRIGATÓRIA DO ROTEIRO:\n⏱️ Duração estimada: ~3X segundos\n\n🎬 GANCHO (0–5s)\nFrase de impacto que para o scroll. Pode ser surpresa, curiosidade ou choque de preço.\n\n👟 PRODUTO (5–18s)  \nDescreva o produto de forma sensorial e emocional. Benefícios reais, como ele resolve um problema ou melhora a vida. Inclua prova social se tiver.\n\n💸 OFERTA (18–28s)\nPreço original → preço atual → % de desconto → frete → garantia. Falar devagar no preço.\n\n📣 CTA (28–40s)\nChamada para ação urgente e específica. Criar escassez real. Terminar com energia.\n\nREGRAS IMPORTANTES:\n- Linguagem natural, como uma pessoa real falando\n- Tom animado mas crível — não exagerar\n- Incluir emojis nos títulos das seções\n- Criar urgência genuína, não forçada\n- O roteiro deve soar natural quando lido em voz alta\n- Se tiver informações de prova social (quantidade vendida, avaliações), usar\n- Adaptar o tom ao tipo de produto\n\nGere APENAS o roteiro, sem explicações adicionais antes ou depois.';
+
+  // Montar mensagem com imagens
+  var msgContent = [];
+  
+  _imagens.forEach(function(img){
+    msgContent.push({
+      type: 'image',
+      source: {
+        type: 'base64',
+        media_type: 'image/jpeg',
+        data: img.replace('data:image/jpeg;base64,','').replace('data:image/png;base64,','')
+      }
+    });
+  });
+
+  var textoUsuario = 'Crie um roteiro de live para este produto. Use EXCLUSIVAMENTE o tom: '+_tom+'. O roteiro inteiro deve refletir esse tom do começo ao fim.';
+  if(detalhes) textoUsuario += '\n\nDetalhes adicionais:\n' + detalhes;
+  msgContent.push({type:'text',text:textoUsuario});
+
+  try{
+    var apiKey = await getApiKey('roteiro');
+    if(!apiKey){alert('Chave API do Gerador de Roteiro não configurada! Configure no painel admin.');return;}
+    var promptSistema = PROMPT_SISTEMA;
+    promptSistema += '\n\nTOM OBRIGATÓRIO PARA ESTE ROTEIRO: ' + _tom + '\nAdapte TODO o roteiro conforme este tom.';
+    try{
+      var confRes=await _sb.from('configuracoes').select('valor').eq('chave','agente_roteiro_prompt').single();
+      if(confRes.data&&confRes.data.valor) promptSistema=confRes.data.valor+'\n\nTOM: '+_tom;
+    }catch(e){}
+
+    var res = await fetch('/api/roteiro',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: promptSistema,
+        messages:[{role:'user',content:msgContent}],
+        apiKey: apiKey
+      })
+    });
+
+    var data = await res.json();
+    var texto = data.content && data.content[0] ? data.content[0].text : '';
+
+    if(!texto){
+      alert('Erro ao gerar roteiro. Tente novamente.');
+      return;
+    }
+
+    // Formatar e exibir
+    document.getElementById('roteiro-conteudo').innerHTML = formatarRoteiro(texto);
+    document.getElementById('resultado-roteiro').style.display='block';
+    document.getElementById('resultado-roteiro').scrollIntoView({behavior:'smooth'});
+
+  }catch(e){
+    console.error(e);
+    alert('Erro: '+e.message);
+  }finally{
+    document.getElementById('loading-roteiro').style.display='none';
+    document.getElementById('btn-gerar').disabled=false;
+  }
+}
+
+function formatarRoteiro(texto){
+  if(!texto) return '';
+  var secoes=[
+    {emoji:'🎯',cor:'#ff4d8d'},
+    {emoji:'💎',cor:'#a07fff'},
+    {emoji:'⚡',cor:'#ffb800'},
+    {emoji:'📣',cor:'#00e5a0'}
+  ];
+  var html='';
+  var linhas=texto.split('\n');
+  var i=0;
+  while(i<linhas.length){
+    var linha=linhas[i].trim();
+    var secao=null;
+    for(var s=0;s<secoes.length;s++){
+      if(linha.startsWith(secoes[s].emoji)){secao=secoes[s];break;}
+    }
+    if(secao){
+      var titulo=linha.replace(/&/g,'&amp;');
+      var corpo='';
+      i++;
+      while(i<linhas.length){
+        var prox=linhas[i].trim();
+        var isNovaSecao=false;
+        for(var s2=0;s2<secoes.length;s2++){if(prox.startsWith(secoes[s2].emoji)){isNovaSecao=true;break;}}
+        if(isNovaSecao) break;
+        if(prox) corpo+=prox.replace(/&/g,'&amp;')+'<br/>';
+        i++;
+      }
+      html+='<div style="margin-bottom:18px;">'
+        +'<div style="font-size:12px;font-weight:800;color:'+secao.cor+';letter-spacing:.5px;margin-bottom:6px;">'+titulo+'</div>'
+        +'<div style="font-size:14px;color:#e0e8ff;line-height:1.85;padding-left:4px;">'+corpo+'</div>'
+        +'</div>';
+    } else {
+      if(linha) html+='<div style="font-size:14px;color:#e0e8ff;line-height:1.85;margin-bottom:6px;">'+linha.replace(/&/g,'&amp;')+'</div>';
+      i++;
+    }
+  }
+  return html||'<div style="font-size:14px;color:#e0e8ff;line-height:1.85;white-space:pre-wrap;">'+texto.replace(/&/g,'&amp;')+'</div>';
+}
+
+
+// ================================================
+// HISTÓRICO DE ROTEIROS
+// ================================================
+var _HIST_ROT_KEY = 'il_roteiros_hist';
+
+function salvarRoteiroNoHistorico(texto, produto, tom){
+  try{
+    var hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');
+    hist.unshift({
+      id:Date.now(),
+      data:new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}),
+      hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+      produto:produto||'Produto',
+      tom:tom||'',
+      texto:texto
+    });
+    if(hist.length>30) hist=hist.slice(0,30);
+    localStorage.setItem(_HIST_ROT_KEY,JSON.stringify(hist));
+  }catch(e){}
+}
+
+function carregarHistoricoRoteiro(){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');}catch(e){}
+  var el=document.getElementById('historico-roteiro-lista');
+  if(!hist.length){
+    el.innerHTML='<div class="empty" style="padding:40px 0;"><i class="ti ti-history" style="font-size:32px;display:block;margin-bottom:8px;"></i><p>Nenhum roteiro salvo ainda.</p></div>';
+    return;
+  }
+  el.innerHTML=hist.map(function(h){
+    return '<div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+      +'<div>'
+      +'<div style="font-size:13px;font-weight:700;">'+h.produto+'</div>'
+      +'<div style="font-size:11px;color:var(--text3);margin-top:2px;">'+h.data+' às '+h.hora+(h.tom?' · '+h.tom:'')+'</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<button onclick="baixarRoteiro('+h.id+')" style="background:rgba(124,92,255,0.1);border:1px solid rgba(124,92,255,0.25);color:var(--purple);padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-download" style="font-size:13px;"></i>Baixar</button>'
+      +'<button onclick="verRoteiro('+h.id+')" style="background:rgba(0,200,255,0.1);border:1px solid rgba(0,200,255,0.25);color:var(--cyan);padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-eye" style="font-size:13px;"></i>Ver</button>'
+      +'<button onclick="deletarRoteiro('+h.id+')" style="background:rgba(255,59,92,0.08);border:1px solid rgba(255,59,92,0.2);color:var(--red);padding:6px 8px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;"><i class="ti ti-trash" style="font-size:13px;"></i></button>'
+      +'</div></div>'
+      +'<div style="font-size:12px;color:var(--text2);line-height:1.6;max-height:55px;overflow:hidden;position:relative;">'
+      +h.texto.slice(0,180).replace(/\n/g,' ')+'...'
+      +'<div style="position:absolute;bottom:0;left:0;right:0;height:25px;background:linear-gradient(transparent,var(--card2));"></div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function verRoteiro(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');}catch(e){}
+  var h=hist.find(function(x){return x.id===id;});
+  if(!h) return;
+  mudarAbaRoteiro('novo');
+  document.getElementById('roteiro-conteudo').innerHTML=formatarRoteiro(h.texto);
+  document.getElementById('roteiro-raw').textContent=h.texto;
+  document.getElementById('resultado-roteiro').style.display='block';
+  document.getElementById('resultado-roteiro').scrollIntoView({behavior:'smooth'});
+}
+
+function baixarRoteiro(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');}catch(e){}
+  var h=hist.find(function(x){return x.id===id;});
+  if(!h) return;
+  var conteudo='ROTEIRO — Infinity Live\n';
+  conteudo+='Produto: '+h.produto+'\n';
+  conteudo+='Data: '+h.data+' às '+h.hora+'\n';
+  if(h.tom) conteudo+='Tom: '+h.tom+'\n';
+  conteudo+='\n'+'='.repeat(40)+'\n\n'+h.texto;
+  var blob=new Blob([conteudo],{type:'text/plain;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='roteiro-'+h.data.replace(/\//g,'-')+'.txt';
+  a.click();URL.revokeObjectURL(url);
+}
+
+function deletarRoteiro(id){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem(_HIST_ROT_KEY)||'[]');}catch(e){}
+  hist=hist.filter(function(x){return x.id!==id;});
+  localStorage.setItem(_HIST_ROT_KEY,JSON.stringify(hist));
+  carregarHistoricoRoteiro();
+}
+
+function limparHistoricoRoteiro(){
+  if(!confirm('Apagar todos os roteiros salvos?')) return;
+  localStorage.removeItem(_HIST_ROT_KEY);
+  carregarHistoricoRoteiro();
+}
+
+function mudarAbaRoteiro(aba){
+  var novo=aba==='novo';
+  document.getElementById('body-roteiro').style.display=novo?'block':'none';
+  document.getElementById('body-historico-roteiro').style.display=novo?'none':'block';
+  document.getElementById('aba-rot-novo').style.color=novo?'var(--purple)':'var(--text3)';
+  document.getElementById('aba-rot-novo').style.borderBottomColor=novo?'var(--purple)':'transparent';
+  document.getElementById('aba-rot-hist').style.color=novo?'var(--text3)':'var(--cyan)';
+  document.getElementById('aba-rot-hist').style.borderBottomColor=novo?'transparent':'var(--cyan)';
+  if(!novo) carregarHistoricoRoteiro();
 }
 
 async function remixarPrompt(tipo){
@@ -828,3 +1285,4 @@ async function fazerLogout(){await _sb.auth.signOut();window.location.href='../l
 </script>
 </body>
 </html>
+      
