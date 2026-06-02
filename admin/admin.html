@@ -284,7 +284,10 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
     <div class="pg" id="pg-materiais">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <div style="font-size:13px;font-weight:700;">Materiais para download</div>
-        <button class="btn btn-p" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-p" onclick="abrirModal('modal-material')"><i class="ti ti-upload" style="font-size:14px;"></i> Novo material</button>
+          <button class="btn" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:var(--green);" onclick="publicarMateriais()"><i class="ti ti-world-upload" style="font-size:14px;"></i> Publicar no site</button>
+        </div>
       </div>
       <div id="mats-lista"><div class="empty"><i class="ti ti-file-upload"></i><p>Nenhum material cadastrado.</p></div></div>
     </div>
@@ -944,6 +947,26 @@ function delTicket(id){
   sTickets(gTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
 }
 
+async function publicarMateriais(){
+  var mats=gMats();
+  if(!mats.length){toast('Nenhum material para publicar.');return;}
+  var btn=event.target;btn.textContent='Publicando...';btn.disabled=true;
+  try{
+    // Deletar todos e reinserir
+    await _sb.from('materiais').delete().neq('id','x');
+    if(mats.length>0){
+      var registros=mats.map(function(m,i){return{
+        id:m.id,nome:m.nome,descricao:m.desc||'',
+        url:m.url||'',tipo:m.tipo||'pdf',ordem:i+1
+      };});
+      var r=await _sb.from('materiais').insert(registros);
+      if(r.error) throw new Error(r.error.message);
+    }
+    toast('Materiais publicados no site!');
+  }catch(e){toast('Erro: '+e.message,true);}
+  btn.textContent='Publicar no site';btn.disabled=false;
+}
+
 function renderMats(){
   var el=document.getElementById('mats-lista');
   var mats=gMats();
@@ -957,7 +980,7 @@ function salvarMaterial(){
   var nome=document.getElementById('mat-nome').value.trim();
   if(!nome){alert('Nome obrigatório.');return;}
   var mats=gMats();
-  mats.unshift({id:uid(),nome:nome,url:document.getElementById('mat-url').value.trim(),tipo:document.getElementById('mat-tipo').value,mod:document.getElementById('mat-mod').value});
+  mats.unshift({id:uid(),nome:nome,url:document.getElementById('mat-url').value.trim(),tipo:document.getElementById('mat-tipo').value,desc:document.getElementById('mat-desc')?document.getElementById('mat-desc').value.trim():'',mod:document.getElementById('mat-mod').value});
   sMats(mats);fecharModal('modal-material');
   document.getElementById('mat-nome').value='';
   document.getElementById('mat-url').value='';
@@ -1153,6 +1176,26 @@ function delTicket(id){
   sTickets(gTickets().filter(function(t){return t.id!==id;}));renderTickets();atualizarStats();toast('Ticket excluído.');
 }
 
+async function publicarMateriais(){
+  var mats=gMats();
+  if(!mats.length){toast('Nenhum material para publicar.');return;}
+  var btn=event.target;btn.textContent='Publicando...';btn.disabled=true;
+  try{
+    // Deletar todos e reinserir
+    await _sb.from('materiais').delete().neq('id','x');
+    if(mats.length>0){
+      var registros=mats.map(function(m,i){return{
+        id:m.id,nome:m.nome,descricao:m.desc||'',
+        url:m.url||'',tipo:m.tipo||'pdf',ordem:i+1
+      };});
+      var r=await _sb.from('materiais').insert(registros);
+      if(r.error) throw new Error(r.error.message);
+    }
+    toast('Materiais publicados no site!');
+  }catch(e){toast('Erro: '+e.message,true);}
+  btn.textContent='Publicar no site';btn.disabled=false;
+}
+
 function renderMats(){
   var el=document.getElementById('mats-lista');
   var mats=gMats();
@@ -1166,7 +1209,7 @@ function salvarMaterial(){
   var nome=document.getElementById('mat-nome').value.trim();
   if(!nome){alert('Nome obrigatório.');return;}
   var mats=gMats();
-  mats.unshift({id:uid(),nome:nome,url:document.getElementById('mat-url').value.trim(),tipo:document.getElementById('mat-tipo').value,mod:document.getElementById('mat-mod').value});
+  mats.unshift({id:uid(),nome:nome,url:document.getElementById('mat-url').value.trim(),tipo:document.getElementById('mat-tipo').value,desc:document.getElementById('mat-desc')?document.getElementById('mat-desc').value.trim():'',mod:document.getElementById('mat-mod').value});
   sMats(mats);fecharModal('modal-material');
   document.getElementById('mat-nome').value='';
   document.getElementById('mat-url').value='';
