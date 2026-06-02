@@ -445,10 +445,15 @@
     if (avEl) avEl.textContent = initials;
     if (nomeEl) nomeEl.textContent = nome;
 
-    // Carregar módulos e aulas do admin (localStorage)
-    var mods = []; try { mods = JSON.parse(localStorage.getItem('il_mods'))||[]; } catch(e){}
-    var aulas = []; try { aulas = JSON.parse(localStorage.getItem('il_aulas'))||[]; } catch(e){}
-    var aulasPublicadas = aulas.filter(function(a){return a.status!=='draft';});
+    // Carregar modulos e aulas do Supabase diretamente
+    var mods = [], aulas = [];
+    try {
+      var rMods = await _sbDash.from('modulos').select('*').eq('status','visible').order('ordem',{ascending:true});
+      var rAulas = await _sbDash.from('aulas').select('*').neq('status','draft').order('ordem',{ascending:true});
+      mods = rMods.data || [];
+      aulas = rAulas.data || [];
+    } catch(eLoad) { console.warn('Erro ao carregar:', eLoad); }
+    var aulasPublicadas = aulas;
 
     // Carregar progresso do Supabase
     var { data: progresso } = await _sbDash.from('progresso')
