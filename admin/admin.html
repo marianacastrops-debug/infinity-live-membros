@@ -722,15 +722,14 @@ async function salvarAluno(){
   if(btn){btn.textContent='Criando...';btn.disabled=true;}
   try{
     var sf=senha||gerarSenha();
-    var SB_SECRET='sb_secret_UIykqcvYhYwNWjf8Afrgdg_4jur-OWD';
-    var res=await fetch('https://fbjxampsauqfngdennpi.supabase.co/auth/v1/admin/users',{
+    var res=await fetch('/api/criar-aluno',{
       method:'POST',
-      headers:{'Content-Type':'application/json','apikey':SB_SECRET,'Authorization':'Bearer '+SB_SECRET},
-      body:JSON.stringify({email:email,password:sf,email_confirm:true,user_metadata:{nome:nome,origem:'manual'}})
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nome:nome,email:email,senha:sf})
     });
     var data=await res.json();
-    if(!data.id){
-      alert('Erro: '+(data.msg||data.message||JSON.stringify(data)));
+    if(!data.ok){
+      alert('Erro: '+(data.error||'Falha ao criar usuario'));
     } else {
       var cores=['#00c8ff','#ff4d8d','#00e5a0','#ffb800','#7c5cff'];
       var a=gAlunos();
@@ -740,9 +739,7 @@ async function salvarAluno(){
       document.getElementById('aluno-email').value='';
       document.getElementById('aluno-senha').value='';
       renderAlunos(a);atualizarStats();
-      var ok=await enviarEmailBoasVindas(nome,email,sf);
-      if(ok) toast('Aluno criado! E-mail enviado!');
-      else{toast('Aluno criado! Anote a senha: '+sf);}
+      toast('Aluno criado! E-mail enviado para '+email+'!');
     }
   }catch(e){alert('Erro: '+e.message);}
   if(btn){btn.textContent='Adicionar aluno';btn.disabled=false;}
