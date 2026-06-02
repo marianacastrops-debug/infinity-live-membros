@@ -772,22 +772,29 @@ async function verPerfil(id){
   try{
     var email2=document.getElementById('perf-email').textContent.trim();
     var realId2=await getUUIDporEmail(email2);
-    var criacao=new Date(a.created_at||Date.now());
-    var desblq=new Date(criacao);desblq.setDate(desblq.getDate()+7);
-    var dentro7dias=desblq>new Date();
-    var rModsBloq=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
-    var temModsBloq=(rModsBloq.data||[]).length>0;
-    if(!dentro7dias||!temModsBloq){
+
+    // Verificar módulos com bloqueio configurado
+    var rM=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
+    var temModsBloq=(rM.data||[]).length>0;
+    if(!temModsBloq){
       btn.textContent='Sem bloqueio';btn.disabled=true;
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;font-family:inherit;background:rgba(255,255,255,0.05);color:var(--text3);border:none;cursor:default;';
-      if(sub) sub.textContent='Aluno sem modulos bloqueados';
+      if(sub) sub.textContent='Nenhum modulo com bloqueio configurado';
       return;
     }
-    var liberado=false;
-    if(realId2){
-      var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',realId2).limit(1);
-      liberado=(res.data&&res.data.length>0&&res.data[0].liberado_manualmente===true);
+
+    // Sem UUID real — mostrar botão ativo por padrão
+    if(!realId2){
+      btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
+      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
+      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
+      btn.disabled=false;return;
     }
+
+    // Verificar se foi liberado manualmente
+    var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',realId2).eq('liberado_manualmente',true).limit(1);
+    var liberado=res.data&&res.data.length>0;
+
     if(liberado){
       btn.dataset.estado='liberado';btn.textContent='Reativar bloqueio';
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(255,184,0,0.15);color:var(--yellow);border:1px solid rgba(255,184,0,0.3);';
@@ -795,8 +802,7 @@ async function verPerfil(id){
     } else {
       btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
-      var ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-      if(sub) sub.textContent='Bloqueado ate '+desblq.getDate()+' de '+ms2[desblq.getMonth()];
+      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
     }
     btn.disabled=false;
   }catch(e){btn.textContent='Erro';console.warn(e);}
@@ -1048,22 +1054,29 @@ async function verPerfil(id){
   try{
     var email2=document.getElementById('perf-email').textContent.trim();
     var realId2=await getUUIDporEmail(email2);
-    var criacao=new Date(a.created_at||Date.now());
-    var desblq=new Date(criacao);desblq.setDate(desblq.getDate()+7);
-    var dentro7dias=desblq>new Date();
-    var rModsBloq=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
-    var temModsBloq=(rModsBloq.data||[]).length>0;
-    if(!dentro7dias||!temModsBloq){
+
+    // Verificar módulos com bloqueio configurado
+    var rM=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
+    var temModsBloq=(rM.data||[]).length>0;
+    if(!temModsBloq){
       btn.textContent='Sem bloqueio';btn.disabled=true;
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;font-family:inherit;background:rgba(255,255,255,0.05);color:var(--text3);border:none;cursor:default;';
-      if(sub) sub.textContent='Aluno sem modulos bloqueados';
+      if(sub) sub.textContent='Nenhum modulo com bloqueio configurado';
       return;
     }
-    var liberado=false;
-    if(realId2){
-      var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',realId2).limit(1);
-      liberado=(res.data&&res.data.length>0&&res.data[0].liberado_manualmente===true);
+
+    // Sem UUID real — mostrar botão ativo por padrão
+    if(!realId2){
+      btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
+      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
+      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
+      btn.disabled=false;return;
     }
+
+    // Verificar se foi liberado manualmente
+    var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',realId2).eq('liberado_manualmente',true).limit(1);
+    var liberado=res.data&&res.data.length>0;
+
     if(liberado){
       btn.dataset.estado='liberado';btn.textContent='Reativar bloqueio';
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(255,184,0,0.15);color:var(--yellow);border:1px solid rgba(255,184,0,0.3);';
@@ -1071,8 +1084,7 @@ async function verPerfil(id){
     } else {
       btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
-      var ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-      if(sub) sub.textContent='Bloqueado ate '+desblq.getDate()+' de '+ms2[desblq.getMonth()];
+      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
     }
     btn.disabled=false;
   }catch(e){btn.textContent='Erro';console.warn(e);}
@@ -1314,22 +1326,29 @@ async function verPerfil(id){
   try{
     var email2=document.getElementById('perf-email').textContent.trim();
     var realId2=await getUUIDporEmail(email2);
-    var criacao=new Date(a.created_at||Date.now());
-    var desblq=new Date(criacao);desblq.setDate(desblq.getDate()+7);
-    var dentro7dias=desblq>new Date();
-    var rModsBloq=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
-    var temModsBloq=(rModsBloq.data||[]).length>0;
-    if(!dentro7dias||!temModsBloq){
+
+    // Verificar módulos com bloqueio configurado
+    var rM=await _sb.from('modulos').select('id').eq('bloqueio_7dias',true);
+    var temModsBloq=(rM.data||[]).length>0;
+    if(!temModsBloq){
       btn.textContent='Sem bloqueio';btn.disabled=true;
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;font-family:inherit;background:rgba(255,255,255,0.05);color:var(--text3);border:none;cursor:default;';
-      if(sub) sub.textContent='Aluno sem modulos bloqueados';
+      if(sub) sub.textContent='Nenhum modulo com bloqueio configurado';
       return;
     }
-    var liberado=false;
-    if(realId2){
-      var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',realId2).limit(1);
-      liberado=(res.data&&res.data.length>0&&res.data[0].liberado_manualmente===true);
+
+    // Sem UUID real — mostrar botão ativo por padrão
+    if(!realId2){
+      btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
+      btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
+      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
+      btn.disabled=false;return;
     }
+
+    // Verificar se foi liberado manualmente
+    var res=await _sb.from('modulos_bloqueados').select('liberado_manualmente').eq('user_id',realId2).eq('liberado_manualmente',true).limit(1);
+    var liberado=res.data&&res.data.length>0;
+
     if(liberado){
       btn.dataset.estado='liberado';btn.textContent='Reativar bloqueio';
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:rgba(255,184,0,0.15);color:var(--yellow);border:1px solid rgba(255,184,0,0.3);';
@@ -1337,8 +1356,7 @@ async function verPerfil(id){
     } else {
       btn.dataset.estado='ativo';btn.textContent='Liberar acesso agora';
       btn.style.cssText='padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000;border:none;';
-      var ms2=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-      if(sub) sub.textContent='Bloqueado ate '+desblq.getDate()+' de '+ms2[desblq.getMonth()];
+      if(sub) sub.textContent='Modulos bloqueados por 7 dias';
     }
     btn.disabled=false;
   }catch(e){btn.textContent='Erro';console.warn(e);}
