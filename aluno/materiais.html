@@ -157,10 +157,10 @@ async function fazerLogout(){ await _sb.auth.signOut(); window.location.href='..
   var SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
   var SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
   try{
-    var res=await fetch(SB_URL+'/rest/v1/materiais?select=*&order=ordem.asc',{
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
-    });
-    var mats=await res.json();
+    // Usar _sb direto que já tem sessão autenticada
+    var r=await _sb.from('materiais').select('*').order('ordem',{ascending:true});
+    var mats=r.data||[];
+    if(r.error) throw new Error(r.error.message);
     document.getElementById('mats-loading').style.display='none';
     if(!Array.isArray(mats)||!mats.length){
       document.getElementById('mats-empty').style.display='block';
