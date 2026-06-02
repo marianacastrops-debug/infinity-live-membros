@@ -678,7 +678,9 @@ function salvarAula(){
   var editId=document.getElementById('aula-id').value;
   var modId=document.getElementById('aula-mod-id').value;
   var m=url.match(/(?:v=|embed\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:m?'https://www.youtube.com/embed/'+m[1]:url,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim()};
+  var pdfEl=document.getElementById('aula-pdf');
+  var thumbEl=document.getElementById('aula-thumb');
+  var dados={id:editId||uid(),moduloId:modId,nome:nome,url:url,embed:m?'https://www.youtube.com/embed/'+m[1]:url,duracao:document.getElementById('aula-dur').value.trim(),status:document.getElementById('aula-status').value,desc:document.getElementById('aula-desc').value.trim(),pdf:pdfEl?pdfEl.value.trim():'',thumb:thumbEl?thumbEl.value.trim():''};
   var aulas=gAulas();
   if(editId){var i=aulas.findIndex(function(a){return a.id===editId;});if(i!==-1)aulas[i]=dados;}
   else aulas.push(dados);
@@ -1040,7 +1042,7 @@ async function publicarNoSite(){
     }
     for(var j=0;j<aulas.length;j++){
       var a=aulas[j];
-      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',ordem:j+1});
+      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',pdf:a.pdf||'',thumb:a.thumb||'',ordem:j+1});
       if(ra.error){console.error('Erro aula:',ra.error);}
     }
     toast('✅ '+mods.length+' módulo(s) publicados! Alunos já podem ver.');
@@ -1269,7 +1271,7 @@ async function publicarNoSite(){
     }
     for(var j=0;j<aulas.length;j++){
       var a=aulas[j];
-      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',ordem:j+1});
+      var ra=await _sb.from('aulas').insert({id:a.id,modulo_id:a.moduloId,nome:a.nome,url:a.url||'',embed:a.embed||'',duracao:a.duracao||'',status:a.status||'published',descricao:a.desc||'',pdf:a.pdf||'',thumb:a.thumb||'',ordem:j+1});
       if(ra.error){console.error('Erro aula:',ra.error);}
     }
     toast('✅ '+mods.length+' módulo(s) publicados! Alunos já podem ver.');
