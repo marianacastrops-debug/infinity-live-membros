@@ -55,6 +55,7 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
 .empty i{font-size:52px;margin-bottom:16px;display:block;}
 .empty h3{font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px;}
 .empty p{font-size:13px;line-height:1.7;max-width:320px;}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -104,10 +105,15 @@ body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;color:var(-
       </div>
     </div>
     <div class="content">
-      <div class="empty">
-        <i class="ti ti-file-download"></i>
-        <h3>Nenhum material disponível ainda</h3>
-        <p>Os materiais serão liberados em breve pelo mentor.<br/>Fique de olho nas novidades!</p>
+      <div id="mats-loading" style="text-align:center;padding:48px;color:var(--text3);">
+        <i class="ti ti-loader-2" style="font-size:32px;display:block;margin-bottom:8px;animation:spin 1s linear infinite;"></i>
+        Carregando materiais...
+      </div>
+      <div id="mats-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;display:none;"></div>
+      <div id="mats-empty" style="display:none;text-align:center;padding:48px;">
+        <i class="ti ti-file-download" style="font-size:40px;display:block;margin-bottom:12px;opacity:.3;"></i>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Nenhum material disponível ainda</div>
+        <div style="font-size:13px;color:var(--text3);">Os materiais serão liberados em breve pelo mentor.</div>
       </div>
     </div>
   </main>
@@ -145,6 +151,46 @@ function abrirAdmin(){ document.getElementById('admin-senha-input').value=''; do
 function fecharAdmin(){ document.getElementById('overlay-admin').style.display='none'; }
 function verificarSenhaAdmin(){ var s=document.getElementById('admin-senha-input').value; if(s===SENHA_ADMIN){fecharAdmin();window.location.href='../admin/admin.html';}else{document.getElementById('admin-err').style.display='block';document.getElementById('admin-senha-input').value='';} }
 async function fazerLogout(){ await _sb.auth.signOut(); window.location.href='../login.html'; }
+
+// Carregar materiais do Supabase
+(async function(){
+  var SB_URL='https://fbjxampsauqfngdennpi.supabase.co';
+  var SB_KEY='sb_publishable_RMqVdkC4rGHAJZEKitBqcA_yUwA9LYg';
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/materiais?select=*&order=ordem.asc',{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    var mats=await res.json();
+    document.getElementById('mats-loading').style.display='none';
+    if(!Array.isArray(mats)||!mats.length){
+      document.getElementById('mats-empty').style.display='block';
+      return;
+    }
+    var icones={pdf:'ti-file-type-pdf',doc:'ti-file-type-doc',xls:'ti-file-type-xls',zip:'ti-file-zip',link:'ti-link',video:'ti-video'};
+    var cores={pdf:'#ff4d8d',doc:'#00c8ff',xls:'#00e5a0',zip:'#ffb800',link:'#7c5cff',video:'#ff8c42'};
+    var grid=document.getElementById('mats-grid');
+    grid.style.display='grid';
+    grid.innerHTML=mats.map(function(m){
+      var tipo=m.tipo||'pdf';
+      var ico=icones[tipo]||'ti-file';
+      var cor=cores[tipo]||'#00c8ff';
+      return '<a href="'+m.url+'" target="_blank" style="text-decoration:none;">'
+        +'<div style="background:var(--card,#111827);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;display:flex;align-items:center;gap:14px;transition:border-color .2s;cursor:pointer;" onmouseover="this.style.borderColor=''+cor+'40'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">'
+        +'<div style="width:46px;height:46px;border-radius:11px;background:'+cor+'18;border:1px solid '+cor+'30;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+        +'<i class="ti '+ico+'" style="font-size:22px;color:'+cor+';"></i></div>'
+        +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-size:13px;font-weight:700;color:#f0f4ff;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+m.nome+'</div>'
+        +(m.descricao?'<div style="font-size:11px;color:#6b7a99;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+m.descricao+'</div>':'')
+        +'</div>'
+        +'<i class="ti ti-download" style="font-size:18px;color:'+cor+';opacity:.7;flex-shrink:0;"></i>'
+        +'</div></a>';
+    }).join('');
+  }catch(e){
+    document.getElementById('mats-loading').style.display='none';
+    document.getElementById('mats-empty').style.display='block';
+    console.warn('Erro ao carregar materiais:',e);
+  }
+})();
 </script>
 </body>
 </html>
