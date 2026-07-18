@@ -121,7 +121,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .st-l{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
 .st-h{background:rgba(255,255,255,0.06);color:var(--text3);}
 .aulas-sec{border-top:1px solid var(--border);padding:8px 15px 12px;}
-.aula-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--card2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border);cursor:grab;}
+.aula-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--card2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border);}
 .aula-item.dragging{opacity:.4;border:1px dashed var(--purple);cursor:grabbing;}
 .aula-item.drag-over{border-color:var(--cyan);background:rgba(0,200,255,0.06);}
 .drag-handle{color:var(--text3);font-size:14px;cursor:grab;padding:0 2px;flex-shrink:0;}
@@ -584,13 +584,16 @@ function renderMods(){
     var am=aulas.filter(function(a){return a.moduloId===m.id;});
     var c=CORES[m.cor||'cyan'];
     var thumb=m.imagem?'<img class="mod-thumb" src="'+m.imagem+'" onerror="this.style.display=\'none\'">':'<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';"><i class="ti ti-photo-off"></i></div>';
-    var aulasHtml=am.length?am.map(function(a,i){
+    var aulasHtml=am.length?'<div class="aulas-lista" data-mod-id="'+m.id+'">'+am.map(function(a,i){
       var btnUp='<button onclick="moverAula(\''+a.id+'\'\,\''+m.id+'\'\\,\'up\')" style="background:none;border:none;color:'+(i===0?'rgba(255,255,255,0.1)':'var(--text2)')+';cursor:'+(i===0?'default':'pointer')+';font-size:13px;padding:1px;line-height:1;"><i class=\"ti ti-chevron-up\"></i></button>';
       var btnDn='<button onclick="moverAula(\''+a.id+'\'\,\''+m.id+'\'\\,\'down\')" style="background:none;border:none;color:'+(i===am.length-1?'rgba(255,255,255,0.1)':'var(--text2)')+';cursor:'+(i===am.length-1?'default':'pointer')+';font-size:13px;padding:1px;line-height:1;"><i class=\"ti ti-chevron-down\"></i></button>';
-      return '<div class="aula-item" data-aula-id="'+a.id+'" data-mod-id="'+m.id+'"><div style="display:flex;flex-direction:column;margin-right:2px;">'+btnUp+btnDn+'</div><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
-    }).join(''):'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
+      return '<div class="aula-item" data-aula-id="'+a.id+'" data-mod-id="'+m.id+'"><i class="ti ti-grip-vertical drag-handle" title="Arraste para reordenar"></i><div style="display:flex;flex-direction:column;margin-right:2px;">'+btnUp+btnDn+'</div><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
+    }).join('')+'</div>':'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
     return '<div class="mod-card"><div class="mod-hd">'+thumb+'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stC[m.status||'visible']+'">'+stL[m.status||'visible']+'</span></div><div class="mod-acts"><button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button><button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button></div></div><div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">AULAS</div>'+aulasHtml+'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button></div></div>';
   }).join('');
+  el.querySelectorAll('.aulas-lista').forEach(function(cont){
+    setupDragAulas(cont, cont.getAttribute('data-mod-id'));
+  });
   atualizarStats();
 }
 
@@ -1055,8 +1058,6 @@ function moverAula(aulaId, modId, direcao){
   renderMods(gMods());
   toast('Ordem salva! Publique no site para aplicar.');
 }
-function setupDragAulas(){}
-
 function renderMats(){
   var el=document.getElementById('mats-lista');
   var mats=gMats();
@@ -1341,7 +1342,12 @@ function setupDragAulas(container, modId){
   container.querySelectorAll('.aula-item').forEach(function(item){
     item.setAttribute('draggable','true');
 
+    item.addEventListener('mousedown', function(e){
+      item._podeArrastar = !!e.target.closest('.drag-handle');
+    });
+
     item.addEventListener('dragstart', function(e){
+      if(!item._podeArrastar){ e.preventDefault(); return; }
       dragging = item;
       setTimeout(function(){item.classList.add('dragging');}, 0);
       e.dataTransfer.effectAllowed = 'move';
