@@ -254,8 +254,9 @@ function renderModulos(mods,aulas,concluidasIds,modsBloqIds,modsBloqDatas){
   document.getElementById('prog-mods').textContent=visiveis.length;
   document.getElementById('pg-sub').textContent=visiveis.length+' módulo(s) · '+totalAulas+' aula(s)';
 
+  var paletaAuto=['pink','purple','cyan','green','yellow'];
   grid.innerHTML=visiveis.map(function(m,idx){
-    var c=CORES[m.cor||'cyan'];
+    var c=CORES[paletaAuto[idx % paletaAuto.length]];
     var am=aulasPubl.filter(function(a){return a.modulo_id===m.id;});
     var concM=am.filter(function(a){return concluidasIds.indexOf(a.id)>-1;}).length;
     var pctM=am.length>0?Math.round(concM/am.length*100):0;
