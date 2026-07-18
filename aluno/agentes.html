@@ -568,7 +568,7 @@ async function gerarPromptImagem(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-5',
         max_tokens:400,
         system:SYSTEM_IMG,
         messages:[{role:'user',content:msgContent}],
@@ -736,7 +736,7 @@ async function remixarPrompt(tipo){
     var res = await fetch('/api/roteiro',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:msgContent}],apiKey:apiKey})
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:500,messages:[{role:'user',content:msgContent}],apiKey:apiKey})
     });
     var data = await res.json();
     var novo = data.content&&data.content[0]?data.content[0].text:'';
@@ -869,7 +869,7 @@ async function gerarRoteiro(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-5',
         max_tokens:1000,
         system: promptSistema,
         messages:[{role:'user',content:msgContent}],
@@ -1078,7 +1078,7 @@ async function remixarPrompt(tipo){
     var res = await fetch('/api/roteiro',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:msgContent}],apiKey:apiKey})
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:500,messages:[{role:'user',content:msgContent}],apiKey:apiKey})
     });
     var data = await res.json();
     var novo = data.content&&data.content[0]?data.content[0].text:'';
@@ -1211,7 +1211,7 @@ async function gerarRoteiro(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-5',
         max_tokens:1000,
         system: promptSistema,
         messages:[{role:'user',content:msgContent}],
