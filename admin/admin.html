@@ -1359,17 +1359,20 @@ function setupDragAulas(container, modId){
 
     item.addEventListener('mousedown', function(e){
       item._podeArrastar = !!e.target.closest('.drag-handle');
+      if(item._podeArrastar) e.stopPropagation();
     });
 
     item.addEventListener('dragstart', function(e){
       if(!item._podeArrastar){ e.preventDefault(); return; }
+      e.stopPropagation();
       dragging = item;
       setTimeout(function(){item.classList.add('dragging');}, 0);
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', item.dataset.aulaId);
     });
 
-    item.addEventListener('dragend', function(){
+    item.addEventListener('dragend', function(e){
+      e.stopPropagation();
       item.classList.remove('dragging');
       container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
       if(dragging){
@@ -1381,6 +1384,7 @@ function setupDragAulas(container, modId){
 
     item.addEventListener('dragover', function(e){
       e.preventDefault();
+      e.stopPropagation();
       if(!dragging || dragging === item) return;
       var rect = item.getBoundingClientRect();
       var mid = rect.top + rect.height/2;
@@ -1395,6 +1399,7 @@ function setupDragAulas(container, modId){
 
     item.addEventListener('drop', function(e){
       e.preventDefault();
+      e.stopPropagation();
     });
   });
 }
