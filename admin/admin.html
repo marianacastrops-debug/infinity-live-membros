@@ -121,7 +121,11 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .st-l{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
 .st-h{background:rgba(255,255,255,0.06);color:var(--text3);}
 .aulas-sec{border-top:1px solid var(--border);padding:8px 15px 12px;}
-.aula-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--card2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border);}
+.aula-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--card2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border);cursor:grab;}
+.aula-item.dragging{opacity:.4;border:1px dashed var(--purple);cursor:grabbing;}
+.aula-item.drag-over{border-color:var(--cyan);background:rgba(0,200,255,0.06);}
+.drag-handle{color:var(--text3);font-size:14px;cursor:grab;padding:0 2px;flex-shrink:0;}
+.drag-handle:hover{color:var(--text2);}
 .aula-n{font-size:11px;font-weight:700;color:var(--text3);width:18px;text-align:center;flex-shrink:0;}
 .aula-info{flex:1;min-width:0;}
 .aula-nome{font-size:12px;font-weight:600;}
@@ -581,7 +585,7 @@ function renderMods(){
     var c=CORES[m.cor||'cyan'];
     var thumb=m.imagem?'<img class="mod-thumb" src="'+m.imagem+'" onerror="this.style.display=\'none\'">':'<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';"><i class="ti ti-photo-off"></i></div>';
     var aulasHtml=am.length?am.map(function(a,i){
-      return '<div class="aula-item"><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
+      return '<div class="aula-item" draggable="true" data-aula-id="'+a.id+'" data-mod-id="'+m.id+'" onmousedown="initDragAula(event,this)"><i class="ti ti-grip-vertical drag-handle"></i><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
     }).join(''):'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
     return '<div class="mod-card"><div class="mod-hd">'+thumb+'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stC[m.status||'visible']+'">'+stL[m.status||'visible']+'</span></div><div class="mod-acts"><button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button><button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button></div></div><div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">AULAS</div>'+aulasHtml+'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button></div></div>';
   }).join('');
@@ -998,7 +1002,7 @@ async function publicarMateriais(){
   btn.textContent='Publicar no site';btn.disabled=false;
 }
 
-var PROMPT_PADRAO_AG='Você é um especialista em vendas ao vivo no TikTok Shop. Crie roteiros de 30-40s para loop na live. ESTRUTURA: GANCHO COM A DOR (0-5s) | PRODUTO+BENEFICIOS+TRANSFORMACAO (5-25s) | GATILHOS sem desconto em % (25-33s) | CTA com clica no link aqui embaixo (33-40s). Linguagem natural. NUNCA mencione % de desconto. CTA SEMPRE com clica no link aqui embaixo.';
+var PROMPT_PADRAO_AG='Você é um especialista em vendas ao vivo no TikTok Shop com foco em psicologia do consumidor e copywriting de alta conversão. Sua missão é criar roteiros naturais de 30 a 40 segundos para serem repetidos em loop durante a live.\n\nESTRUTURA OBRIGATÓRIA:\n\n🎯 GANCHO COM A DOR (0–5s)\nComece falando da dor, problema ou desejo do cliente. Algo que ele sente no dia a dia. Seja direto e empático.\n\n💎 PRODUTO + BENEFÍCIOS + TRANSFORMAÇÃO (5–25s)\nFale bastante do produto de forma sensorial — como ele é, como parece, como faz a pessoa se sentir. Mostre a TRANSFORMAÇÃO: como a vida da pessoa muda depois de ter esse produto. Use linguagem emocional e real. Inclua detalhes concretos. Se tiver prova social (quantidade vendida, avaliações), use aqui.\n\n⚡ GATILHOS (25–33s)\nCrie urgência e escassez real. Fale o preço com impacto — preço antigo vs preço atual. NUNCA mencione porcentagem de desconto. Exemplos: estoque acabando, preço só na live, frete grátis só agora.\n\n📣 CTA (33–40s)\nSEMPRE termine com clica no link aqui embaixo — nunca clica no carrinho. Adicione uma frase de reforço emocional ou urgência depois.\n\nTOM DO ROTEIRO:\nO tom será definido pelo usuário. Adapte toda a linguagem, ritmo e escolha de palavras conforme o tom solicitado:\n- VISCERAL PARA CONVERSÃO: linguagem urgente, direta, quase agressiva. Cada palavra empurra para a ação. Sem enrolação.\n- EMOCIONAL: conecta com sentimentos, sonhos e desejos. Faz a pessoa se imaginar usando o produto. Mais suave e envolvente.\n- INFORMATIVO: foca em dados, características e benefícios concretos. Tom de quem entende do assunto.\n- SÉRIO E DIRETO: sem exageros, sem animação excessiva. Confiante e objetivo. Fala de igual para igual.\n\nREGRAS:\n- Linguagem 100% natural como pessoa real falando\n- NUNCA mencionar porcentagem de desconto\n- CTA SEMPRE com clica no link aqui embaixo\n- Foco na TRANSFORMAÇÃO não no produto em si\n- Gere APENAS o roteiro sem explicações antes ou depois\n- Formate EXATAMENTE assim com os emojis e seções separadas';
 
 async function salvarConfAgentes(){
   var kr=document.getElementById('ag-key-roteiro').value.trim();
@@ -1032,6 +1036,81 @@ async function carregarConfAgentes(){
 function resetarPrompt(){
   if(document.getElementById('ag-prompt')) document.getElementById('ag-prompt').value=PROMPT_PADRAO_AG;
   toast('Prompt restaurado para o padrão!');
+}
+
+// ================================================
+// DRAG AND DROP DE AULAS
+// ================================================
+var _dragAulaEl = null;
+var _dragModId = null;
+
+function initDragAula(e, el){
+  // Só inicia drag pelo handle
+  if(!e.target.classList.contains('drag-handle') && !e.target.closest('.drag-handle')) return;
+  _dragAulaEl = el;
+  _dragModId = el.dataset.modId;
+}
+
+function setupDragAulas(container, modId){
+  container.addEventListener('dragstart', function(e){
+    var item = e.target.closest('.aula-item');
+    if(!item) return;
+    _dragAulaEl = item;
+    _dragModId = modId;
+    item.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  container.addEventListener('dragend', function(e){
+    var item = e.target.closest('.aula-item');
+    if(item) item.classList.remove('dragging');
+    container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
+  });
+
+  container.addEventListener('dragover', function(e){
+    e.preventDefault();
+    var over = e.target.closest('.aula-item');
+    if(!over || over === _dragAulaEl) return;
+    container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
+    over.classList.add('drag-over');
+    var rect = over.getBoundingClientRect();
+    var mid = rect.top + rect.height/2;
+    if(e.clientY < mid){
+      container.insertBefore(_dragAulaEl, over);
+    } else {
+      container.insertBefore(_dragAulaEl, over.nextSibling);
+    }
+  });
+
+  container.addEventListener('drop', function(e){
+    e.preventDefault();
+    container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
+    // Salvar nova ordem
+    var novaOrdem = Array.from(container.querySelectorAll('.aula-item')).map(function(el){return el.dataset.aulaId;});
+    salvarOrdemAulas(modId, novaOrdem, container);
+  });
+}
+
+function salvarOrdemAulas(modId, novaOrdem, container){
+  var aulas = gAulas();
+  // Reordenar as aulas deste módulo
+  var aulasDoMod = aulas.filter(function(a){return a.moduloId===modId;});
+  var outrasAulas = aulas.filter(function(a){return a.moduloId!==modId;});
+  
+  // Criar nova lista na ordem certa
+  var reordenadas = novaOrdem.map(function(id){
+    return aulasDoMod.find(function(a){return a.id===id;});
+  }).filter(Boolean);
+  
+  // Atualizar número de ordem
+  reordenadas.forEach(function(a,i){a.ordem=i+1;});
+  
+  sAulas(outrasAulas.concat(reordenadas));
+  
+  // Atualizar números visuais
+  container.querySelectorAll('.aula-n').forEach(function(el,i){el.textContent=i+1;});
+  
+  toast('Ordem salva! Clique em Publicar no site para aplicar.');
 }
 
 function renderMats(){
@@ -1263,7 +1342,7 @@ async function publicarMateriais(){
   btn.textContent='Publicar no site';btn.disabled=false;
 }
 
-var PROMPT_PADRAO_AG='Você é um especialista em vendas ao vivo no TikTok Shop. Crie roteiros de 30-40s para loop na live. ESTRUTURA: GANCHO COM A DOR (0-5s) | PRODUTO+BENEFICIOS+TRANSFORMACAO (5-25s) | GATILHOS sem desconto em % (25-33s) | CTA com clica no link aqui embaixo (33-40s). Linguagem natural. NUNCA mencione % de desconto. CTA SEMPRE com clica no link aqui embaixo.';
+var PROMPT_PADRAO_AG='Você é um especialista em vendas ao vivo no TikTok Shop com foco em psicologia do consumidor e copywriting de alta conversão. Sua missão é criar roteiros naturais de 30 a 40 segundos para serem repetidos em loop durante a live.\n\nESTRUTURA OBRIGATÓRIA:\n\n🎯 GANCHO COM A DOR (0–5s)\nComece falando da dor, problema ou desejo do cliente. Algo que ele sente no dia a dia. Seja direto e empático.\n\n💎 PRODUTO + BENEFÍCIOS + TRANSFORMAÇÃO (5–25s)\nFale bastante do produto de forma sensorial — como ele é, como parece, como faz a pessoa se sentir. Mostre a TRANSFORMAÇÃO: como a vida da pessoa muda depois de ter esse produto. Use linguagem emocional e real. Inclua detalhes concretos. Se tiver prova social (quantidade vendida, avaliações), use aqui.\n\n⚡ GATILHOS (25–33s)\nCrie urgência e escassez real. Fale o preço com impacto — preço antigo vs preço atual. NUNCA mencione porcentagem de desconto. Exemplos: estoque acabando, preço só na live, frete grátis só agora.\n\n📣 CTA (33–40s)\nSEMPRE termine com clica no link aqui embaixo — nunca clica no carrinho. Adicione uma frase de reforço emocional ou urgência depois.\n\nTOM DO ROTEIRO:\nO tom será definido pelo usuário. Adapte toda a linguagem, ritmo e escolha de palavras conforme o tom solicitado:\n- VISCERAL PARA CONVERSÃO: linguagem urgente, direta, quase agressiva. Cada palavra empurra para a ação. Sem enrolação.\n- EMOCIONAL: conecta com sentimentos, sonhos e desejos. Faz a pessoa se imaginar usando o produto. Mais suave e envolvente.\n- INFORMATIVO: foca em dados, características e benefícios concretos. Tom de quem entende do assunto.\n- SÉRIO E DIRETO: sem exageros, sem animação excessiva. Confiante e objetivo. Fala de igual para igual.\n\nREGRAS:\n- Linguagem 100% natural como pessoa real falando\n- NUNCA mencionar porcentagem de desconto\n- CTA SEMPRE com clica no link aqui embaixo\n- Foco na TRANSFORMAÇÃO não no produto em si\n- Gere APENAS o roteiro sem explicações antes ou depois\n- Formate EXATAMENTE assim com os emojis e seções separadas';
 
 async function salvarConfAgentes(){
   var kr=document.getElementById('ag-key-roteiro').value.trim();
@@ -1297,6 +1376,81 @@ async function carregarConfAgentes(){
 function resetarPrompt(){
   if(document.getElementById('ag-prompt')) document.getElementById('ag-prompt').value=PROMPT_PADRAO_AG;
   toast('Prompt restaurado para o padrão!');
+}
+
+// ================================================
+// DRAG AND DROP DE AULAS
+// ================================================
+var _dragAulaEl = null;
+var _dragModId = null;
+
+function initDragAula(e, el){
+  // Só inicia drag pelo handle
+  if(!e.target.classList.contains('drag-handle') && !e.target.closest('.drag-handle')) return;
+  _dragAulaEl = el;
+  _dragModId = el.dataset.modId;
+}
+
+function setupDragAulas(container, modId){
+  container.addEventListener('dragstart', function(e){
+    var item = e.target.closest('.aula-item');
+    if(!item) return;
+    _dragAulaEl = item;
+    _dragModId = modId;
+    item.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  container.addEventListener('dragend', function(e){
+    var item = e.target.closest('.aula-item');
+    if(item) item.classList.remove('dragging');
+    container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
+  });
+
+  container.addEventListener('dragover', function(e){
+    e.preventDefault();
+    var over = e.target.closest('.aula-item');
+    if(!over || over === _dragAulaEl) return;
+    container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
+    over.classList.add('drag-over');
+    var rect = over.getBoundingClientRect();
+    var mid = rect.top + rect.height/2;
+    if(e.clientY < mid){
+      container.insertBefore(_dragAulaEl, over);
+    } else {
+      container.insertBefore(_dragAulaEl, over.nextSibling);
+    }
+  });
+
+  container.addEventListener('drop', function(e){
+    e.preventDefault();
+    container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
+    // Salvar nova ordem
+    var novaOrdem = Array.from(container.querySelectorAll('.aula-item')).map(function(el){return el.dataset.aulaId;});
+    salvarOrdemAulas(modId, novaOrdem, container);
+  });
+}
+
+function salvarOrdemAulas(modId, novaOrdem, container){
+  var aulas = gAulas();
+  // Reordenar as aulas deste módulo
+  var aulasDoMod = aulas.filter(function(a){return a.moduloId===modId;});
+  var outrasAulas = aulas.filter(function(a){return a.moduloId!==modId;});
+  
+  // Criar nova lista na ordem certa
+  var reordenadas = novaOrdem.map(function(id){
+    return aulasDoMod.find(function(a){return a.id===id;});
+  }).filter(Boolean);
+  
+  // Atualizar número de ordem
+  reordenadas.forEach(function(a,i){a.ordem=i+1;});
+  
+  sAulas(outrasAulas.concat(reordenadas));
+  
+  // Atualizar números visuais
+  container.querySelectorAll('.aula-n').forEach(function(el,i){el.textContent=i+1;});
+  
+  toast('Ordem salva! Clique em Publicar no site para aplicar.');
 }
 
 function renderMats(){
