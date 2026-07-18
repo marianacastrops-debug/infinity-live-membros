@@ -109,6 +109,9 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .rb-d{background:rgba(255,59,92,0.08);color:var(--red);}
 .rb-d:hover{background:rgba(255,59,92,0.2);}
 .mod-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.mod-card.dragging{opacity:.4;border:1px dashed var(--purple);}
+.mod-card.drag-over{border-color:var(--cyan);background:rgba(0,200,255,0.04);}
+.drag-handle-mod{font-size:17px;}
 .mod-hd{display:flex;align-items:center;gap:11px;padding:13px 15px;}
 .mod-thumb{width:50px;height:65px;border-radius:7px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
 .mod-thumb-ph{width:50px;height:65px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);}
@@ -589,8 +592,9 @@ function renderMods(){
       var btnDn='<button onclick="moverAula(\''+a.id+'\'\,\''+m.id+'\'\\,\'down\')" style="background:none;border:none;color:'+(i===am.length-1?'rgba(255,255,255,0.1)':'var(--text2)')+';cursor:'+(i===am.length-1?'default':'pointer')+';font-size:13px;padding:1px;line-height:1;"><i class=\"ti ti-chevron-down\"></i></button>';
       return '<div class="aula-item" data-aula-id="'+a.id+'" data-mod-id="'+m.id+'"><i class="ti ti-grip-vertical drag-handle" title="Arraste para reordenar"></i><div style="display:flex;flex-direction:column;margin-right:2px;">'+btnUp+btnDn+'</div><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
     }).join('')+'</div>':'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
-    return '<div class="mod-card"><div class="mod-hd">'+thumb+'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stC[m.status||'visible']+'">'+stL[m.status||'visible']+'</span></div><div class="mod-acts"><button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button><button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button></div></div><div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">AULAS</div>'+aulasHtml+'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button></div></div>';
+    return '<div class="mod-card" data-mod-id="'+m.id+'"><div class="mod-hd"><i class="ti ti-grip-vertical drag-handle drag-handle-mod" title="Arraste para reordenar o módulo"></i>'+thumb+'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stC[m.status||'visible']+'">'+stL[m.status||'visible']+'</span></div><div class="mod-acts"><button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button><button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button></div></div><div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">AULAS</div>'+aulasHtml+'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button></div></div>';
   }).join('');
+  setupDragMods(el);
   el.querySelectorAll('.aulas-lista').forEach(function(cont){
     setupDragAulas(cont, cont.getAttribute('data-mod-id'));
   });
@@ -1404,6 +1408,68 @@ function salvarOrdemAulas(modId, novaOrdem, container){
   container.querySelectorAll('.aula-n').forEach(function(el,i){el.textContent=i+1;});
   
   toast('Ordem salva! Clique em Publicar no site para aplicar.');
+}
+
+// ================================================
+// DRAG AND DROP DE MÓDULOS
+// ================================================
+function setupDragMods(container){
+  var dragging = null;
+
+  container.querySelectorAll('.mod-card').forEach(function(item){
+    item.setAttribute('draggable','true');
+
+    item.addEventListener('mousedown', function(e){
+      item._podeArrastar = !!e.target.closest('.drag-handle-mod');
+    });
+
+    item.addEventListener('dragstart', function(e){
+      if(!item._podeArrastar){ e.preventDefault(); return; }
+      dragging = item;
+      setTimeout(function(){item.classList.add('dragging');}, 0);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', item.dataset.modId);
+    });
+
+    item.addEventListener('dragend', function(){
+      item.classList.remove('dragging');
+      container.querySelectorAll('.mod-card').forEach(function(el){el.classList.remove('drag-over');});
+      if(dragging){
+        var novaOrdem = Array.from(container.querySelectorAll('.mod-card')).map(function(el){return el.dataset.modId;});
+        salvarOrdemMods(novaOrdem);
+        dragging = null;
+      }
+    });
+
+    item.addEventListener('dragover', function(e){
+      e.preventDefault();
+      if(!dragging || dragging === item) return;
+      var rect = item.getBoundingClientRect();
+      var mid = rect.top + rect.height/2;
+      container.querySelectorAll('.mod-card').forEach(function(el){el.classList.remove('drag-over');});
+      item.classList.add('drag-over');
+      if(e.clientY < mid){
+        container.insertBefore(dragging, item);
+      } else {
+        container.insertBefore(dragging, item.nextSibling);
+      }
+    });
+
+    item.addEventListener('drop', function(e){
+      e.preventDefault();
+    });
+  });
+}
+
+function salvarOrdemMods(novaOrdem){
+  var mods = gMods();
+  var reordenados = novaOrdem.map(function(id){
+    return mods.find(function(m){return m.id===id;});
+  }).filter(Boolean);
+  reordenados.forEach(function(m,i){ m.ordem = i+1; });
+  sMods(reordenados);
+  renderMods();
+  toast('Ordem dos módulos salva! Publique no site para aplicar.');
 }
 
 function renderMats(){
