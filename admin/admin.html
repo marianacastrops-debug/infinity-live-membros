@@ -124,6 +124,7 @@ td{padding:9px 10px;font-size:12px;color:var(--text2);vertical-align:middle;}
 .st-l{background:rgba(255,184,0,0.12);color:var(--yellow);border:1px solid rgba(255,184,0,0.2);}
 .st-h{background:rgba(255,255,255,0.06);color:var(--text3);}
 .aulas-sec{border-top:1px solid var(--border);padding:8px 15px 12px;}
+.aulas-lista{min-height:22px;}
 .aula-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--card2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border);}
 .aula-item.dragging{opacity:.4;border:1px dashed var(--purple);cursor:grabbing;}
 .aula-item.drag-over{border-color:var(--cyan);background:rgba(0,200,255,0.06);}
@@ -587,11 +588,11 @@ function renderMods(){
     var am=aulas.filter(function(a){return a.moduloId===m.id;});
     var c=CORES[m.cor||'cyan'];
     var thumb=m.imagem?'<img class="mod-thumb" src="'+m.imagem+'" onerror="this.style.display=\'none\'">':'<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';"><i class="ti ti-photo-off"></i></div>';
-    var aulasHtml=am.length?'<div class="aulas-lista" data-mod-id="'+m.id+'">'+am.map(function(a,i){
+    var aulasHtml='<div class="aulas-lista" data-mod-id="'+m.id+'">'+(am.length?am.map(function(a,i){
       var btnUp='<button onclick="moverAula(\''+a.id+'\'\,\''+m.id+'\'\\,\'up\')" style="background:none;border:none;color:'+(i===0?'rgba(255,255,255,0.1)':'var(--text2)')+';cursor:'+(i===0?'default':'pointer')+';font-size:13px;padding:1px;line-height:1;"><i class=\"ti ti-chevron-up\"></i></button>';
       var btnDn='<button onclick="moverAula(\''+a.id+'\'\,\''+m.id+'\'\\,\'down\')" style="background:none;border:none;color:'+(i===am.length-1?'rgba(255,255,255,0.1)':'var(--text2)')+';cursor:'+(i===am.length-1?'default':'pointer')+';font-size:13px;padding:1px;line-height:1;"><i class=\"ti ti-chevron-down\"></i></button>';
-      return '<div class="aula-item" data-aula-id="'+a.id+'" data-mod-id="'+m.id+'"><i class="ti ti-grip-vertical drag-handle" title="Arraste para reordenar"></i><div style="display:flex;flex-direction:column;margin-right:2px;">'+btnUp+btnDn+'</div><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
-    }).join('')+'</div>':'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
+      return '<div class="aula-item" data-aula-id="'+a.id+'" data-mod-id="'+m.id+'"><i class="ti ti-grip-vertical drag-handle" title="Arraste para reordenar ou mover para outro módulo"></i><div style="display:flex;flex-direction:column;margin-right:2px;">'+btnUp+btnDn+'</div><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
+    }).join(''):'<div class="aulas-vazio" style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo. Arraste uma aula pra cá.</div>')+'</div>';
     return '<div class="mod-card" data-mod-id="'+m.id+'"><div class="mod-hd"><i class="ti ti-grip-vertical drag-handle drag-handle-mod" title="Arraste para reordenar o módulo"></i>'+thumb+'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stC[m.status||'visible']+'">'+stL[m.status||'visible']+'</span></div><div class="mod-acts"><button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button><button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button></div></div><div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">AULAS</div>'+aulasHtml+'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button></div></div>';
   }).join('');
   setupDragMods(el);
@@ -1328,20 +1329,22 @@ function resetarPrompt(){
 }
 
 // ================================================
-// DRAG AND DROP DE AULAS
+// DRAG AND DROP DE AULAS (também entre módulos diferentes)
 // ================================================
-var _dragAulaEl = null;
-var _dragModId = null;
-
-function initDragAula(e, el){
-  // Só inicia drag pelo handle
-  if(!e.target.classList.contains('drag-handle') && !e.target.closest('.drag-handle')) return;
-  _dragAulaEl = el;
-  _dragModId = el.dataset.modId;
-}
+var _dragAula = null;
 
 function setupDragAulas(container, modId){
-  var dragging = null;
+  container.setAttribute('data-mod-id', modId);
+
+  // Permite soltar a aula numa área vazia do módulo (ex: módulo sem nenhuma aula ainda,
+  // ou abaixo da última aula da lista)
+  container.addEventListener('dragover', function(e){
+    e.preventDefault();
+    if(!_dragAula) return;
+    var vazio = container.querySelector('.aulas-vazio');
+    if(vazio) vazio.remove();
+    if(!container.contains(_dragAula)) container.appendChild(_dragAula);
+  });
 
   container.querySelectorAll('.aula-item').forEach(function(item){
     item.setAttribute('draggable','true');
@@ -1352,7 +1355,7 @@ function setupDragAulas(container, modId){
 
     item.addEventListener('dragstart', function(e){
       if(!item._podeArrastar){ e.preventDefault(); return; }
-      dragging = item;
+      _dragAula = item;
       setTimeout(function(){item.classList.add('dragging');}, 0);
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', item.dataset.aulaId);
@@ -1360,54 +1363,54 @@ function setupDragAulas(container, modId){
 
     item.addEventListener('dragend', function(){
       item.classList.remove('dragging');
-      container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
-      if(dragging){
-        var novaOrdem = Array.from(container.querySelectorAll('.aula-item')).map(function(el){return el.dataset.aulaId;});
-        salvarOrdemAulas(modId, novaOrdem, container);
-        dragging = null;
+      document.querySelectorAll('.aula-item.drag-over').forEach(function(el){el.classList.remove('drag-over');});
+      if(_dragAula){
+        finalizarDragAula();
+        _dragAula = null;
       }
     });
 
     item.addEventListener('dragover', function(e){
       e.preventDefault();
-      if(!dragging || dragging === item) return;
+      e.stopPropagation();
+      if(!_dragAula || _dragAula === item) return;
       var rect = item.getBoundingClientRect();
       var mid = rect.top + rect.height/2;
-      container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
+      document.querySelectorAll('.aula-item.drag-over').forEach(function(el){el.classList.remove('drag-over');});
       item.classList.add('drag-over');
+      var pai = item.parentNode;
       if(e.clientY < mid){
-        container.insertBefore(dragging, item);
+        pai.insertBefore(_dragAula, item);
       } else {
-        container.insertBefore(dragging, item.nextSibling);
+        pai.insertBefore(_dragAula, item.nextSibling);
       }
     });
 
     item.addEventListener('drop', function(e){
       e.preventDefault();
+      e.stopPropagation();
     });
   });
 }
 
-function salvarOrdemAulas(modId, novaOrdem, container){
+// Roda depois de soltar: relê a ordem/módulo de cada aula direto do DOM
+// (assim uma aula arrastada pra dentro de outro módulo já sai com o moduloId certo)
+function finalizarDragAula(){
   var aulas = gAulas();
-  // Reordenar as aulas deste módulo
-  var aulasDoMod = aulas.filter(function(a){return a.moduloId===modId;});
-  var outrasAulas = aulas.filter(function(a){return a.moduloId!==modId;});
-  
-  // Criar nova lista na ordem certa
-  var reordenadas = novaOrdem.map(function(id){
-    return aulasDoMod.find(function(a){return a.id===id;});
-  }).filter(Boolean);
-  
-  // Atualizar número de ordem
-  reordenadas.forEach(function(a,i){a.ordem=i+1;});
-  
-  sAulas(outrasAulas.concat(reordenadas));
-  
-  // Atualizar números visuais
-  container.querySelectorAll('.aula-n').forEach(function(el,i){el.textContent=i+1;});
-  
-  toast('Ordem salva! Clique em Publicar no site para aplicar.');
+  var porId = {};
+  aulas.forEach(function(a){ porId[a.id] = a; });
+
+  document.querySelectorAll('.aulas-lista').forEach(function(cont){
+    var modId = cont.getAttribute('data-mod-id');
+    Array.from(cont.querySelectorAll('.aula-item')).forEach(function(el, i){
+      var a = porId[el.dataset.aulaId];
+      if(a){ a.moduloId = modId; a.ordem = i+1; }
+    });
+  });
+
+  sAulas(aulas);
+  renderMods();
+  toast('Aula movida! Publique no site para aplicar.');
 }
 
 // ================================================
