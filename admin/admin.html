@@ -585,7 +585,9 @@ function renderMods(){
     var c=CORES[m.cor||'cyan'];
     var thumb=m.imagem?'<img class="mod-thumb" src="'+m.imagem+'" onerror="this.style.display=\'none\'">':'<div class="mod-thumb-ph" style="background:'+c.bg+';color:'+c.cor+';"><i class="ti ti-photo-off"></i></div>';
     var aulasHtml=am.length?am.map(function(a,i){
-      return '<div class="aula-item" draggable="true" data-aula-id="'+a.id+'" data-mod-id="'+m.id+'"><i class="ti ti-grip-vertical drag-handle"></i><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
+      var btnUp='<button onclick="moverAula(\''+a.id+'\'\,\''+m.id+'\'\\,\'up\')" style="background:none;border:none;color:'+(i===0?'rgba(255,255,255,0.1)':'var(--text2)')+';cursor:'+(i===0?'default':'pointer')+';font-size:13px;padding:1px;line-height:1;"><i class=\"ti ti-chevron-up\"></i></button>';
+      var btnDn='<button onclick="moverAula(\''+a.id+'\'\,\''+m.id+'\'\\,\'down\')" style="background:none;border:none;color:'+(i===am.length-1?'rgba(255,255,255,0.1)':'var(--text2)')+';cursor:'+(i===am.length-1?'default':'pointer')+';font-size:13px;padding:1px;line-height:1;"><i class=\"ti ti-chevron-down\"></i></button>';
+      return '<div class="aula-item" data-aula-id="'+a.id+'" data-mod-id="'+m.id+'"><div style="display:flex;flex-direction:column;margin-right:2px;">'+btnUp+btnDn+'</div><span class="aula-n">'+(i+1)+'</span><div class="aula-info"><div class="aula-nome">'+a.nome+(a.status==='draft'?' <span style="font-size:9px;color:var(--yellow);background:rgba(255,184,0,0.1);padding:1px 5px;border-radius:4px;">RASCUNHO</span>':'')+'</div><div class="aula-url">'+(a.embed||a.url||'—')+'</div></div><span class="aula-dur">'+(a.duracao||'—')+'</span><div class="aula-acts"><button class="ab ab-e" onclick="editarAula(\''+a.id+'\')"><i class="ti ti-edit"></i></button><button class="ab ab-d" onclick="confirmar(\'Excluir aula\',\'Excluir &quot;'+a.nome.replace(/'/g,'').replace(/"/g,'')+'&quot;?\',function(){delAula(\''+a.id+'\')})"><i class="ti ti-trash"></i></button></div></div>';
     }).join(''):'<div style="font-size:12px;color:var(--text3);padding:5px 0;">Nenhuma aula neste módulo.</div>';
     return '<div class="mod-card"><div class="mod-hd">'+thumb+'<div class="mod-info"><div class="mod-nome">'+m.nome+'</div><div class="mod-meta">'+am.length+' aula(s) · Ordem '+m.ordem+'</div><span class="st '+stC[m.status||'visible']+'">'+stL[m.status||'visible']+'</span></div><div class="mod-acts"><button class="btn btn-o btn-sm" onclick="editarMod(\''+m.id+'\')"><i class="ti ti-edit" style="font-size:12px;"></i> Editar</button><button class="btn btn-p btn-sm" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;"></i> Aula</button></div></div><div class="aulas-sec"><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;">AULAS</div>'+aulasHtml+'<button class="btn btn-o btn-sm" style="width:100%;justify-content:center;margin-top:7px;" onclick="novaAula(\''+m.id+'\')"><i class="ti ti-plus" style="font-size:12px;color:var(--cyan);"></i> Adicionar aula</button></div></div>';
   }).join('');
@@ -1039,82 +1041,21 @@ function resetarPrompt(){
 }
 
 // ================================================
-// DRAG AND DROP DE AULAS
-// ================================================
-var _dragAulaEl = null;
-var _dragModId = null;
-
-function initDragAula(e, el){
-  // Só inicia drag pelo handle
-  if(!e.target.classList.contains('drag-handle') && !e.target.closest('.drag-handle')) return;
-  _dragAulaEl = el;
-  _dragModId = el.dataset.modId;
+// REORDENAR AULAS
+function moverAula(aulaId, modId, direcao){
+  var aulas=gAulas();
+  var am=aulas.filter(function(a){return a.moduloId===modId;}).sort(function(a,b){return (a.ordem||0)-(b.ordem||0);});
+  var idx=am.findIndex(function(a){return a.id===aulaId;});
+  if(idx===-1)return;
+  var nIdx=direcao==='up'?idx-1:idx+1;
+  if(nIdx<0||nIdx>=am.length)return;
+  var tmp=am[idx];am[idx]=am[nIdx];am[nIdx]=tmp;
+  am.forEach(function(a,i){a.ordem=i+1;});
+  sAulas(aulas.filter(function(a){return a.moduloId!==modId;}).concat(am));
+  renderMods(gMods());
+  toast('Ordem salva! Publique no site para aplicar.');
 }
-
-function setupDragAulas(container, modId){
-  var dragging = null;
-
-  container.querySelectorAll('.aula-item').forEach(function(item){
-    item.setAttribute('draggable','true');
-
-    item.addEventListener('dragstart', function(e){
-      dragging = item;
-      setTimeout(function(){item.classList.add('dragging');}, 0);
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', item.dataset.aulaId);
-    });
-
-    item.addEventListener('dragend', function(){
-      item.classList.remove('dragging');
-      container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
-      if(dragging){
-        var novaOrdem = Array.from(container.querySelectorAll('.aula-item')).map(function(el){return el.dataset.aulaId;});
-        salvarOrdemAulas(modId, novaOrdem, container);
-        dragging = null;
-      }
-    });
-
-    item.addEventListener('dragover', function(e){
-      e.preventDefault();
-      if(!dragging || dragging === item) return;
-      var rect = item.getBoundingClientRect();
-      var mid = rect.top + rect.height/2;
-      container.querySelectorAll('.aula-item').forEach(function(el){el.classList.remove('drag-over');});
-      item.classList.add('drag-over');
-      if(e.clientY < mid){
-        container.insertBefore(dragging, item);
-      } else {
-        container.insertBefore(dragging, item.nextSibling);
-      }
-    });
-
-    item.addEventListener('drop', function(e){
-      e.preventDefault();
-    });
-  });
-}
-
-function salvarOrdemAulas(modId, novaOrdem, container){
-  var aulas = gAulas();
-  // Reordenar as aulas deste módulo
-  var aulasDoMod = aulas.filter(function(a){return a.moduloId===modId;});
-  var outrasAulas = aulas.filter(function(a){return a.moduloId!==modId;});
-  
-  // Criar nova lista na ordem certa
-  var reordenadas = novaOrdem.map(function(id){
-    return aulasDoMod.find(function(a){return a.id===id;});
-  }).filter(Boolean);
-  
-  // Atualizar número de ordem
-  reordenadas.forEach(function(a,i){a.ordem=i+1;});
-  
-  sAulas(outrasAulas.concat(reordenadas));
-  
-  // Atualizar números visuais
-  container.querySelectorAll('.aula-n').forEach(function(el,i){el.textContent=i+1;});
-  
-  toast('Ordem salva! Clique em Publicar no site para aplicar.');
-}
+function setupDragAulas(){}
 
 function renderMats(){
   var el=document.getElementById('mats-lista');
