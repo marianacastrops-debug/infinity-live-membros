@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     if (!email) return res.status(400).json({ error: 'Email obrigatorio' });
 
     const SB_URL = 'https://fbjxampsauqfngdennpi.supabase.co';
-    const SB_SECRET = 'sb_secret_UIykqcvYhYwNWjf8Afrgdg_4jur-OWD';
+    const SB_SECRET = 'sb_secret_2gsqX6fKbuD-oqInc37Usg_qq-QUT-E';
     const headers = { 'Content-Type': 'application/json', 'apikey': SB_SECRET, 'Authorization': `Bearer ${SB_SECRET}` };
 
     // Buscar ID pelo email
